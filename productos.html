@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario de Medicamentos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-group button, .back-btn {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .back-btn {
+      background-color: #007bff;
+      color: white;
+      margin-bottom: 20px;
+    }
+    .back-btn:hover {
+      opacity: 0.9;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-reset {
+      background-color: #dc3545;
+      color: white;
+    }
+    /* ====== TABLA DE MEDICAMENTOS ====== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    table tfoot tr {
+      background-color: #d9edf7;
+      font-weight: bold;
+    }
+    /* Botones de acción en la tabla */
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-edit {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-edit:hover, .btn-delete:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <!-- Botón para volver al menú principal -->
+  <button class="back-btn" onclick="window.location.href='index.html'">Volver al Menú</button>
+
+  <div class="container">
+    <h1>Inventario de Medicamentos</h1>
+    <!-- FORMULARIO PARA REGISTRAR / EDITAR MEDICAMENTOS -->
+    <form id="medicamentoForm">
+      <div class="form-grid">
+        <!-- Código (generado automáticamente, solo lectura) -->
+        <div class="form-group">
+          <label for="codigo">Código:</label>
+          <input type="number" id="codigo" readonly>
+        </div>
+        <!-- Nombre -->
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" required>
+        </div>
+        <!-- Unidad -->
+        <div class="form-group">
+          <label for="unidad">Unidad:</label>
+          <input type="text" id="unidad" placeholder="Ej: Caja x 10, Frasco 120 ml, etc.">
+        </div>
+        <!-- Precio de Compra -->
+        <div class="form-group">
+          <label for="precioCompra">Precio de Compra:</label>
+          <input type="number" id="precioCompra" step="0.01" required>
+        </div>
+        <!-- % Utilidad -->
+        <div class="form-group">
+          <label for="utilidad">% Utilidad:</label>
+          <input type="number" id="utilidad" step="0.01" required>
+        </div>
+        <!-- Precio de Venta (automático) -->
+        <div class="form-group">
+          <label for="precioVenta">Precio de Venta:</label>
+          <input type="number" id="precioVenta" step="0.01" readonly>
+        </div>
+        <!-- Impuesto % -->
+        <div class="form-group">
+          <label for="impuesto">Impuesto (%):</label>
+          <input type="number" id="impuesto" step="0.01" value="0">
+        </div>
+        <!-- Existencia Actual -->
+        <div class="form-group">
+          <label for="existencia">Existencia Actual:</label>
+          <input type="number" id="existencia" required>
+        </div>
+        <!-- Stock Mínimo -->
+        <div class="form-group">
+          <label for="stockMinimo">Stock Mínimo:</label>
+          <input type="number" id="stockMinimo" required>
+        </div>
+        <!-- Status -->
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <select id="status">
+            <option value="Activo">Activo</option>
+            <option value="Inactivo">Inactivo</option>
+          </select>
+        </div>
+        <!-- Monto (automático) -->
+        <div class="form-group">
+          <label for="monto">Monto:</label>
+          <input type="number" id="monto" step="0.01" readonly>
+        </div>
+      </div> <!-- fin .form-grid -->
+
+      <div class="button-group">
+        <button type="submit" class="btn-submit" id="submitBtn">Guardar</button>
+        <button type="reset" class="btn-reset">Limpiar</button>
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- TABLA PARA MOSTRAR LOS MEDICAMENTOS REGISTRADOS -->
+  <div class="container">
+    <table id="tablaMedicamentos">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Unidad</th>
+          <th>Precio Compra</th>
+          <th>% Utilidad</th>
+          <th>Precio Venta</th>
+          <th>Impuesto %</th>
+          <th>Existencia Actual</th>
+          <th>Stock Mínimo</th>
+          <th>Status</th>
+          <th>Monto</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filas generadas dinámicamente -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="10" style="text-align:right;">Total Inventario:</td>
+          <td id="totalInventario"></td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <script>
+    // Referencias a los campos del formulario
+    const medicamentoForm = document.getElementById('medicamentoForm');
+    const codigoInput = document.getElementById('codigo');
+    const nombreInput = document.getElementById('nombre');
+    const unidadInput = document.getElementById('unidad');
+    const precioCompraInput = document.getElementById('precioCompra');
+    const utilidadInput = document.getElementById('utilidad');
+    const precioVentaInput = document.getElementById('precioVenta');
+    const impuestoInput = document.getElementById('impuesto');
+    const existenciaInput = document.getElementById('existencia');
+    const stockMinimoInput = document.getElementById('stockMinimo');
+    const statusSelect = document.getElementById('status');
+    const montoInput = document.getElementById('monto');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Para manejar edición
+    let editId = null;
+
+    // Array de medicamentos y contador para IDs
+    let medicamentos = [];
+    let medicamentosCounter = 1;
+
+    // Lista de 52 medicamentos predefinidos (datos inventados)
+    const medicamentosPredefinidos = [
+      { id: 1,  codigo: "1001", nombre:"Acetaminofén 500 mg",     unidad:"Caja x 10",  precioCompra:1000, utilidad:30, precioVenta:0, impuesto:5,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id: 2,  codigo: "1002", nombre:"Ibuprofeno 400 mg",       unidad:"Caja x 10",  precioCompra:1200, utilidad:25, precioVenta:0, impuesto:5,  existencia:40, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id: 3,  codigo: "1003", nombre:"Diclofenaco Sódico 50 mg", unidad:"Caja x 20",  precioCompra:900,  utilidad:30, precioVenta:0, impuesto:0,  existencia:60, stockMinimo:10, status:"Activo",  monto:0 },
+      { id: 4,  codigo: "1004", nombre:"Amoxicilina 500 mg",      unidad:"Caja x 12",  precioCompra:1500, utilidad:20, precioVenta:0, impuesto:5,  existencia:35, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id: 5,  codigo: "1005", nombre:"Ciprofloxacina 500 mg",   unidad:"Caja x 10",  precioCompra:1800, utilidad:25, precioVenta:0, impuesto:5,  existencia:30, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id: 6,  codigo: "1006", nombre:"Metformina 850 mg",       unidad:"Caja x 30",  precioCompra:1000, utilidad:15, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id: 7,  codigo: "1007", nombre:"Losartán 50 mg",          unidad:"Caja x 30",  precioCompra:1200, utilidad:30, precioVenta:0, impuesto:5,  existencia:60, stockMinimo:12, status:"Activo",  monto:0 },
+      { id: 8,  codigo: "1008", nombre:"Atorvastatina 20 mg",     unidad:"Caja x 10",  precioCompra:2000, utilidad:20, precioVenta:0, impuesto:5,  existencia:40, stockMinimo:10, status:"Activo",  monto:0 },
+      { id: 9,  codigo: "1009", nombre:"Omeprazol 20 mg",         unidad:"Caja x 14",  precioCompra:800,  utilidad:25, precioVenta:0, impuesto:0,  existencia:70, stockMinimo:15, status:"Activo",  monto:0 },
+      { id:10,  codigo: "1010", nombre:"Loratadina 10 mg",        unidad:"Caja x 10",  precioCompra:700,  utilidad:40, precioVenta:0, impuesto:5,  existencia:50, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:11,  codigo: "1011", nombre:"Salbutamol Inhalador",    unidad:"Frasco 200 d", precioCompra:3000, utilidad:25, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:12,  codigo: "1012", nombre:"Hidrocortisona Crema 1%",  unidad:"Tubo 30 g",  precioCompra:1500, utilidad:30, precioVenta:0, impuesto:0,  existencia:35, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:13,  codigo: "1013", nombre:"Cetirizina 10 mg",        unidad:"Caja x 10",  precioCompra:600,  utilidad:30, precioVenta:0, impuesto:5,  existencia:60, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:14,  codigo: "1014", nombre:"Ranitidina 150 mg",       unidad:"Caja x 20",  precioCompra:900,  utilidad:20, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:15,  codigo: "1015", nombre:"Paracetamol + Codeína",    unidad:"Caja x 10",  precioCompra:1300, utilidad:25, precioVenta:0, impuesto:5,  existencia:40, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:16,  codigo: "1016", nombre:"Tramadol 50 mg",           unidad:"Caja x 10",  precioCompra:2000, utilidad:20, precioVenta:0, impuesto:5,  existencia:30, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:17,  codigo: "1017", nombre:"Furosemida 40 mg",         unidad:"Caja x 10",  precioCompra:800,  utilidad:30, precioVenta:0, impuesto:0,  existencia:40, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:18,  codigo: "1018", nombre:"Enalapril 10 mg",          unidad:"Caja x 30",  precioCompra:900,  utilidad:25, precioVenta:0, impuesto:5,  existencia:60, stockMinimo:12, status:"Activo",  monto:0 },
+      { id:19,  codigo: "1019", nombre:"Aciclovir 400 mg",         unidad:"Caja x 10",  precioCompra:1800, utilidad:20, precioVenta:0, impuesto:0,  existencia:25, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:20,  codigo: "1020", nombre:"Aspirina 100 mg",          unidad:"Caja x 30",  precioCompra:600,  utilidad:40, precioVenta:0, impuesto:5,  existencia:80, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:21,  codigo: "1021", nombre:"Azitromicina 500 mg",      unidad:"Caja x 3",   precioCompra:2500, utilidad:20, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:22,  codigo: "1022", nombre:"Clonazepam 2 mg",          unidad:"Caja x 30",  precioCompra:3000, utilidad:30, precioVenta:0, impuesto:0,  existencia:15, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:23,  codigo: "1023", nombre:"Diazepam 10 mg",           unidad:"Caja x 20",  precioCompra:2200, utilidad:20, precioVenta:0, impuesto:5,  existencia:30, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:24,  codigo: "1024", nombre:"Ketoconazol Crema 2%",     unidad:"Tubo 20 g",  precioCompra:1200, utilidad:25, precioVenta:0, impuesto:0,  existencia:40, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:25,  codigo: "1025", nombre:"Albendazol 400 mg",        unidad:"Caja x 2",   precioCompra:1000, utilidad:30, precioVenta:0, impuesto:5,  existencia:25, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:26,  codigo: "1026", nombre:"Metronidazol 500 mg",      unidad:"Caja x 20",  precioCompra:800,  utilidad:25, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:27,  codigo: "1027", nombre:"Hidroxicloroquina 200 mg", unidad:"Caja x 30", precioCompra:2500, utilidad:20, precioVenta:0, impuesto:5,  existencia:10, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:28,  codigo: "1028", nombre:"Clorfenamina 4 mg",       unidad:"Caja x 10",  precioCompra:500,  utilidad:30, precioVenta:0, impuesto:0,  existencia:40, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:29,  codigo: "1029", nombre:"Bisoprolol 5 mg",         unidad:"Caja x 30",  precioCompra:1500, utilidad:25, precioVenta:0, impuesto:5,  existencia:35, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:30,  codigo: "1030", nombre:"Carvedilol 12.5 mg",      unidad:"Caja x 30",  precioCompra:1600, utilidad:20, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:31,  codigo: "1031", nombre:"Warfarina 5 mg",          unidad:"Caja x 30",  precioCompra:1400, utilidad:30, precioVenta:0, impuesto:5,  existencia:25, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:32,  codigo: "1032", nombre:"Clopidogrel 75 mg",       unidad:"Caja x 30",  precioCompra:2500, utilidad:25, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:33,  codigo: "1033", nombre:"Salicilato de Metilo Gel", unidad:"Tubo 40 g",  precioCompra:900,  utilidad:30, precioVenta:0, impuesto:0,  existencia:30, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:34,  codigo: "1034", nombre:"Insulina NPH",            unidad:"Frasco 10 ml",precioCompra:4000, utilidad:20, precioVenta:0, impuesto:5,  existencia:10, stockMinimo:2,  status:"Activo",  monto:0 },
+      { id:35,  codigo: "1035", nombre:"Insulina Glargina",       unidad:"Frasco 3 ml", precioCompra:6000, utilidad:15, precioVenta:0, impuesto:5,  existencia:8,  stockMinimo:2,  status:"Activo",  monto:0 },
+      { id:36,  codigo: "1036", nombre:"Amiodarona 200 mg",       unidad:"Caja x 30",  precioCompra:3500, utilidad:25, precioVenta:0, impuesto:0,  existencia:10, stockMinimo:3,  status:"Activo",  monto:0 },
+      { id:37,  codigo: "1037", nombre:"Levotiroxina 50 mcg",     unidad:"Caja x 50",  precioCompra:1000, utilidad:30, precioVenta:0, impuesto:5,  existencia:40, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:38,  codigo: "1038", nombre:"Prednisona 20 mg",        unidad:"Caja x 20",  precioCompra:1200, utilidad:20, precioVenta:0, impuesto:0,  existencia:30, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:39,  codigo: "1039", nombre:"Omeprazol 40 mg",         unidad:"Caja x 14",  precioCompra:900,  utilidad:25, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:40,  codigo: "1040", nombre:"Alprazolam 1 mg",         unidad:"Caja x 30",  precioCompra:1800, utilidad:30, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:41,  codigo: "1041", nombre:"Diclofenaco Potásico 50 mg",unidad:"Caja x 20",precioCompra:1000, utilidad:25, precioVenta:0, impuesto:0,  existencia:60, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:42,  codigo: "1042", nombre:"Ketoprofeno 100 mg",      unidad:"Caja x 10",  precioCompra:1300, utilidad:20, precioVenta:0, impuesto:5,  existencia:40, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:43,  codigo: "1043", nombre:"Etoricoxib 90 mg",        unidad:"Caja x 10",  precioCompra:2200, utilidad:30, precioVenta:0, impuesto:5,  existencia:25, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:44,  codigo: "1044", nombre:"Celecoxib 200 mg",        unidad:"Caja x 10",  precioCompra:2500, utilidad:20, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:45,  codigo: "1045", nombre:"Naproxeno 550 mg",        unidad:"Caja x 10",  precioCompra:1200, utilidad:25, precioVenta:0, impuesto:0,  existencia:35, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:46,  codigo: "1046", nombre:"Captopril 25 mg",         unidad:"Caja x 30",  precioCompra:700,  utilidad:30, precioVenta:0, impuesto:5,  existencia:60, stockMinimo:10, status:"Activo",  monto:0 },
+      { id:47,  codigo: "1047", nombre:"Gabapentina 300 mg",      unidad:"Caja x 30",  precioCompra:2000, utilidad:25, precioVenta:0, impuesto:5,  existencia:15, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:48,  codigo: "1048", nombre:"Sertralina 50 mg",        unidad:"Caja x 30",  precioCompra:1500, utilidad:20, precioVenta:0, impuesto:0,  existencia:40, stockMinimo:8,  status:"Activo",  monto:0 },
+      { id:49,  codigo: "1049", nombre:"Amitriptilina 25 mg",     unidad:"Caja x 30",  precioCompra:1300, utilidad:30, precioVenta:0, impuesto:5,  existencia:20, stockMinimo:5,  status:"Activo",  monto:0 },
+      { id:50,  codigo: "1050", nombre:"Bromuro de Ipratropio Inhal.", unidad:"Frasco 20 ml", precioCompra:3000, utilidad:25, precioVenta:0, impuesto:5, existencia:12, stockMinimo:3, status:"Activo", monto:0 },
+      { id:51,  codigo: "1051", nombre:"Budesonida Inhalador",   unidad:"Frasco 200 d",precioCompra:3500, utilidad:20, precioVenta:0, impuesto:5,  existencia:10, stockMinimo:3,  status:"Activo",  monto:0 },
+      { id:52,  codigo: "1052", nombre:"Lansoprazol 30 mg",      unidad:"Caja x 14",  precioCompra:1000, utilidad:25, precioVenta:0, impuesto:0,  existencia:50, stockMinimo:10, status:"Activo",  monto:0 }
+    ];
+
+    // Al cargar la página, fusionamos con localStorage
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedMeds = localStorage.getItem('medicamentos');
+      if (storedMeds) {
+        medicamentos = JSON.parse(storedMeds);
+      } else {
+        medicamentos = [];
+      }
+      const storedCounter = localStorage.getItem('medicamentosCounter');
+      if (storedCounter) {
+        medicamentosCounter = parseInt(storedCounter, 10);
+      }
+      // Fusionar sin duplicar (por id)
+      const idsExistentes = medicamentos.map(m => m.id);
+      medicamentosPredefinidos.forEach(predef => {
+        if (!idsExistentes.includes(predef.id)) {
+          medicamentos.push(predef);
+        }
+      });
+      // Ajustar el contador
+      if (medicamentos.length > 0) {
+        medicamentosCounter = Math.max(...medicamentos.map(m => m.id)) + 1;
+      }
+      localStorage.setItem('medicamentos', JSON.stringify(medicamentos));
+      localStorage.setItem('medicamentosCounter', medicamentosCounter);
+      renderTablaMedicamentos();
+      // Mostrar automáticamente el código a generar en el campo (si no se está editando)
+      if (!editId) {
+        codigoInput.value = medicamentosCounter;
+      }
+    });
+
+    // Recalcular Precio de Venta y Monto
+    precioCompraInput.addEventListener('input', recalcularPrecios);
+    utilidadInput.addEventListener('input', recalcularPrecios);
+    existenciaInput.addEventListener('input', recalcularPrecios);
+
+    function recalcularPrecios() {
+      const compra = parseFloat(precioCompraInput.value) || 0;
+      const util = parseFloat(utilidadInput.value) || 0;
+      const exist = parseFloat(existenciaInput.value) || 0;
+      // Precio de venta: se calcula automáticamente
+      const venta = compra + (compra * util / 100);
+      precioVentaInput.value = venta.toFixed(2);
+      // Monto: Precio de Venta * Existencia
+      const montoCalc = venta * exist;
+      montoInput.value = montoCalc.toFixed(2);
+    }
+
+    // Evento submit para guardar/actualizar medicamento
+    medicamentoForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Si estamos agregando nuevo, el código se genera automáticamente
+      const nuevoMed = {
+        id: editId ? editId : medicamentosCounter,
+        codigo: editId ? codigoInput.value : medicamentosCounter.toString(),
+        nombre: nombreInput.value.trim(),
+        unidad: unidadInput.value.trim(),
+        precioCompra: parseFloat(precioCompraInput.value) || 0,
+        utilidad: parseFloat(utilidadInput.value) || 0,
+        precioVenta: parseFloat(precioVentaInput.value) || 0,
+        impuesto: parseFloat(impuestoInput.value) || 0,
+        existencia: parseFloat(existenciaInput.value) || 0,
+        stockMinimo: parseFloat(stockMinimoInput.value) || 0,
+        status: statusSelect.value,
+        monto: parseFloat(montoInput.value) || 0
+      };
+
+      if (editId) {
+        medicamentos = medicamentos.map(m => m.id === editId ? nuevoMed : m);
+        alert('¡Medicamento actualizado con éxito!');
+        editId = null;
+        submitBtn.textContent = 'Guardar';
+      } else {
+        medicamentos.push(nuevoMed);
+        medicamentosCounter++;
+        localStorage.setItem('medicamentosCounter', medicamentosCounter);
+        alert('¡Medicamento guardado con éxito!');
+      }
+      localStorage.setItem('medicamentos', JSON.stringify(medicamentos));
+      renderTablaMedicamentos();
+      medicamentoForm.reset();
+      precioVentaInput.value = '';
+      montoInput.value = '';
+      // Actualiza el código para el siguiente medicamento
+      if (!editId) {
+        codigoInput.value = medicamentosCounter;
+      }
+    });
+
+    // Renderizar tabla y actualizar total del inventario
+    function renderTablaMedicamentos() {
+      const tablaBody = document.querySelector('#tablaMedicamentos tbody');
+      tablaBody.innerHTML = '';
+      let totalInventario = 0;
+      medicamentos.forEach(med => {
+        const fila = document.createElement('tr');
+        fila.appendChild(crearCelda(med.codigo));
+        fila.appendChild(crearCelda(med.nombre));
+        fila.appendChild(crearCelda(med.unidad));
+        fila.appendChild(crearCelda(med.precioCompra));
+        fila.appendChild(crearCelda(med.utilidad));
+        fila.appendChild(crearCelda(med.precioVenta));
+        fila.appendChild(crearCelda(med.impuesto));
+        fila.appendChild(crearCelda(med.existencia));
+        fila.appendChild(crearCelda(med.stockMinimo));
+        fila.appendChild(crearCelda(med.status));
+        fila.appendChild(crearCelda(med.monto));
+        totalInventario += med.monto;
+        const tdAcciones = document.createElement('td');
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = 'Editar';
+        btnEdit.classList.add('btn-edit');
+        btnEdit.addEventListener('click', () => editarMedicamento(med.id));
+        tdAcciones.appendChild(btnEdit);
+        const btnDelete = document.createElement('button');
+        btnDelete.textContent = 'Eliminar';
+        btnDelete.classList.add('btn-delete');
+        btnDelete.addEventListener('click', () => eliminarMedicamento(med.id));
+        tdAcciones.appendChild(btnDelete);
+        fila.appendChild(tdAcciones);
+        tablaBody.appendChild(fila);
+      });
+      // Actualizar total en el tfoot
+      document.getElementById('totalInventario').textContent = totalInventario.toFixed(2);
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    // Editar medicamento
+    function editarMedicamento(id) {
+      const med = medicamentos.find(m => m.id === id);
+      if (!med) return;
+      codigoInput.value = med.codigo;
+      nombreInput.value = med.nombre;
+      unidadInput.value = med.unidad;
+      precioCompraInput.value = med.precioCompra;
+      utilidadInput.value = med.utilidad;
+      precioVentaInput.value = med.precioVenta;
+      impuestoInput.value = med.impuesto;
+      existenciaInput.value = med.existencia;
+      stockMinimoInput.value = med.stockMinimo;
+      statusSelect.value = med.status;
+      montoInput.value = med.monto;
+      editId = med.id;
+      submitBtn.textContent = 'Actualizar';
+    }
+
+    // Eliminar medicamento
+    function eliminarMedicamento(id) {
+      if (confirm('¿Deseas eliminar este medicamento?')) {
+        medicamentos = medicamentos.filter(m => m.id !== id);
+        localStorage.setItem('medicamentos', JSON.stringify(medicamentos));
+        renderTablaMedicamentos();
+      }
+    }
+  </script>
+</body>
+</html>

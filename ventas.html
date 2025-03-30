@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Módulo de Ventas Mejorado</title>
+  <style>
+    /* --------- ESTILOS GENERALES --------- */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    /* --------- CAJA DE INFO (EMPRESA/CLIENTE) --------- */
+    .info-box {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: #fafafa;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .info-box h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .info-box p {
+      margin: 4px 0;
+      font-size: 0.95rem;
+    }
+    /* --------- FORMULARIO DE VENTAS --------- */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group input[type="text"], 
+    .form-group input[type="number"], 
+    .form-group select {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .inline-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .inline-group input {
+      flex: 1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+      vertical-align: middle;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    .btn-add-item, .btn-delete-item, .btn-view-doc {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 0.9em;
+    }
+    .btn-add-item:hover, .btn-delete-item:hover, .btn-view-doc:hover {
+      opacity: 0.9;
+    }
+    .btn-submit, .btn-reset {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .btn-reset {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-submit:hover, .btn-reset:hover {
+      opacity: 0.9;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    /* --------- ESTILO PARA EL TOTAL DE VENTA --------- */
+    #totalVenta {
+      font-weight: bold;
+      font-size: 1.1rem;
+      background-color: #eef;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón para volver al menú principal -->
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <div class="container">
+    <h1>Módulo de Ventas (Mejorado)</h1>
+    
+    <!-- CAJA DE INFO DE LA EMPRESA -->
+    <div class="info-box" id="empresaInfoDiv">
+      <!-- Se llenará con JS -->
+      <!-- Ejemplo:
+           <h3>Empresa:</h3>
+           <p>Hand Salud</p>
+           <p>NIT: 43978675</p>
+           etc...
+      -->
+    </div>
+
+    <!-- CAJA DE INFO DEL CLIENTE -->
+    <div class="info-box">
+      <h3>Datos del Cliente</h3>
+      <!-- 1) Búsqueda por documento -->
+      <div class="inline-group">
+        <label for="docInput">Documento:</label>
+        <input type="text" id="docInput" placeholder="Ingrese número de documento..."/>
+        <button type="button" onclick="buscarClientePorDocumento()">Buscar</button>
+      </div>
+      <!-- 2) Mostramos los datos del cliente seleccionado -->
+      <div id="clienteInfoDiv" style="margin-top:10px;">
+        <!-- Se llena con JS si encuentra el cliente -->
+        <!-- Ejemplo:
+            <p><strong>Nombre:</strong> Andrea Rodríguez</p>
+            <p><strong>Tel:</strong> 3001234567</p>
+            ...
+        -->
+      </div>
+    </div>
+
+    <!-- Consecutivo para la venta -->
+    <div class="form-group inline-group">
+      <label for="ventaId"><strong>N° Venta / Factura:</strong></label>
+      <input type="text" id="ventaId" readonly>
+    </div>
+
+    <!-- Formulario principal de Ventas -->
+    <form id="ventaForm" style="margin-top:20px;">
+      <table id="tablaVentas">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Lote</th>
+            <th>Fecha Venc.</th>
+            <th>Unidad</th>
+            <th>Cant. Disp.</th>
+            <th>Cant. Venta</th>
+            <th>Precio Compra</th>
+            <th>Rentab. (%)</th>
+            <th>Precio Venta</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filas dinámicas -->
+        </tbody>
+      </table>
+      <button type="button" class="btn-add-item" onclick="agregarFilaVenta()">Agregar Ítem</button>
+      
+      <div class="form-group" style="margin-top:15px;">
+        <label for="totalVenta"><strong>Total Venta:</strong></label>
+        <input type="number" id="totalVenta" step="0.01" readonly>
+      </div>
+      
+      <div class="button-group">
+        <button type="submit" class="btn-submit">Guardar Venta</button>
+        <button type="reset" class="btn-reset">Limpiar</button>
+        <button type="button" class="btn-add-item" onclick="generarDocumentoVenta()">Ver/Generar Factura</button>
+      </div>
+    </form>
+    
+    <!-- Sección de Historial de Ventas -->
+    <div class="container" style="margin-top:40px;">
+      <h2>Historial de Ventas</h2>
+      <table id="tablaHistorialVentas">
+        <thead>
+          <tr>
+            <th>ID Venta</th>
+            <th>Fecha</th>
+            <th>Total Venta</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Filas dinámicas -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    /******************************************************************************
+     * ESTRUCTURA DE DATOS:
+     * - localStorage.getItem('clientes'): array de clientes con { id, nombre, documento, telefono, etc. }
+     * - localStorage.getItem('ventas'): array de ventas, cada una con { id, fecha, cliente, items[], totalVenta }
+     * - localStorage.getItem('entradas') / 'salidas' para el inventario.
+     * - localStorage.getItem('ventasCounter') para el consecutivo.
+     ******************************************************************************/
+
+    /******************************************************************************
+     * 1) Carga de la info de la empresa
+     ******************************************************************************/
+    function cargarEmpresa() {
+      const storedEmpresa = localStorage.getItem('empresaInfo');
+      const div = document.getElementById('empresaInfoDiv');
+      if (storedEmpresa) {
+        const emp = JSON.parse(storedEmpresa);
+        div.innerHTML = `
+          <h3>Datos de la Empresa</h3>
+          <p><strong>Nombre:</strong> ${emp.nombre}</p>
+          <p><strong>NIT:</strong> ${emp.nit}</p>
+          <p><strong>Tel:</strong> ${emp.telefono}</p>
+          <p><strong>Correo:</strong> ${emp.correo}</p>
+          <p><strong>Director:</strong> ${emp.director}</p>
+          <p><strong>Dirección:</strong> ${emp.direccion}</p>
+        `;
+      } else {
+        div.innerHTML = "<h3>Datos de la Empresa</h3><p>No se encontró información de la empresa.</p>";
+      }
+    }
+
+    /******************************************************************************
+     * 2) Búsqueda de cliente por documento
+     ******************************************************************************/
+    let clienteSeleccionado = null; // Aquí guardamos el objeto cliente hallado
+    function buscarClientePorDocumento() {
+      const docInput = document.getElementById('docInput').value.trim();
+      if (!docInput) {
+        alert("Ingrese un número de documento para buscar.");
+        return;
+      }
+      const storedClientes = localStorage.getItem('clientes');
+      if (!storedClientes) {
+        alert("No hay clientes registrados en el sistema.");
+        return;
+      }
+      const listaClientes = JSON.parse(storedClientes);
+      // Buscar match
+      const encontrado = listaClientes.find(cli => cli.documento === docInput);
+      if (!encontrado) {
+        alert("No se encontró un cliente con ese documento.");
+        return;
+      }
+      // Llenar la info en la interfaz
+      clienteSeleccionado = encontrado;
+      mostrarInfoCliente(encontrado);
+    }
+
+    function mostrarInfoCliente(cli) {
+      const div = document.getElementById('clienteInfoDiv');
+      div.innerHTML = `
+        <p><strong>Nombre:</strong> ${cli.nombre}</p>
+        <p><strong>Documento:</strong> ${cli.documento}</p>
+        <p><strong>Teléfono:</strong> ${cli.telefono || ""}</p>
+        <p><strong>Correo:</strong> ${cli.correo || ""}</p>
+        <p><strong>Dirección:</strong> ${cli.direccion || ""}</p>
+        <p><strong>Ciudad/Depto:</strong> ${cli.ciudad || ""} (${cli.departamento || ""})</p>
+      `;
+    }
+
+    /******************************************************************************
+     * 3) Generar ID/Consecutivo de la venta
+     ******************************************************************************/
+    function getVentaId() {
+      let counter = localStorage.getItem("ventasCounter");
+      if (!counter) {
+        counter = 1;
+      } else {
+        counter = parseInt(counter, 10);
+      }
+      const ventaId = "F-" + String(counter).padStart(3, "0");
+      return ventaId;
+    }
+    function incrementarVentasCounter() {
+      let counter = localStorage.getItem("ventasCounter");
+      if (!counter) counter = 1; 
+      else counter = parseInt(counter, 10) + 1;
+      localStorage.setItem("ventasCounter", counter);
+    }
+
+    /******************************************************************************
+     * 4) Obtener inventario
+     ******************************************************************************/
+    function obtenerInventario() {
+      let inventario = [];
+      const storedEntradas = localStorage.getItem('entradas');
+      const storedSalidas = localStorage.getItem('salidas');
+      let entradas = storedEntradas ? JSON.parse(storedEntradas) : [];
+      let salidas  = storedSalidas  ? JSON.parse(storedSalidas)  : [];
+      
+      // Sumar entradas
+      entradas.forEach(entrada => {
+        entrada.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (!reg) {
+            reg = {
+              codigo: item.productoCodigo,
+              productoNombre: item.productoNombre,
+              unidad: item.unidad,
+              lote: item.lote,
+              fechaVencimiento: item.fechaVenc,
+              cantidad: 0,
+              precioCompra: item.precioUnitario
+            };
+            inventario.push(reg);
+          }
+          reg.cantidad += item.cantidad;
+        });
+      });
+      // Restar salidas
+      salidas.forEach(salida => {
+        salida.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= item.cantidad;
+          }
+        });
+      });
+      return inventario;
+    }
+
+    /******************************************************************************
+     * 5) Manejo de las filas de venta
+     ******************************************************************************/
+    const ventaIdInput    = document.getElementById('ventaId');
+    const tablaVentasBody = document.querySelector('#tablaVentas tbody');
+    const totalVentaInput = document.getElementById('totalVenta');
+    const ventaForm       = document.getElementById('ventaForm');
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarEmpresa();
+      ventaIdInput.value = getVentaId();
+      renderHistorialVentas();
+    });
+
+    function agregarFilaVenta() {
+      const inventario = obtenerInventario();
+      const row = document.createElement('tr');
+
+      // -- Producto
+      const tdProducto = document.createElement('td');
+      const selectProducto = document.createElement('select');
+      selectProducto.innerHTML = "<option value=''>Seleccione un producto</option>";
+      // Mapa de productos
+      const mapaProductos = {};
+      inventario.forEach(item => {
+        if (item.cantidad > 0) {
+          if (!mapaProductos[item.codigo]) {
+            mapaProductos[item.codigo] = {
+              nombre: item.productoNombre,
+              registros: []
+            };
+          }
+          mapaProductos[item.codigo].registros.push(item);
+        }
+      });
+      for (let codigo in mapaProductos) {
+        const opt = document.createElement('option');
+        opt.value = codigo;
+        opt.textContent = codigo + " - " + mapaProductos[codigo].nombre;
+        selectProducto.appendChild(opt);
+      }
+      tdProducto.appendChild(selectProducto);
+      row.appendChild(tdProducto);
+
+      // -- Lote
+      const tdLote = document.createElement('td');
+      const selectLote = document.createElement('select');
+      selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+      tdLote.appendChild(selectLote);
+      row.appendChild(tdLote);
+
+      // -- Fecha Venc.
+      const tdFvenc = document.createElement('td');
+      tdFvenc.textContent = "";
+      row.appendChild(tdFvenc);
+
+      // -- Unidad
+      const tdUnidad = document.createElement('td');
+      tdUnidad.textContent = "";
+      row.appendChild(tdUnidad);
+
+      // -- Cant. Disponible
+      const tdDisp = document.createElement('td');
+      tdDisp.textContent = "";
+      row.appendChild(tdDisp);
+
+      // -- Cant. Venta
+      const tdCantidad = document.createElement('td');
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type = 'number';
+      inputCantidad.min = '1';
+      inputCantidad.value = '1';
+      inputCantidad.required = true;
+      tdCantidad.appendChild(inputCantidad);
+      row.appendChild(tdCantidad);
+
+      // -- Precio Compra
+      const tdPrecioCompra = document.createElement('td');
+      const inputPrecioCompra = document.createElement('input');
+      inputPrecioCompra.type = 'number';
+      inputPrecioCompra.step = '0.01';
+      inputPrecioCompra.min = '0';
+      inputPrecioCompra.value = '0';
+      inputPrecioCompra.required = true;
+      tdPrecioCompra.appendChild(inputPrecioCompra);
+      row.appendChild(tdPrecioCompra);
+
+      // -- Rentabilidad
+      const tdRentab = document.createElement('td');
+      const inputRentab = document.createElement('input');
+      inputRentab.type = 'number';
+      inputRentab.step = '0.01';
+      inputRentab.min = '0';
+      inputRentab.value = '30'; // por defecto 30%
+      tdRentab.appendChild(inputRentab);
+      row.appendChild(tdRentab);
+
+      // -- Precio Venta
+      const tdPrecioVenta = document.createElement('td');
+      const inputPrecioVenta = document.createElement('input');
+      inputPrecioVenta.type = 'number';
+      inputPrecioVenta.step = '0.01';
+      inputPrecioVenta.min = '0';
+      inputPrecioVenta.readOnly = true;
+      tdPrecioVenta.appendChild(inputPrecioVenta);
+      row.appendChild(tdPrecioVenta);
+
+      // -- Total
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = "0.00";
+      row.appendChild(tdTotal);
+
+      // -- Acciones
+      const tdAcciones = document.createElement('td');
+      const btnDelete = document.createElement('button');
+      btnDelete.type = 'button';
+      btnDelete.textContent = 'Quitar';
+      btnDelete.classList.add('btn-delete-item');
+      btnDelete.addEventListener('click', () => {
+        row.remove();
+        recalcularTotalVenta();
+      });
+      tdAcciones.appendChild(btnDelete);
+      row.appendChild(tdAcciones);
+
+      // Eventos
+      selectProducto.addEventListener('change', () => {
+        const codigo = selectProducto.value;
+        selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+        tdUnidad.textContent = "";
+        tdFvenc.textContent  = "";
+        tdDisp.textContent   = "";
+        inputPrecioCompra.value = "0";
+        inputPrecioVenta.value  = "0";
+        tdTotal.textContent     = "0.00";
+
+        if (!codigo) return;
+        const regs = mapaProductos[codigo].registros;
+        regs.forEach(r => selectLote.appendChild(crearOpcionLote(r)));
+      });
+
+      selectLote.addEventListener('change', () => {
+        const loteSel = selectLote.selectedOptions[0];
+        if (!loteSel) return;
+        tdUnidad.textContent = loteSel.dataset.unidad || "";
+        tdFvenc.textContent  = loteSel.dataset.fvenc  || "";
+        tdDisp.textContent   = loteSel.dataset.disp   || "0";
+        inputPrecioCompra.value = loteSel.dataset.pc   || "0.00";
+        calcularPrecioVenta();
+      });
+
+      inputRentab.addEventListener('input', calcularPrecioVenta);
+      inputPrecioCompra.addEventListener('input', calcularPrecioVenta);
+      inputCantidad.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalVenta();
+      });
+      inputPrecioVenta.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalVenta();
+      });
+
+      function crearOpcionLote(registro) {
+        const opt = document.createElement('option');
+        opt.value = registro.lote;
+        opt.textContent = registro.lote + " (venc: " + (registro.fechaVencimiento || "-") + ")";
+        opt.dataset.unidad = registro.unidad;
+        opt.dataset.fvenc  = registro.fechaVencimiento || "";
+        opt.dataset.disp   = registro.cantidad;
+        opt.dataset.pc     = registro.precioCompra;
+        return opt;
+      }
+
+      function calcularPrecioVenta() {
+        const pc   = parseFloat(inputPrecioCompra.value) || 0;
+        const rent = parseFloat(inputRentab.value)       || 0;
+        const pv   = pc * (1 + rent/100);
+        inputPrecioVenta.value = pv.toFixed(2);
+        recalcularFila();
+        recalcularTotalVenta();
+      }
+
+      function recalcularFila() {
+        const cant = parseFloat(inputCantidad.value)   || 0;
+        const pv   = parseFloat(inputPrecioVenta.value)|| 0;
+        const tot  = cant * pv;
+        tdTotal.textContent = tot.toFixed(2);
+      }
+
+      tablaVentasBody.appendChild(row);
+    }
+
+    function recalcularTotalVenta() {
+      let total = 0;
+      const rows = tablaVentasBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const tdTotal = row.cells[9];
+        total += parseFloat(tdTotal.textContent);
+      });
+      totalVentaInput.value = total.toFixed(2);
+    }
+
+    /******************************************************************************
+     * 6) Guardar la venta
+     ******************************************************************************/
+    ventaForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!ventaIdInput.value) {
+        alert("No hay número de venta/factura.");
+        return;
+      }
+      if (!clienteSeleccionado) {
+        alert("Por favor busque y seleccione un cliente antes de guardar la venta.");
+        return;
+      }
+
+      const rows = tablaVentasBody.querySelectorAll('tr');
+      if (rows.length === 0) {
+        alert("Agrega al menos un producto a la venta.");
+        return;
+      }
+
+      // Armar array de items
+      const itemsVenta = [];
+      rows.forEach(row => {
+        const selectProd = row.cells[0].querySelector('select');
+        const codigoTexto= selectProd?.value || "";
+        const texto      = selectProd?.selectedOptions[0]?.textContent || "";
+        const splitted   = texto.split(" - ");
+        const nombreProd = splitted[1] || "";
+        
+        const selectLote = row.cells[1].querySelector('select');
+        const loteSel    = selectLote?.value || "";
+        const fvenc      = row.cells[2].textContent;
+        const unidad     = row.cells[3].textContent;
+        const cantSal    = parseFloat(row.cells[5].querySelector('input').value) || 0;
+        const pcompra    = parseFloat(row.cells[6].querySelector('input').value) || 0;
+        const rentab     = parseFloat(row.cells[7].querySelector('input').value) || 0;
+        const pventa     = parseFloat(row.cells[8].querySelector('input').value) || 0;
+        const total      = parseFloat(row.cells[9].textContent) || 0;
+
+        itemsVenta.push({
+          productoCodigo:  codigoTexto,
+          productoNombre:  nombreProd,
+          lote:            loteSel,
+          fechaVenc:       fvenc,
+          unidad:          unidad,
+          cantidad:        cantSal,
+          precioCompra:    pcompra,
+          rentabilidad:    rentab,
+          precioVenta:     pventa,
+          total:           total
+        });
+      });
+
+      const nuevaVenta = {
+        id: ventaIdInput.value,
+        fecha: new Date().toISOString().split("T")[0],
+        // Guardamos el clienteSeleccionado
+        cliente: {
+          id: clienteSeleccionado.id,
+          nombre: clienteSeleccionado.nombre,
+          documento: clienteSeleccionado.documento,
+          telefono: clienteSeleccionado.telefono || "",
+          correo: clienteSeleccionado.correo || "",
+          direccion: clienteSeleccionado.direccion || "",
+          ciudad: clienteSeleccionado.ciudad || "",
+          departamento: clienteSeleccionado.departamento || ""
+        },
+        items: itemsVenta,
+        totalVenta: parseFloat(totalVentaInput.value)
+      };
+
+      // Guardar en localStorage
+      let ventasGuardadas = [];
+      const storedVentas = localStorage.getItem('ventas');
+      if (storedVentas) {
+        ventasGuardadas = JSON.parse(storedVentas);
+      }
+      ventasGuardadas.push(nuevaVenta);
+      localStorage.setItem('ventas', JSON.stringify(ventasGuardadas));
+
+      incrementarVentasCounter();
+
+      alert("Venta guardada con éxito.");
+      // Limpiar
+      ventaForm.reset();
+      clienteSeleccionado = null;
+      document.getElementById('docInput').value = "";
+      document.getElementById('clienteInfoDiv').innerHTML = "";
+      tablaVentasBody.innerHTML = "";
+      totalVentaInput.value = "";
+      ventaIdInput.value = getVentaId();
+      renderHistorialVentas();
+    });
+
+    /******************************************************************************
+     * 7) Historial de Ventas
+     ******************************************************************************/
+    function renderHistorialVentas() {
+      const tablaHistorialBody = document.querySelector('#tablaHistorialVentas tbody');
+      tablaHistorialBody.innerHTML = "";
+      let ventasGuardadas = [];
+      const storedVentas = localStorage.getItem('ventas');
+      if (storedVentas) {
+        ventasGuardadas = JSON.parse(storedVentas);
+      }
+      if (ventasGuardadas.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 4;
+        cell.style.textAlign = "center";
+        cell.textContent = "No hay ventas registradas.";
+        row.appendChild(cell);
+        tablaHistorialBody.appendChild(row);
+        return;
+      }
+      ventasGuardadas.forEach(venta => {
+        const row = document.createElement('tr');
+        row.appendChild(crearCelda(venta.id));
+        row.appendChild(crearCelda(venta.fecha));
+        row.appendChild(crearCelda(venta.totalVenta.toFixed(2)));
+
+        const tdAcc = document.createElement('td');
+        const btnView = document.createElement('button');
+        btnView.textContent = "Ver Factura";
+        btnView.classList.add("btn-view-doc");
+        btnView.addEventListener('click', () => verDocumentoVenta(venta.id));
+        tdAcc.appendChild(btnView);
+        row.appendChild(tdAcc);
+
+        tablaHistorialBody.appendChild(row);
+      });
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    /******************************************************************************
+     * 8) Generar/Ver la factura con nuevo estilo
+     ******************************************************************************/
+    function generarDocumentoVenta() {
+      const storedVentas = localStorage.getItem('ventas');
+      if (!storedVentas) {
+        alert("No hay ventas registradas.");
+        return;
+      }
+      const ventasGuardadas = JSON.parse(storedVentas);
+      const venta = ventasGuardadas[ventasGuardadas.length - 1];
+      verDocumentoVenta(venta.id);
+    }
+
+    function verDocumentoVenta(ventaId) {
+      const storedVentas = localStorage.getItem('ventas');
+      if (!storedVentas) {
+        alert("No hay ventas registradas.");
+        return;
+      }
+      const ventasGuardadas = JSON.parse(storedVentas);
+      const venta = ventasGuardadas.find(v => v.id === ventaId);
+      if (!venta) {
+        alert("Venta no encontrada.");
+        return;
+      }
+      // Info de la empresa
+      let empresa = {
+        nombre: "[Mi Empresa]",
+        nit: "[NIT]",
+        telefono: "",
+        correo: "",
+        director: "",
+        direccion: ""
+      };
+      const storedEmpresa = localStorage.getItem("empresaInfo");
+      if (storedEmpresa) {
+        empresa = JSON.parse(storedEmpresa);
+      }
+
+      // Generar HTML con estilo algo más moderno
+      let docHTML = `
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Factura ${venta.id}</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif; 
+              margin: 20px; 
+              background-color: #fff;
+            }
+            h1 {
+              text-align: center;
+              margin-bottom: 20px;
+            }
+            .info-box {
+              border: 1px solid #ccc;
+              border-radius: 6px;
+              padding: 15px;
+              margin-bottom: 20px;
+              background-color: #fafafa;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            .info-box p {
+              margin: 4px 0;
+            }
+            table {
+              width: 100%; 
+              border-collapse: collapse; 
+              margin-top: 20px;
+            }
+            table th, table td {
+              border: 1px solid #ccc; 
+              padding: 8px; 
+              text-align: left; 
+              font-size: 0.9em;
+            }
+            table thead {
+              background-color: #e9ecef;
+            }
+            .text-right { text-align: right; }
+            .total-box {
+              text-align: right;
+              margin-top: 10px;
+              font-size: 1.1rem;
+              font-weight: bold;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Factura de Venta</h1>
+          
+          <div class="info-box">
+            <p><strong>Empresa:</strong> ${empresa.nombre}</p>
+            <p><strong>NIT:</strong> ${empresa.nit}</p>
+            <p><strong>Tel:</strong> ${empresa.telefono}</p>
+            <p><strong>Correo:</strong> ${empresa.correo}</p>
+            <p><strong>Director:</strong> ${empresa.director}</p>
+            <p><strong>Dirección:</strong> ${empresa.direccion}</p>
+          </div>
+
+          <div class="info-box">
+            <p><strong>ID Venta:</strong> ${venta.id}</p>
+            <p><strong>Fecha:</strong> ${venta.fecha}</p>
+            ${
+              venta.cliente ?
+              `
+              <p><strong>Cliente:</strong> ${venta.cliente.nombre}</p>
+              <p><strong>Documento:</strong> ${venta.cliente.documento}</p>
+              <p><strong>Teléfono:</strong> ${venta.cliente.telefono}</p>
+              <p><strong>Correo:</strong> ${venta.cliente.correo}</p>
+              <p><strong>Dirección:</strong> ${venta.cliente.direccion}</p>
+              <p><strong>Ciudad/Depto:</strong> ${venta.cliente.ciudad} (${venta.cliente.departamento})</p>
+              `
+              : `<p><em>Sin información de cliente</em></p>`
+            }
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Lote</th>
+                <th>F.Venc</th>
+                <th>Cant</th>
+                <th>Precio Venta</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      venta.items.forEach(item => {
+        docHTML += `
+            <tr>
+              <td>${item.productoCodigo} - ${item.productoNombre}</td>
+              <td>${item.lote}</td>
+              <td>${item.fechaVenc}</td>
+              <td>${item.cantidad}</td>
+              <td>${item.precioVenta.toFixed(2)}</td>
+              <td>${item.total.toFixed(2)}</td>
+            </tr>
+        `;
+      });
+      docHTML += `
+            </tbody>
+          </table>
+          <div class="total-box">
+            Total Venta: ${venta.totalVenta.toFixed(2)}
+          </div>
+        </body>
+        </html>
+      `;
+      const ventana = window.open('', '_blank');
+      ventana.document.write(docHTML);
+      ventana.document.close();
+    }
+
+    /* Botón para borrar historial (opcional) */
+    function borrarHistorialVentas() {
+      if (confirm("¿Estás seguro de borrar el historial de ventas?")) {
+        localStorage.removeItem("ventas");
+        renderHistorialVentas();
+        alert("Historial de ventas eliminado.");
+      }
+    }
+  </script>
+
+  <button onclick="borrarHistorialVentas()">Borrar Historial de Ventas</button>
+</body>
+</html>

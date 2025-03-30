@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Clientes</title>
+  <style>
+    /* ======== ESTILOS GENERALES ======== */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Botón para volver al menú principal */
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+
+    /* ======== FORMULARIO ======== */
+    form {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Contenedor en grid de dos columnas */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"],
+    .form-group select,
+    .form-group textarea {
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    /* Grupo para estado (Activo/Inactivo) */
+    .estado-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .estado-container input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    /* Botones del formulario */
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    button[type="submit"] {
+      background-color: #28a745;
+      color: #fff;
+    }
+
+    button[type="reset"] {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    hr {
+      margin: 30px 0;
+    }
+
+    /* ======== TABLA ======== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+      background-color: #fff;
+    }
+
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    table thead {
+      background-color: #e9ecef;
+    }
+
+    table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    /* ======== BOTONES DE ACCIÓN EN LA TABLA ======== */
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+
+    .btn-edit {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+
+    .btn-edit:hover, .btn-delete:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestión de Clientes</h1>
+  <!-- Botón para volver al Menú principal -->
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <!-- FORMULARIO PARA REGISTRAR/EDITAR CLIENTES -->
+  <form id="clienteForm">
+    <div class="form-grid">
+      <!-- Nombre del cliente -->
+      <div class="form-group">
+        <label for="nombreCliente">Nombre del cliente:</label>
+        <input type="text" id="nombreCliente" required>
+      </div>
+
+      <!-- Tipo de documento -->
+      <div class="form-group">
+        <label for="tipoDocumentoCliente">Tipo de documento:</label>
+        <select id="tipoDocumentoCliente">
+          <option value="">Seleccione una opción</option>
+          <option value="Cédula">Cédula</option>
+          <option value="NIT">NIT</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+
+      <!-- Número de documento -->
+      <div class="form-group">
+        <label for="documentoCliente">Número de documento:</label>
+        <input type="text" id="documentoCliente" required>
+      </div>
+
+      <!-- Teléfono -->
+      <div class="form-group">
+        <label for="telefonoCliente">Teléfono:</label>
+        <input type="tel" id="telefonoCliente">
+      </div>
+
+      <!-- Correo electrónico -->
+      <div class="form-group">
+        <label for="correoCliente">Correo electrónico:</label>
+        <input type="email" id="correoCliente">
+      </div>
+
+      <!-- Dirección -->
+      <div class="form-group">
+        <label for="direccionCliente">Dirección:</label>
+        <input type="text" id="direccionCliente">
+      </div>
+
+<!-- Departamento -->
+<div class="form-group">
+  <label for="departamentoCliente">Departamento:</label>
+  <select id="departamentoCliente">
+    <option value="">Seleccione un departamento</option>
+    <option value="Amazonas">Amazonas</option>
+    <option value="Antioquia">Antioquia</option>
+    <option value="Arauca">Arauca</option>
+    <option value="Atlántico">Atlántico</option>
+    <option value="Bolívar">Bolívar</option>
+    <option value="Boyacá">Boyacá</option>
+    <option value="Caldas">Caldas</option>
+    <option value="Caquetá">Caquetá</option>
+    <option value="Casanare">Casanare</option>
+    <option value="Cauca">Cauca</option>
+    <option value="Cesar">Cesar</option>
+    <option value="Chocó">Chocó</option>
+    <option value="Córdoba">Córdoba</option>
+    <option value="Cundinamarca">Cundinamarca</option>
+    <option value="Guainía">Guainía</option>
+    <option value="Guaviare">Guaviare</option>
+    <option value="Huila">Huila</option>
+    <option value="La Guajira">La Guajira</option>
+    <option value="Magdalena">Magdalena</option>
+    <option value="Meta">Meta</option>
+    <option value="Nariño">Nariño</option>
+    <option value="Norte de Santander">Norte de Santander</option>
+    <option value="Putumayo">Putumayo</option>
+    <option value="Quindío">Quindío</option>
+    <option value="Risaralda">Risaralda</option>
+    <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+    <option value="Santander">Santander</option>
+    <option value="Sucre">Sucre</option>
+    <option value="Tolima">Tolima</option>
+    <option value="Valle del Cauca">Valle del Cauca</option>
+    <option value="Vaupés">Vaupés</option>
+    <option value="Vichada">Vichada</option>
+  </select>
+</div>
+
+<!-- Ciudad -->
+<div class="form-group">
+  <label for="ciudadCliente">Ciudad:</label>
+  <select id="ciudadCliente">
+    <option value="">Seleccione una ciudad</option>
+    <option value="Bogotá">Bogotá</option>
+    <option value="Medellín">Medellín</option>
+    <option value="Cali">Cali</option>
+    <option value="Barranquilla">Barranquilla</option>
+    <option value="Cartagena">Cartagena</option>
+    <option value="Bucaramanga">Bucaramanga</option>
+    <option value="Pereira">Pereira</option>
+    <option value="Santa Marta">Santa Marta</option>
+    <option value="Manizales">Manizales</option>
+    <option value="Ibagué">Ibagué</option>
+    <option value="Cúcuta">Cúcuta</option>
+    <option value="Armenia">Armenia</option>
+    <option value="Popayán">Popayán</option>
+    <option value="Neiva">Neiva</option>
+    <option value="Montería">Montería</option>
+    <option value="Otro">Otro</option>
+  </select>
+</div>
+
+
+
+
+
+
+      <!-- Rol -->
+      <div class="form-group">
+        <label for="rolCliente">Rol de quien digita:</label>
+        <select id="rolCliente">
+          <option value="">Seleccione una opción</option>
+          <option value="QF">QF</option>
+          <option value="TRF">TRF</option>
+          <option value="TSF">TSF</option>
+          <option value="Otros">Otros</option>
+        </select>
+      </div>
+
+      <!-- Estado (Activo/Inactivo) -->
+      <div class="form-group">
+        <label>Estado:</label>
+        <div class="estado-container">
+          <div>
+            <input type="radio" id="activoCliente" name="estadoCliente" value="Activo" checked>
+            <label for="activoCliente">Activo</label>
+          </div>
+          <div>
+            <input type="radio" id="inactivoCliente" name="estadoCliente" value="Inactivo">
+            <label for="inactivoCliente">Inactivo</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observaciones -->
+      <div class="form-group">
+        <label for="observacionesCliente">Observaciones:</label>
+        <textarea id="observacionesCliente"></textarea>
+      </div>
+    </div> <!-- fin .form-grid -->
+
+    <!-- Botones del formulario -->
+    <div class="button-group">
+      <button type="submit" id="submitBtn">Guardar</button>
+      <button type="reset">Limpiar</button>
+    </div>
+  </form>
+
+  <hr>
+
+  <!-- TABLA PARA MOSTRAR LOS CLIENTES REGISTRADOS -->
+  <table id="tablaClientes">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Tipo doc.</th>
+        <th>N° Documento</th>
+        <th>Teléfono</th>
+        <th>Correo</th>
+        <th>Dirección</th>
+        <th>Ciudad</th>
+        <th>Departamento</th>
+        <th>Rol</th>
+        <th>Estado</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Se generarán dinámicamente -->
+    </tbody>
+  </table>
+
+  <script>
+    // Variable para almacenar el ID del cliente que se está editando (si aplica)
+    let editId = null;
+    // Array para almacenar los clientes
+    let clientes = [];
+    // Contador para asignar un ID único a cada cliente
+    let clientesCounter = 1;
+
+    // Definimos 10 clientes preestablecidos
+    const clientesPredefinidos = [
+      {
+        id: 1,
+        nombre: 'Andrea Rodríguez',
+        tipoDocumento: 'Cédula',
+        documento: '1023456789',
+        telefono: '3001234567',
+        correo: 'andrea.rodriguez@example.com',
+        direccion: 'Calle 10 #5-20',
+        ciudad: 'Medellín',
+        departamento: 'Antioquia',
+        rol: 'QF',
+        estado: 'Activo',
+        observaciones: 'Cliente frecuente de analgésicos'
+      },
+      {
+        id: 2,
+        nombre: 'Carlos López',
+        tipoDocumento: 'Cédula',
+        documento: '713456789',
+        telefono: '3109876543',
+        correo: 'carlos.lopez@example.com',
+        direccion: 'Carrera 20 #15-30',
+        ciudad: 'Bogotá',
+        departamento: 'Cundinamarca',
+        rol: 'Otros',
+        estado: 'Activo',
+        observaciones: 'Cliente compra suplementos regularmente'
+      },
+      {
+        id: 3,
+        nombre: 'María Fernanda García',
+        tipoDocumento: 'Cédula',
+        documento: '556789012',
+        telefono: '3125551122',
+        correo: 'mafer.garcia@example.com',
+        direccion: 'Avenida 45 #22-18',
+        ciudad: 'Cali',
+        departamento: 'Valle del Cauca',
+        rol: 'TSF',
+        estado: 'Activo',
+        observaciones: 'Consulta frecuente de medicamentos para hipertensión'
+      },
+      {
+        id: 4,
+        nombre: 'Jorge Pérez',
+        tipoDocumento: 'NIT',
+        documento: '900123456-1',
+        telefono: '3012223344',
+        correo: 'jorge.perez@example.com',
+        direccion: 'Calle 50 #8-60',
+        ciudad: 'Barranquilla',
+        departamento: 'Atlántico',
+        rol: 'TRF',
+        estado: 'Activo',
+        observaciones: 'Representante de una droguería local'
+      },
+      {
+        id: 5,
+        nombre: 'Daniela Ramírez',
+        tipoDocumento: 'Cédula',
+        documento: '1011121314',
+        telefono: '3009871234',
+        correo: 'daniela.ramirez@example.com',
+        direccion: 'Carrera 14 #20-25',
+        ciudad: 'Bucaramanga',
+        departamento: 'Santander',
+        rol: 'QF',
+        estado: 'Activo',
+        observaciones: 'Compra insumos para clínica familiar'
+      },
+      {
+        id: 6,
+        nombre: 'Sebastián Gómez',
+        tipoDocumento: 'Otro',
+        documento: 'AX-4567',
+        telefono: '3045678901',
+        correo: 'sebastian.gomez@example.com',
+        direccion: 'Calle 9 #30-11',
+        ciudad: 'Cartagena',
+        departamento: 'Bolívar',
+        rol: 'Otros',
+        estado: 'Activo',
+        observaciones: 'Paciente con tratamiento crónico'
+      },
+      {
+        id: 7,
+        nombre: 'Liliana Contreras',
+        tipoDocumento: 'Cédula',
+        documento: '721345678',
+        telefono: '3104449988',
+        correo: 'liliana.contreras@example.com',
+        direccion: 'Transversal 12 #45-67',
+        ciudad: 'Manizales',
+        departamento: 'Caldas',
+        rol: 'TSF',
+        estado: 'Activo',
+        observaciones: 'Compra productos de cuidado personal'
+      },
+      {
+        id: 8,
+        nombre: 'Mario Castaño',
+        tipoDocumento: 'Otro',
+        documento: 'PAS-0123',
+        telefono: '3051234567',
+        correo: 'mario.castano@example.com',
+        direccion: 'Diagonal 18 #40-90',
+        ciudad: 'Pereira',
+        departamento: 'Risaralda',
+        rol: 'TRF',
+        estado: 'Activo',
+        observaciones: 'Visita la farmacia una vez al mes'
+      },
+      {
+        id: 9,
+        nombre: 'Luisa Martínez',
+        tipoDocumento: 'Cédula',
+        documento: '1000234599',
+        telefono: '3187654321',
+        correo: 'luisa.martinez@example.com',
+        direccion: 'Carrera 25 #50-10',
+        ciudad: 'Neiva',
+        departamento: 'Huila',
+        rol: 'QF',
+        estado: 'Activo',
+        observaciones: 'Compra medicamentos pediátricos'
+      },
+      {
+        id: 10,
+        nombre: 'Valentina Castro',
+        tipoDocumento: 'Cédula',
+        documento: '1122334455',
+        telefono: '3191112233',
+        correo: 'valentina.castro@example.com',
+        direccion: 'Calle 15 #7-20',
+        ciudad: 'Ibague',
+        departamento: 'Tolima',
+        rol: 'Otros',
+        estado: 'Activo',
+        observaciones: 'Compra vitaminas y suplementos deportivos'
+      }
+    ];
+
+    // Al cargar la página, se cargan los datos de localStorage y fusionamos con los clientes predefinidos
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedClientes = localStorage.getItem('clientes');
+      if (storedClientes) {
+        clientes = JSON.parse(storedClientes);
+      } else {
+        clientes = [];
+      }
+
+      const storedCounter = localStorage.getItem('clientesCounter');
+      if (storedCounter) {
+        clientesCounter = parseInt(storedCounter, 10);
+      }
+
+      // Fusionar sin duplicar (por id)
+      const idsExistentes = clientes.map(c => c.id);
+      clientesPredefinidos.forEach(predef => {
+        if (!idsExistentes.includes(predef.id)) {
+          clientes.push(predef);
+        }
+      });
+
+      // Ajustar el contador según el mayor id
+      if (clientes.length > 0) {
+        clientesCounter = Math.max(...clientes.map(c => c.id)) + 1;
+      }
+
+      // Guardar nuevamente en localStorage
+      localStorage.setItem('clientes', JSON.stringify(clientes));
+      localStorage.setItem('clientesCounter', clientesCounter);
+
+      // Renderizamos la tabla
+      renderTablaClientes();
+    });
+
+    // Referencias a elementos del DOM
+    const clienteForm = document.getElementById('clienteForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const tablaClientesBody = document.querySelector('#tablaClientes tbody');
+
+    // Evento 'submit' para guardar o actualizar cliente
+    clienteForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Recopilamos los valores del formulario
+      const nombre = document.getElementById('nombreCliente').value.trim();
+      const tipoDocumento = document.getElementById('tipoDocumentoCliente').value;
+      const documento = document.getElementById('documentoCliente').value.trim();
+      const telefono = document.getElementById('telefonoCliente').value.trim();
+      const correo = document.getElementById('correoCliente').value.trim();
+      const direccion = document.getElementById('direccionCliente').value.trim();
+      const ciudad = document.getElementById('ciudadCliente').value.trim();
+      const departamento = document.getElementById('departamentoCliente').value.trim();
+      const rol = document.getElementById('rolCliente').value;
+      const estado = document.querySelector('input[name="estadoCliente"]:checked').value;
+      const observaciones = document.getElementById('observacionesCliente').value.trim();
+
+      // Creamos el objeto cliente
+      const nuevoCliente = {
+        id: editId ? editId : clientesCounter,
+        nombre,
+        tipoDocumento,
+        documento,
+        telefono,
+        correo,
+        direccion,
+        ciudad,
+        departamento,
+        rol,
+        estado,
+        observaciones
+      };
+
+      if (editId) {
+        // Modo edición: actualizamos el registro existente
+        clientes = clientes.map((cli) => cli.id === editId ? nuevoCliente : cli);
+        alert('¡Cliente actualizado con éxito!');
+        editId = null;
+        submitBtn.textContent = 'Guardar';
+      } else {
+        // Nuevo cliente
+        clientes.push(nuevoCliente);
+        clientesCounter++;
+        localStorage.setItem('clientesCounter', clientesCounter);
+        alert('¡Cliente guardado con éxito!');
+      }
+
+      // Guardamos en localStorage
+      localStorage.setItem('clientes', JSON.stringify(clientes));
+
+      // Refrescamos la tabla y limpiamos el formulario
+      renderTablaClientes();
+      clienteForm.reset();
+    });
+
+    // Función para renderizar la tabla de clientes
+    function renderTablaClientes() {
+      tablaClientesBody.innerHTML = '';
+      clientes.forEach((cli) => {
+        const fila = document.createElement('tr');
+        fila.appendChild(crearCelda(cli.nombre));
+        fila.appendChild(crearCelda(cli.tipoDocumento));
+        fila.appendChild(crearCelda(cli.documento));
+        fila.appendChild(crearCelda(cli.telefono));
+        fila.appendChild(crearCelda(cli.correo));
+        fila.appendChild(crearCelda(cli.direccion));
+        fila.appendChild(crearCelda(cli.ciudad));
+        fila.appendChild(crearCelda(cli.departamento));
+        fila.appendChild(crearCelda(cli.rol));
+        fila.appendChild(crearCelda(cli.estado));
+        fila.appendChild(crearCelda(cli.observaciones));
+
+        // Celda de acciones
+        const tdAcciones = document.createElement('td');
+
+        // Botón Editar
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = 'Editar';
+        btnEdit.classList.add('btn-edit');
+        btnEdit.addEventListener('click', () => editarCliente(cli.id));
+        tdAcciones.appendChild(btnEdit);
+
+        // Botón Eliminar
+        const btnDelete = document.createElement('button');
+        btnDelete.textContent = 'Eliminar';
+        btnDelete.classList.add('btn-delete');
+        btnDelete.addEventListener('click', () => eliminarCliente(cli.id));
+        tdAcciones.appendChild(btnDelete);
+
+        fila.appendChild(tdAcciones);
+        tablaClientesBody.appendChild(fila);
+      });
+    }
+
+    // Función auxiliar para crear celdas
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    // Función para editar un cliente
+    function editarCliente(id) {
+      const cli = clientes.find(c => c.id === id);
+      if (!cli) return;
+
+      document.getElementById('nombreCliente').value = cli.nombre;
+      document.getElementById('tipoDocumentoCliente').value = cli.tipoDocumento;
+      document.getElementById('documentoCliente').value = cli.documento;
+      document.getElementById('telefonoCliente').value = cli.telefono;
+      document.getElementById('correoCliente').value = cli.correo;
+      document.getElementById('direccionCliente').value = cli.direccion;
+      document.getElementById('ciudadCliente').value = cli.ciudad;
+      document.getElementById('departamentoCliente').value = cli.departamento;
+      document.getElementById('rolCliente').value = cli.rol;
+      document.getElementById('observacionesCliente').value = cli.observaciones;
+
+      if (cli.estado === 'Activo') {
+        document.getElementById('activoCliente').checked = true;
+      } else {
+        document.getElementById('inactivoCliente').checked = true;
+      }
+      editId = cli.id;
+      submitBtn.textContent = 'Actualizar';
+    }
+
+    // Función para eliminar un cliente
+    function eliminarCliente(id) {
+      if (confirm('¿Deseas eliminar este cliente?')) {
+        clientes = clientes.filter(c => c.id !== id);
+        localStorage.setItem('clientes', JSON.stringify(clientes));
+        renderTablaClientes();
+      }
+    }
+  </script>
+</body>
+</html>

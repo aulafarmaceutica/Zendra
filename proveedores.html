@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Creación de Proveedores</title>
+  <style>
+    /* ======== ESTILOS GENERALES ======== */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    /* Botón de menú principal */
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    /* ======== FORMULARIO ======== */
+    form {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.2);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="email"],
+    .form-group input[type="tel"],
+    .form-group select,
+    .form-group textarea {
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+    .form-group textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+    /* Para agrupar checkboxes de Productos principales */
+    .checkbox-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .checkbox-group label {
+      margin-bottom: 5px;
+      font-weight: normal;
+    }
+    /* Fieldset para agrupar información bancaria y condiciones de entrega */
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-top: 20px;
+      border-radius: 5px;
+    }
+    fieldset legend {
+      font-weight: bold;
+      padding: 0 5px;
+    }
+    /* Estado (Activo/Inactivo) */
+    .estado-container {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .estado-container input[type="radio"] {
+      margin-right: 5px;
+    }
+    /* Botones del formulario */
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-group button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button[type="submit"] {
+      background-color: #28a745;
+      color: #fff;
+    }
+    button[type="reset"] {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    hr {
+      margin: 30px 0;
+    }
+    /* ======== TABLA ======== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0 auto;
+      background-color: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    /* Botones de acción en la tabla */
+    .btn-edit, .btn-delete {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-edit {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-edit:hover, .btn-delete:hover {
+      opacity: 0.9;
+    }
+    /* Campo de días de crédito (oculto inicialmente) */
+    #diasCreditoGroup {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Enlace para volver al menú principal -->
+  <div style="text-align:left; margin-bottom:20px;">
+    <a class="menu-button" href="index.html">Volver al Menú</a>
+  </div>
+
+  <h1>Creación de Proveedores</h1>
+
+  <!-- Formulario de Proveedores -->
+  <form id="proveedorForm">
+    <div class="form-grid">
+      <!-- Información básica -->
+      <div class="form-group">
+        <label for="nombreProveedor">Nombre del proveedor:</label>
+        <input type="text" id="nombreProveedor" required>
+      </div>
+      <div class="form-group">
+        <label for="nitProveedor">NIT (Número de identificación tributaria):</label>
+        <input type="text" id="nitProveedor" required>
+      </div>
+      <div class="form-group">
+        <label for="departamentoProveedor">Departamento:</label>
+        <select id="departamentoProveedor">
+          <option value="">Seleccione un departamento</option>
+          <option value="Amazonas">Amazonas</option>
+          <option value="Antioquia">Antioquia</option>
+          <option value="Arauca">Arauca</option>
+          <option value="Atlántico">Atlántico</option>
+          <option value="Bolívar">Bolívar</option>
+          <option value="Boyacá">Boyacá</option>
+          <option value="Caldas">Caldas</option>
+          <option value="Caquetá">Caquetá</option>
+          <option value="Casanare">Casanare</option>
+          <option value="Cauca">Cauca</option>
+          <option value="Cesar">Cesar</option>
+          <option value="Chocó">Chocó</option>
+          <option value="Córdoba">Córdoba</option>
+          <option value="Cundinamarca">Cundinamarca</option>
+          <option value="Guainía">Guainía</option>
+          <option value="Guaviare">Guaviare</option>
+          <option value="Huila">Huila</option>
+          <option value="La Guajira">La Guajira</option>
+          <option value="Magdalena">Magdalena</option>
+          <option value="Meta">Meta</option>
+          <option value="Nariño">Nariño</option>
+          <option value="Norte de Santander">Norte de Santander</option>
+          <option value="Putumayo">Putumayo</option>
+          <option value="Quindío">Quindío</option>
+          <option value="Risaralda">Risaralda</option>
+          <option value="San Andrés y Providencia">San Andrés y Providencia</option>
+          <option value="Santander">Santander</option>
+          <option value="Sucre">Sucre</option>
+          <option value="Tolima">Tolima</option>
+          <option value="Valle del Cauca">Valle del Cauca</option>
+          <option value="Vaupés">Vaupés</option>
+          <option value="Vichada">Vichada</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="ciudadProveedor">Ciudad:</label>
+        <select id="ciudadProveedor">
+          <option value="">Seleccione una ciudad</option>
+          <option value="Bogotá">Bogotá</option>
+          <option value="Medellín">Medellín</option>
+          <option value="Cali">Cali</option>
+          <option value="Barranquilla">Barranquilla</option>
+          <option value="Cartagena">Cartagena</option>
+          <option value="Bucaramanga">Bucaramanga</option>
+          <option value="Pereira">Pereira</option>
+          <option value="Santa Marta">Santa Marta</option>
+          <option value="Manizales">Manizales</option>
+          <option value="Ibagué">Ibagué</option>
+          <option value="Cúcuta">Cúcuta</option>
+          <option value="Armenia">Armenia</option>
+          <option value="Popayán">Popayán</option>
+          <option value="Neiva">Neiva</option>
+          <option value="Montería">Montería</option>
+          <option value="Otro">Otro</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="direccionProveedor">Dirección:</label>
+        <input type="text" id="direccionProveedor">
+      </div>
+      <div class="form-group">
+        <label for="telefonoProveedor">Teléfono:</label>
+        <input type="tel" id="telefonoProveedor">
+      </div>
+      <div class="form-group">
+        <label for="correoProveedor">Correo electrónico autorizado por DIAN:</label>
+        <input type="email" id="correoProveedor">
+      </div>
+      <div class="form-group">
+        <label for="asesorProveedor">Nombre del asesor:</label>
+        <input type="text" id="asesorProveedor">
+      </div>
+      <div class="form-group">
+        <label for="telAsesorProveedor">Teléfono del asesor:</label>
+        <input type="tel" id="telAsesorProveedor">
+      </div>
+      <div class="form-group">
+        <label for="tipoProveedor">Tipo de proveedor:</label>
+        <select id="tipoProveedor">
+          <option value="">Seleccione una opción</option>
+          <option value="Laboratorio">Laboratorio</option>
+          <option value="Depósito">Depósito</option>
+          <option value="Agencia de especialidades farmacéuticas">Agencia de especialidades farmacéuticas</option>
+        </select>
+      </div>
+      <!-- Checkboxes para "Productos principales" -->
+      <div class="form-group">
+        <label>Productos principales:</label>
+        <div class="checkbox-group" id="productosCheckboxGroup">
+          <label><input type="checkbox" name="productosPrincipales" value="Medicamentos"> Medicamentos</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Cosméticos"> Cosméticos</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Dispositivos médicos"> Dispositivos médicos</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Homeopáticos"> Homeopáticos</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Fitoterapéuticos"> Fitoterapéuticos</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Aseo"> Aseo</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Droga blanca"> Droga blanca</label>
+          <label><input type="checkbox" name="productosPrincipales" value="Otros"> Otros</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="observacionesProveedor">Observaciones:</label>
+        <textarea id="observacionesProveedor"></textarea>
+      </div>
+    </div> <!-- fin .form-grid -->
+
+    <!-- Fieldset: Información Bancaria y Condiciones de Entrega -->
+    <fieldset>
+      <legend>Información Bancaria y Condiciones de Entrega</legend>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="condicionesPago">Condiciones de pago:</label>
+          <select id="condicionesPago">
+            <option value="">Seleccione una opción</option>
+            <option value="Contado">Contado</option>
+            <option value="Crédito">Crédito</option>
+            <option value="A convenir">A convenir</option>
+          </select>
+        </div>
+        <div class="form-group" id="diasCreditoGroup">
+          <label for="diasCredito">Días de crédito:</label>
+          <input type="text" id="diasCredito" placeholder="Ej: 30">
+        </div>
+        <div class="form-group">
+          <label for="bancoProveedor">Banco:</label>
+          <select id="bancoProveedor">
+            <option value="">Seleccione un banco</option>
+            <option value="Bancolombia">Bancolombia</option>
+            <option value="Davivienda">Davivienda</option>
+            <option value="BBVA">BBVA</option>
+            <option value="Banco de Bogotá">Banco de Bogotá</option>
+            <option value="Banco de Occidente">Banco de Occidente</option>
+            <option value="Banco Popular">Banco Popular</option>
+            <option value="Colpatria">Colpatria</option>
+            <option value="Itaú">Itaú</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tipoCuentaProveedor">Tipo de cuenta:</label>
+          <select id="tipoCuentaProveedor">
+            <option value="">Seleccione una opción</option>
+            <option value="Ahorro">Ahorro</option>
+            <option value="Corriente">Corriente</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="numeroCuentaProveedor">Certificación bancaria número:</label>
+          <input type="text" id="numeroCuentaProveedor">
+        </div>
+        <div class="form-group">
+          <label for="tiempoEntregaProveedor">Tiempo de entrega:</label>
+          <select id="tiempoEntregaProveedor">
+            <option value="">Seleccione una opción</option>
+            <option value="Entrega inmediata">Entrega inmediata</option>
+            <option value="24 horas">24 horas</option>
+            <option value="48">48</option>
+            <option value="72">72</option>
+            <option value="Menos de 5">Menos de 5</option>
+            <option value="Menos de 10">Menos de 10</option>
+            <option value="Acordada por correo electrónico">Acordada por correo electrónico</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+        <!-- Nuevos campos en la sección bancaria -->
+        <div class="form-group">
+          <label for="prontoPago">¿Permite pronto pago?</label>
+          <input type="checkbox" id="prontoPago">
+        </div>
+        <div class="form-group">
+          <label for="diasProntoPago">Días de pronto pago:</label>
+          <input type="text" id="diasProntoPago" placeholder="Ej: 10">
+        </div>
+        <div class="form-group">
+          <label for="descuentoProntoPago">Descuento por pronto pago (%):</label>
+          <input type="text" id="descuentoProntoPago" placeholder="Ej: 5">
+        </div>
+      </div>
+    </fieldset>
+
+    <!-- Estado -->
+    <div class="form-group" style="margin-top:20px;">
+      <label>Estado:</label>
+      <div class="estado-container">
+        <div>
+          <input type="radio" id="activo" name="estado" value="Activo" checked>
+          <label for="activo">Activo</label>
+        </div>
+        <div>
+          <input type="radio" id="inactivo" name="estado" value="Inactivo">
+          <label for="inactivo">Inactivo</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones -->
+    <div class="button-group">
+      <button type="submit" id="submitBtn">Guardar</button>
+      <button type="reset">Limpiar</button>
+    </div>
+  </form>
+
+  <hr>
+
+  <!-- Tabla de Proveedores -->
+  <table id="tablaProveedores">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>NIT</th>
+        <th>Departamento</th>
+        <th>Ciudad</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Correo electrónico autorizado por DIAN</th>
+        <th>Asesor</th>
+        <th>Tel. Asesor</th>
+        <th>Tipo</th>
+        <th>Productos principales</th>
+        <th>Cond. Pago</th>
+        <th>Días Crédito</th>
+        <th>Banco</th>
+        <th>Tipo de cuenta</th>
+        <th>Certificación bancaria número</th>
+        <th>Permite pronto pago</th>
+        <th>Días pronto pago</th>
+        <th>Descuento por pronto pago (%)</th>
+        <th>Tiempo Entrega</th>
+        <th>Estado</th>
+        <th>Observaciones</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    let editId = null;
+    let proveedores = [];
+    let proveedoresCounter = 1;
+
+    // Proveedores predefinidos con datos completos (inventados)
+    const proveedoresPredefinidos = [
+      {
+        id: 1,
+        nombre: 'Coopidrogas',
+        nit: '860026123-0',
+        departamento: 'Antioquia',
+        ciudad: 'Bello',
+        direccion: 'Diagonal 52 #10-100, Zona Industrial',
+        telefono: '(604) 4449829',
+        correo: 'contacto@coopidrogas.co',
+        asesor: 'Carlos Rojas',
+        telAsesor: '3123456789',
+        tipoProv: 'Cooperativa (Mayorista)',
+        productos: 'Medicamentos genéricos y de marca, productos populares',
+        condPago: 'Contado / Crédito a asociados',
+        diasCred: '30',
+        banco: 'Banco de Bogotá',
+        tipoCuenta: 'Corriente',
+        numeroCuenta: '1234567890',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: 'Entrega inmediata',
+        estado: 'Activo',
+        observaciones: 'Mayorista con amplia cobertura en Antioquia'
+      },
+      {
+        id: 2,
+        nombre: 'Distribuciones AXA S.A.S',
+        nit: '800052534-6',
+        departamento: 'Bogotá D.C.',
+        ciudad: 'Bogotá',
+        direccion: 'Carrera 34 #6-70, Barrio Pensilvania',
+        telefono: '(601) 2940100',
+        correo: 'info@axadistribuciones.com',
+        asesor: 'Liliana Contreras',
+        telAsesor: '3109876543',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos, OTC, cuidado personal',
+        condPago: 'A convenir',
+        diasCred: '15',
+        banco: 'Bancolombia',
+        tipoCuenta: 'Ahorro',
+        numeroCuenta: '0987654321',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: '24 horas',
+        estado: 'Activo',
+        observaciones: 'Cobertura nacional y pedidos en línea'
+      },
+      {
+        id: 3,
+        nombre: 'Unión de Droguistas S.A.S (Unidrogas)',
+        nit: '890208788-9',
+        departamento: 'Antioquia',
+        ciudad: 'Medellín',
+        direccion: 'Sucursal central, Medellín',
+        telefono: '(604) 3202720',
+        correo: 'servicio@unidrogas.com',
+        asesor: 'Jorge Herrera',
+        telAsesor: '3120001122',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos genéricos y de marca, cuidado personal',
+        condPago: 'A convenir',
+        diasCred: '30',
+        banco: 'Davivienda',
+        tipoCuenta: 'Corriente',
+        numeroCuenta: '1122334455',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: '48',
+        estado: 'Activo',
+        observaciones: 'Seguimiento de pedidos por app'
+      },
+      {
+        id: 4,
+        nombre: 'Depósito de Drogas Profesional S.A.S',
+        nit: '800095628-4',
+        departamento: 'Antioquia',
+        ciudad: 'Medellín',
+        direccion: 'Carrera 43A #31-93',
+        telefono: '(604) 2622400',
+        correo: 'profesional@une.net.co',
+        asesor: 'Ana Martínez',
+        telAsesor: '3015558899',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos, dispositivos médicos, reactivos diagnósticos',
+        condPago: 'A convenir',
+        diasCred: '45',
+        banco: 'Banco de Occidente',
+        tipoCuenta: 'Corriente',
+        numeroCuenta: '5566778899',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: '72',
+        estado: 'Activo',
+        observaciones: 'Autorizado por la Secretaría de Salud'
+      },
+      {
+        id: 5,
+        nombre: 'Distribuciones Macrofarma S.A.S',
+        nit: '900523068-1',
+        departamento: 'Antioquia',
+        ciudad: 'Medellín',
+        direccion: 'Carrera 64C #74-53',
+        telefono: '(604) 4449615',
+        correo: 'regente@macrofarma.com.co',
+        asesor: 'Sofía Ramírez',
+        telAsesor: '3021112233',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos, cosméticos, suplementos, dispositivos médicos',
+        condPago: 'A convenir',
+        diasCred: '20',
+        banco: 'BBVA',
+        tipoCuenta: 'Ahorro',
+        numeroCuenta: '6677889900',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: 'Menos de 5',
+        estado: 'Activo',
+        observaciones: 'Cobertura nacional amplia'
+      },
+      {
+        id: 6,
+        nombre: 'Distribuidora Dismedvital S.A.S',
+        nit: '900590912-7',
+        departamento: 'Antioquia',
+        ciudad: 'Medellín',
+        direccion: 'Carrera 52 #35-58',
+        telefono: '(604) 4440001',
+        correo: 'dismedvital@outlook.com',
+        asesor: 'Mauricio Gómez',
+        telAsesor: '3105557777',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos genéricos y comerciales, insumos de droguería',
+        condPago: 'A convenir',
+        diasCred: '10',
+        banco: 'Colpatria',
+        tipoCuenta: 'Corriente',
+        numeroCuenta: '3344556677',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: 'Menos de 10',
+        estado: 'Activo',
+        observaciones: 'Habilitado por la Secretaría de Salud'
+      },
+      {
+        id: 7,
+        nombre: 'Mediservis S.A.S',
+        nit: '811031212-1',
+        departamento: 'Antioquia',
+        ciudad: 'Medellín',
+        direccion: 'Carrera 80A #41-20',
+        telefono: '(604) 4446171',
+        correo: 'info@mediservis.com.co',
+        asesor: 'Verónica López',
+        telAsesor: '3011122334',
+        tipoProv: 'Distribuidor Mayorista',
+        productos: 'Medicamentos POS y No POS, insumos médicos, suplementos',
+        condPago: 'A convenir',
+        diasCred: '25',
+        banco: 'Banco Popular',
+        tipoCuenta: 'Ahorro',
+        numeroCuenta: '4455667788',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: 'Acordada por correo electrónico',
+        estado: 'Activo',
+        observaciones: 'Proveedor para farmacias y EPS'
+      },
+      {
+        id: 8,
+        nombre: 'Tecnoquímicas S.A.',
+        nit: '890300466-5',
+        departamento: 'Valle del Cauca',
+        ciudad: 'Cali',
+        direccion: 'Calle 23 #7-39, Barrio San Nicolás',
+        telefono: '(602) 8825555',
+        correo: 'ventas@tecnoquimicas.com',
+        asesor: 'Camila Salazar',
+        telAsesor: '3009876543',
+        tipoProv: 'Laboratorio',
+        productos: 'Medicamentos de marca y genéricos, productos de cuidado personal',
+        condPago: 'A convenir',
+        diasCred: '15',
+        banco: 'Itaú',
+        tipoCuenta: 'Corriente',
+        numeroCuenta: '9988776655',
+        prontoPago: false,
+        diasProntoPago: '',
+        descuentoProntoPago: '',
+        tiempoEntrega: 'Otro',
+        estado: 'Activo',
+        observaciones: 'Líder con amplia presencia en Colombia'
+      }
+    ];
+
+    // Al cargar la página: fusionar predefinidos y guardar en Local Storage
+    document.addEventListener('DOMContentLoaded', () => {
+      const storedProveedores = localStorage.getItem('proveedores');
+      proveedores = storedProveedores ? JSON.parse(storedProveedores) : [];
+      const idsExistentes = proveedores.map(p => p.id);
+      proveedoresPredefinidos.forEach(predef => {
+        if (!idsExistentes.includes(predef.id)) {
+          proveedores.push(predef);
+        }
+      });
+      if (proveedores.length > 0) {
+        proveedoresCounter = Math.max(...proveedores.map(p => p.id)) + 1;
+      }
+      localStorage.setItem('proveedores', JSON.stringify(proveedores));
+      localStorage.setItem('proveedoresCounter', proveedoresCounter);
+      renderTablaProveedores();
+    });
+
+    // Mostrar/ocultar campo de días de crédito según condición de pago
+    const condicionesPagoSelect = document.getElementById('condicionesPago');
+    const diasCreditoGroup = document.getElementById('diasCreditoGroup');
+    const diasCreditoInput = document.getElementById('diasCredito');
+    condicionesPagoSelect.addEventListener('change', () => {
+      if (condicionesPagoSelect.value === 'Crédito') {
+        diasCreditoGroup.style.display = 'block';
+      } else {
+        diasCreditoGroup.style.display = 'none';
+        diasCreditoInput.value = '';
+      }
+    });
+
+    // Manejo del formulario
+    const proveedorForm = document.getElementById('proveedorForm');
+    const submitBtn = document.getElementById('submitBtn');
+
+    proveedorForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const nombre = document.getElementById('nombreProveedor').value.trim();
+      const nit = document.getElementById('nitProveedor').value.trim();
+      const departamento = document.getElementById('departamentoProveedor').value;
+      const ciudad = document.getElementById('ciudadProveedor').value;
+      const direccion = document.getElementById('direccionProveedor').value.trim();
+      const telefono = document.getElementById('telefonoProveedor').value.trim();
+      const correo = document.getElementById('correoProveedor').value.trim();
+      const asesor = document.getElementById('asesorProveedor').value.trim();
+      const telAsesor = document.getElementById('telAsesorProveedor').value.trim();
+      const tipoProv = document.getElementById('tipoProveedor').value;
+      
+      // Recolectar checkboxes marcados
+      const productosMarcados = document.querySelectorAll('input[name="productosPrincipales"]:checked');
+      const productos = Array.from(productosMarcados).map(checkbox => checkbox.value).join(', ');
+
+      const condPago = condicionesPagoSelect.value;
+      const diasCred = diasCreditoInput.value.trim();
+      const banco = document.getElementById('bancoProveedor').value.trim();
+      const tipoCuenta = document.getElementById('tipoCuentaProveedor').value;
+      const numeroCuenta = document.getElementById('numeroCuentaProveedor').value.trim();
+      const tiempoEntrega = document.getElementById('tiempoEntregaProveedor').value;
+      const estado = document.querySelector('input[name="estado"]:checked').value;
+      const observaciones = document.getElementById('observacionesProveedor').value.trim();
+      
+      // Nuevos campos de pronto pago
+      const prontoPago = document.getElementById('prontoPago').checked;
+      const diasProntoPago = document.getElementById('diasProntoPago').value.trim();
+      const descuentoProntoPago = document.getElementById('descuentoProntoPago').value.trim();
+
+      const nuevoProveedor = {
+        id: editId ? editId : proveedoresCounter,
+        nombre,
+        nit,
+        departamento,
+        ciudad,
+        direccion,
+        telefono,
+        correo,
+        asesor,
+        telAsesor,
+        tipoProv,
+        productos,
+        condPago,
+        diasCred,
+        banco,
+        tipoCuenta,
+        numeroCuenta,
+        prontoPago,
+        diasProntoPago,
+        descuentoProntoPago,
+        tiempoEntrega,
+        estado,
+        observaciones
+      };
+
+      if (editId) {
+        // Editar
+        proveedores = proveedores.map(p => p.id === editId ? nuevoProveedor : p);
+        alert('¡Proveedor actualizado con éxito!');
+        editId = null;
+        submitBtn.textContent = 'Guardar';
+      } else {
+        // Crear
+        proveedores.push(nuevoProveedor);
+        proveedoresCounter++;
+        localStorage.setItem('proveedoresCounter', proveedoresCounter);
+        alert('¡Proveedor guardado con éxito!');
+      }
+      localStorage.setItem('proveedores', JSON.stringify(proveedores));
+      renderTablaProveedores();
+      proveedorForm.reset();
+      diasCreditoGroup.style.display = 'none';
+    });
+
+    function renderTablaProveedores() {
+      const tablaProveedoresBody = document.querySelector('#tablaProveedores tbody');
+      tablaProveedoresBody.innerHTML = '';
+      proveedores.forEach(p => {
+        const fila = document.createElement('tr');
+        fila.appendChild(crearCelda(p.nombre));
+        fila.appendChild(crearCelda(p.nit));
+        fila.appendChild(crearCelda(p.departamento));
+        fila.appendChild(crearCelda(p.ciudad));
+        fila.appendChild(crearCelda(p.direccion));
+        fila.appendChild(crearCelda(p.telefono));
+        fila.appendChild(crearCelda(p.correo));
+        fila.appendChild(crearCelda(p.asesor));
+        fila.appendChild(crearCelda(p.telAsesor));
+        fila.appendChild(crearCelda(p.tipoProv));
+        fila.appendChild(crearCelda(p.productos));
+        fila.appendChild(crearCelda(p.condPago));
+        fila.appendChild(crearCelda(p.diasCred));
+        fila.appendChild(crearCelda(p.banco));
+        fila.appendChild(crearCelda(p.tipoCuenta));
+        fila.appendChild(crearCelda(p.numeroCuenta));
+        fila.appendChild(crearCelda(p.prontoPago ? 'Sí' : 'No'));
+        fila.appendChild(crearCelda(p.diasProntoPago));
+        fila.appendChild(crearCelda(p.descuentoProntoPago));
+        fila.appendChild(crearCelda(p.tiempoEntrega));
+        fila.appendChild(crearCelda(p.estado));
+        fila.appendChild(crearCelda(p.observaciones));
+        
+        // Acciones
+        const tdAcciones = document.createElement('td');
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = 'Editar';
+        btnEdit.classList.add('btn-edit');
+        btnEdit.addEventListener('click', () => editarProveedor(p.id));
+        tdAcciones.appendChild(btnEdit);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.textContent = 'Eliminar';
+        btnDelete.classList.add('btn-delete');
+        btnDelete.addEventListener('click', () => eliminarProveedor(p.id));
+        tdAcciones.appendChild(btnDelete);
+
+        fila.appendChild(tdAcciones);
+        tablaProveedoresBody.appendChild(fila);
+      });
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    function editarProveedor(id) {
+      const prov = proveedores.find(p => p.id === id);
+      if (!prov) return;
+      document.getElementById('nombreProveedor').value = prov.nombre;
+      document.getElementById('nitProveedor').value = prov.nit;
+      document.getElementById('departamentoProveedor').value = prov.departamento;
+      document.getElementById('ciudadProveedor').value = prov.ciudad;
+      document.getElementById('direccionProveedor').value = prov.direccion;
+      document.getElementById('telefonoProveedor').value = prov.telefono;
+      document.getElementById('correoProveedor').value = prov.correo;
+      document.getElementById('asesorProveedor').value = prov.asesor;
+      document.getElementById('telAsesorProveedor').value = prov.telAsesor;
+      document.getElementById('tipoProveedor').value = prov.tipoProv;
+      
+      // Marcar checkboxes de productos
+      const productosCheckboxes = document.querySelectorAll('input[name="productosPrincipales"]');
+      const listaProductos = prov.productos ? prov.productos.split(', ') : [];
+      productosCheckboxes.forEach(checkbox => {
+        checkbox.checked = listaProductos.includes(checkbox.value);
+      });
+
+      document.getElementById('observacionesProveedor').value = prov.observaciones;
+      document.getElementById('condicionesPago').value = prov.condPago || '';
+      document.getElementById('diasCredito').value = prov.diasCred || '';
+      if (prov.condPago === 'Crédito') {
+        diasCreditoGroup.style.display = 'block';
+      } else {
+        diasCreditoGroup.style.display = 'none';
+      }
+      document.getElementById('bancoProveedor').value = prov.banco || '';
+      document.getElementById('tipoCuentaProveedor').value = prov.tipoCuenta || '';
+      document.getElementById('numeroCuentaProveedor').value = prov.numeroCuenta || '';
+      document.getElementById('tiempoEntregaProveedor').value = prov.tiempoEntrega || '';
+      document.getElementById('prontoPago').checked = prov.prontoPago || false;
+      document.getElementById('diasProntoPago').value = prov.diasProntoPago || '';
+      document.getElementById('descuentoProntoPago').value = prov.descuentoProntoPago || '';
+      if (prov.estado === 'Activo') {
+        document.getElementById('activo').checked = true;
+      } else {
+        document.getElementById('inactivo').checked = true;
+      }
+      editId = prov.id;
+      submitBtn.textContent = 'Actualizar';
+    }
+
+    function eliminarProveedor(id) {
+      if (confirm('¿Deseas eliminar este proveedor?')) {
+        proveedores = proveedores.filter(p => p.id !== id);
+        localStorage.setItem('proveedores', JSON.stringify(proveedores));
+        renderTablaProveedores();
+      }
+    }
+  </script>
+</body>
+</html>

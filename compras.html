@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Módulo de Compras</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1, h2, h3 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .back-btn {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .back-btn:hover {
+      background-color: #0056b3;
+    }
+    form {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input, select, textarea {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-group button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      color: white;
+    }
+    .btn-reset {
+      background-color: #dc3545;
+      color: white;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    /* Estilos para la tabla de ítems de compra */
+    #tablaItems {
+      margin-top: 10px;
+    }
+    #tablaItems th, #tablaItems td {
+      border: 1px solid #ccc;
+      padding: 5px;
+      text-align: left;
+    }
+    #tablaItems thead {
+      background-color: #e9ecef;
+    }
+    .btn-add-item {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+    .btn-add-item:hover {
+      opacity: 0.9;
+    }
+    .btn-delete-item {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px 5px;
+      font-size: 0.9em;
+    }
+    .btn-delete-item:hover {
+      opacity: 0.9;
+    }
+    /* Botones de acción en la tabla de compras */
+    .btn-edit, .btn-delete, .btn-view {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.9em;
+    }
+    .btn-edit {
+      background-color: #007bff;
+      color: #fff;
+    }
+    .btn-delete {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-view {
+      background-color: #17a2b8;
+      color: #fff;
+    }
+    .btn-edit:hover, .btn-delete:hover, .btn-view:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón para volver al menú principal -->
+  <button class="back-btn" onclick="window.location.href='index.html'">Volver al Menú</button>
+
+  <div class="container">
+    <h1>Gestión de Compras</h1>
+    <form id="compraForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="proveedorCompra">Proveedor:</label>
+          <select id="proveedorCompra" required>
+            <option value="">Seleccione un proveedor</option>
+            <!-- Se cargarán dinámicamente desde localStorage -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fechaCompra">Fecha de Compra:</label>
+          <input type="date" id="fechaCompra" required>
+        </div>
+      </div>
+
+      <h3>Productos de la Compra</h3>
+      <!-- Tabla de ítems de compra con columna Unidad -->
+      <table id="tablaItems">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Unidad</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se agregarán filas dinámicamente -->
+        </tbody>
+      </table>
+      <button type="button" class="btn-add-item" onclick="agregarItem()">Agregar Producto</button>
+
+      <!-- Total de la compra -->
+      <div class="form-group" style="margin-top:15px;">
+        <label for="totalCompra">Total de Compra:</label>
+        <input type="number" id="totalCompra" step="0.01" readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="observacionesCompra">Observaciones:</label>
+        <textarea id="observacionesCompra"></textarea>
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn-submit" id="submitBtn">Guardar Compra</button>
+        <button type="reset" class="btn-reset">Limpiar</button>
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <div class="container">
+    <h2>Compras Registradas</h2>
+    <table id="tablaCompras">
+      <thead>
+        <tr>
+          <th>ID Compra</th>
+          <th>Proveedor</th>
+          <th>Fecha</th>
+          <th>Total</th>
+          <th>Observaciones</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Se mostrarán las compras registradas -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Variables para compras
+    let compras = [];
+    let comprasCounter = 1;
+    let editCompraId = null;
+
+    // Referencias al DOM
+    const compraForm = document.getElementById('compraForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const tablaComprasBody = document.querySelector('#tablaCompras tbody');
+    const tablaItemsBody = document.querySelector('#tablaItems tbody');
+    const totalCompraInput = document.getElementById('totalCompra');
+    const proveedorSelect = document.getElementById('proveedorCompra');
+
+    // Al cargar la página: cargar compras y proveedores
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cargar compras
+      const storedCompras = localStorage.getItem('compras');
+      if (storedCompras) {
+        compras = JSON.parse(storedCompras);
+      }
+      const storedCounter = localStorage.getItem('comprasCounter');
+      if (storedCounter) {
+        comprasCounter = parseInt(storedCounter, 10);
+      }
+      renderTablaCompras();
+
+      // Cargar proveedores en el select (se asume que ya existen en localStorage con clave "proveedores")
+      const storedProveedores = localStorage.getItem('proveedores');
+      if (storedProveedores) {
+        const proveedores = JSON.parse(storedProveedores);
+        proveedores.forEach(prov => {
+          const option = document.createElement('option');
+          option.value = prov.id;
+          option.textContent = prov.nombre;
+          proveedorSelect.appendChild(option);
+        });
+      }
+    });
+
+    // Función para agregar ítem de compra
+    function agregarItem() {
+      const row = document.createElement('tr');
+
+      // Columna de producto
+      const tdProducto = document.createElement('td');
+      const selectProducto = document.createElement('select');
+      selectProducto.required = true;
+      const defaultOption = document.createElement('option');
+      defaultOption.value = "";
+      defaultOption.textContent = "Seleccione un producto";
+      selectProducto.appendChild(defaultOption);
+
+      // Cargar productos desde localStorage (clave "medicamentos")
+      const storedProductos = localStorage.getItem('medicamentos');
+      if (storedProductos) {
+        const productos = JSON.parse(storedProductos);
+        productos.forEach(prod => {
+          const option = document.createElement('option');
+          option.value = prod.codigo; // se usará el código como identificador
+          option.textContent = `${prod.codigo} - ${prod.nombre}`;
+          // Guardamos la unidad en un atributo data
+          option.dataset.unidad = prod.unidad || "";
+          selectProducto.appendChild(option);
+        });
+      }
+      tdProducto.appendChild(selectProducto);
+      row.appendChild(tdProducto);
+
+      // Columna de Unidad (se actualizará al seleccionar el producto)
+      const tdUnidad = document.createElement('td');
+      tdUnidad.textContent = "";
+      row.appendChild(tdUnidad);
+
+      // Columna de cantidad
+      const tdCantidad = document.createElement('td');
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type = 'number';
+      inputCantidad.min = '1';
+      inputCantidad.value = '1';
+      inputCantidad.required = true;
+      tdCantidad.appendChild(inputCantidad);
+      row.appendChild(tdCantidad);
+
+      // Columna de precio unitario
+      const tdPrecio = document.createElement('td');
+      const inputPrecio = document.createElement('input');
+      inputPrecio.type = 'number';
+      inputPrecio.step = '0.01';
+      inputPrecio.min = '0';
+      inputPrecio.required = true;
+      tdPrecio.appendChild(inputPrecio);
+      row.appendChild(tdPrecio);
+
+      // Columna de total (calculado)
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = '0.00';
+      row.appendChild(tdTotal);
+
+      // Columna de acciones (botón eliminar ítem)
+      const tdActions = document.createElement('td');
+      const btnDeleteItem = document.createElement('button');
+      btnDeleteItem.type = 'button';
+      btnDeleteItem.textContent = 'Eliminar';
+      btnDeleteItem.classList.add('btn-delete-item');
+      btnDeleteItem.addEventListener('click', () => {
+        row.remove();
+        calcularTotalCompra();
+      });
+      tdActions.appendChild(btnDeleteItem);
+      row.appendChild(tdActions);
+
+      // Actualizar la columna Unidad al cambiar el producto
+      selectProducto.addEventListener('change', () => {
+        const unidad = selectProducto.options[selectProducto.selectedIndex].dataset.unidad || "";
+        tdUnidad.textContent = unidad;
+      });
+
+      // Recalcular el total al cambiar cantidad o precio
+      inputCantidad.addEventListener('input', () => {
+        const total = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
+        tdTotal.textContent = total.toFixed(2);
+        calcularTotalCompra();
+      });
+      inputPrecio.addEventListener('input', () => {
+        const total = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
+        tdTotal.textContent = total.toFixed(2);
+        calcularTotalCompra();
+      });
+
+      tablaItemsBody.appendChild(row);
+    }
+
+    // Función para calcular el total de la compra
+    function calcularTotalCompra() {
+      let total = 0;
+      const rows = tablaItemsBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const tdTotal = row.children[4];
+        total += parseFloat(tdTotal.textContent);
+      });
+      totalCompraInput.value = total.toFixed(2);
+    }
+
+    // Guardar o actualizar compra
+    compraForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const proveedorId = proveedorSelect.value;
+      const fecha = document.getElementById('fechaCompra').value;
+      const observaciones = document.getElementById('observacionesCompra').value.trim();
+      const totalCompra = parseFloat(totalCompraInput.value) || 0;
+
+      // Recopilar datos de ítems (incluyendo unidad)
+      const itemsData = [];
+      const rows = tablaItemsBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const selectProducto = row.children[0].querySelector('select');
+        const productoCodigo = selectProducto.value;
+        const unidad = row.children[1].textContent;
+        const cantidad = parseFloat(row.children[2].querySelector('input').value) || 0;
+        const precioUnitario = parseFloat(row.children[3].querySelector('input').value) || 0;
+        const total = parseFloat(row.children[4].textContent) || 0;
+        itemsData.push({ productoCodigo, unidad, cantidad, precioUnitario, total });
+      });
+
+      const nuevaCompra = {
+        id: editCompraId ? editCompraId : comprasCounter,
+        proveedorId,
+        fecha,
+        items: itemsData,
+        totalCompra,
+        observaciones
+      };
+
+      if (editCompraId) {
+        // Editar compra existente
+        compras = compras.map(c => c.id === editCompraId ? nuevaCompra : c);
+        alert('¡Compra actualizada con éxito!');
+        editCompraId = null;
+        submitBtn.textContent = 'Guardar Compra';
+      } else {
+        // Nueva compra
+        compras.push(nuevaCompra);
+        comprasCounter++;
+        localStorage.setItem('comprasCounter', comprasCounter);
+        alert('¡Compra guardada con éxito!');
+      }
+      localStorage.setItem('compras', JSON.stringify(compras));
+      renderTablaCompras();
+      compraForm.reset();
+      tablaItemsBody.innerHTML = '';
+      totalCompraInput.value = '';
+    });
+
+    // Función para renderizar la tabla de compras
+    function renderTablaCompras() {
+      tablaComprasBody.innerHTML = '';
+      compras.forEach(compra => {
+        const fila = document.createElement('tr');
+        fila.appendChild(crearCelda(compra.id));
+
+        // Obtener el nombre del proveedor
+        let proveedorNombre = '';
+        const storedProveedores = localStorage.getItem('proveedores');
+        if (storedProveedores) {
+          const proveedores = JSON.parse(storedProveedores);
+          const prov = proveedores.find(p => p.id == compra.proveedorId);
+          proveedorNombre = prov ? prov.nombre : '';
+        }
+        fila.appendChild(crearCelda(proveedorNombre));
+        fila.appendChild(crearCelda(compra.fecha));
+        fila.appendChild(crearCelda(compra.totalCompra.toFixed(2)));
+        fila.appendChild(crearCelda(compra.observaciones));
+
+        // Acciones: Ver, Editar, Eliminar
+        const tdAcciones = document.createElement('td');
+        const btnView = document.createElement('button');
+        btnView.textContent = 'Ver';
+        btnView.classList.add('btn-view');
+        btnView.addEventListener('click', () => verCompra(compra.id));
+        tdAcciones.appendChild(btnView);
+
+        const btnEdit = document.createElement('button');
+        btnEdit.textContent = 'Editar';
+        btnEdit.classList.add('btn-edit');
+        btnEdit.addEventListener('click', () => editarCompra(compra.id));
+        tdAcciones.appendChild(btnEdit);
+
+        const btnDelete = document.createElement('button');
+        btnDelete.textContent = 'Eliminar';
+        btnDelete.classList.add('btn-delete');
+        btnDelete.addEventListener('click', () => eliminarCompra(compra.id));
+        tdAcciones.appendChild(btnDelete);
+
+        fila.appendChild(tdAcciones);
+        tablaComprasBody.appendChild(fila);
+      });
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    // Editar compra
+    function editarCompra(id) {
+      const compra = compras.find(c => c.id === id);
+      if (!compra) return;
+      proveedorSelect.value = compra.proveedorId;
+      document.getElementById('fechaCompra').value = compra.fecha;
+      document.getElementById('observacionesCompra').value = compra.observaciones;
+      totalCompraInput.value = compra.totalCompra.toFixed(2);
+
+      // Limpiar la tabla de ítems
+      tablaItemsBody.innerHTML = '';
+
+      // Rellenar los ítems de esta compra
+      compra.items.forEach(item => {
+        const row = document.createElement('tr');
+
+        // Producto
+        const tdProducto = document.createElement('td');
+        const selectProducto = document.createElement('select');
+        selectProducto.required = true;
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = "Seleccione un producto";
+        selectProducto.appendChild(defaultOption);
+
+        // Cargar productos
+        const storedProductos = localStorage.getItem('medicamentos');
+        if (storedProductos) {
+          const productos = JSON.parse(storedProductos);
+          productos.forEach(prod => {
+            const option = document.createElement('option');
+            option.value = prod.codigo;
+            option.textContent = `${prod.codigo} - ${prod.nombre}`;
+            option.dataset.unidad = prod.unidad || "";
+            selectProducto.appendChild(option);
+          });
+        }
+        selectProducto.value = item.productoCodigo;
+        tdProducto.appendChild(selectProducto);
+        row.appendChild(tdProducto);
+
+        // Unidad
+        const tdUnidad = document.createElement('td');
+        tdUnidad.textContent = item.unidad || "";
+        row.appendChild(tdUnidad);
+
+        // Cantidad
+        const tdCantidad = document.createElement('td');
+        const inputCantidad = document.createElement('input');
+        inputCantidad.type = 'number';
+        inputCantidad.min = '1';
+        inputCantidad.value = item.cantidad;
+        inputCantidad.required = true;
+        tdCantidad.appendChild(inputCantidad);
+        row.appendChild(tdCantidad);
+
+        // Precio unitario
+        const tdPrecio = document.createElement('td');
+        const inputPrecio = document.createElement('input');
+        inputPrecio.type = 'number';
+        inputPrecio.step = '0.01';
+        inputPrecio.min = '0';
+        inputPrecio.required = true;
+        inputPrecio.value = item.precioUnitario;
+        tdPrecio.appendChild(inputPrecio);
+        row.appendChild(tdPrecio);
+
+        // Total
+        const tdTotal = document.createElement('td');
+        tdTotal.textContent = item.total.toFixed(2);
+        row.appendChild(tdTotal);
+
+        // Botón Eliminar
+        const tdActions = document.createElement('td');
+        const btnDeleteItem = document.createElement('button');
+        btnDeleteItem.type = 'button';
+        btnDeleteItem.textContent = 'Eliminar';
+        btnDeleteItem.classList.add('btn-delete-item');
+        btnDeleteItem.addEventListener('click', () => {
+          row.remove();
+          calcularTotalCompra();
+        });
+        tdActions.appendChild(btnDeleteItem);
+        row.appendChild(tdActions);
+
+        // Actualizar la unidad al cambiar el producto
+        selectProducto.addEventListener('change', () => {
+          const unidad = selectProducto.options[selectProducto.selectedIndex].dataset.unidad || "";
+          tdUnidad.textContent = unidad;
+        });
+
+        // Recalcular total
+        inputCantidad.addEventListener('input', () => {
+          const total = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
+          tdTotal.textContent = total.toFixed(2);
+          calcularTotalCompra();
+        });
+        inputPrecio.addEventListener('input', () => {
+          const total = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
+          tdTotal.textContent = total.toFixed(2);
+          calcularTotalCompra();
+        });
+
+        tablaItemsBody.appendChild(row);
+      });
+      editCompraId = compra.id;
+      submitBtn.textContent = 'Actualizar Compra';
+    }
+
+    // Eliminar compra
+    function eliminarCompra(id) {
+      if (confirm('¿Deseas eliminar esta compra?')) {
+        compras = compras.filter(c => c.id !== id);
+        localStorage.setItem('compras', JSON.stringify(compras));
+        renderTablaCompras();
+      }
+    }
+
+    // Ver orden de compra (con nombre real del producto)
+    function verCompra(id) {
+      const compra = compras.find(c => c.id === id);
+      if (!compra) return;
+
+      // Obtener datos del proveedor
+      let proveedorNombre = '';
+      let proveedorDatos = {};
+      const storedProveedores = localStorage.getItem('proveedores');
+      if (storedProveedores) {
+        const proveedores = JSON.parse(storedProveedores);
+        const prov = proveedores.find(p => p.id == compra.proveedorId);
+        if (prov) {
+          proveedorNombre = prov.nombre;
+          proveedorDatos = prov;
+        }
+      }
+
+      // Datos de la empresa (puedes guardar en localStorage si lo prefieres)
+      let empresa = {
+        nombre: "Mi Empresa S.A.",
+        direccion: "Calle Falsa 123",
+        nit: "900123456-7",
+        telefono: "(1) 2345678",
+        correo: "info@miempresa.com",
+        director: "Juan Pérez"
+      };
+      const storedEmpresa = localStorage.getItem("empresaInfo");
+      if (storedEmpresa) {
+        empresa = JSON.parse(storedEmpresa);
+      }
+
+      // Cargar lista de productos para mostrar nombre real
+      let listaProductos = [];
+      const storedProductos = localStorage.getItem('medicamentos');
+      if (storedProductos) {
+        listaProductos = JSON.parse(storedProductos);
+      }
+
+      // Construir el HTML
+      let pedidoHTML = `
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Orden de Compra #${compra.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+            h1 { text-align: center; color: #008000; }
+            .header, .info {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 20px;
+            }
+            .info-block { line-height: 1.4; }
+            .green-title {
+              font-weight: bold;
+              text-transform: uppercase;
+              color: #008000;
+              margin-bottom: 5px;
+            }
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            table th, table td {
+              border: 1px solid #ccc;
+              padding: 8px;
+              text-align: left;
+            }
+            table thead {
+              background-color: #e9ecef;
+            }
+            table tbody tr:nth-child(even) {
+              background-color: #f8f9fa;
+            }
+            .text-right {
+              text-align: right;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>ORDEN DE COMPRA</h1>
+          <div class="header">
+            <div class="info-block">
+              <div class="green-title">${empresa.nombre}</div>
+              <div>${empresa.direccion}</div>
+              <div>NIT: ${empresa.nit}</div>
+              <div>Tel: ${empresa.telefono}</div>
+              <div>Correo: ${empresa.correo}</div>
+              <div>Director: ${empresa.director}</div>
+            </div>
+            <div class="info-block" style="text-align:right;">
+              <p><strong>N° ORDEN:</strong> ${compra.id}</p>
+              <p><strong>FECHA:</strong> ${compra.fecha}</p>
+            </div>
+          </div>
+          <hr>
+          <div class="info">
+            <div class="info-block">
+              <div class="green-title">ENVIAR A:</div>
+              <p><strong>PROVEEDOR:</strong> ${proveedorNombre}</p>
+              <p><strong>DOMICILIO:</strong> ${proveedorDatos.direccion || ""}</p>
+              <p><strong>CIUDAD:</strong> ${proveedorDatos.ciudad || ""}</p>
+              <p><strong>CONTACTO:</strong> ${proveedorDatos.asesor || ""}</p>
+              <p><strong>TELÉFONO:</strong> ${proveedorDatos.telAsesor || ""}</p>
+            </div>
+            <div class="info-block" style="text-align:right;">
+              <p><strong>ENTREGA:</strong> Envío a domicilio</p>
+              <p><strong>TIEMPO DE ENTREGA:</strong> ${proveedorDatos.tiempoEntrega || "15 días"}</p>
+              <p><strong>PAGO:</strong> Transferencia bancaria</p>
+              <p><strong>DÍAS DE CRÉDITO:</strong> ${proveedorDatos.diasCred || ""}</p>
+            </div>
+          </div>
+          <hr>
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Unidad</th>
+                <th>Cantidad</th>
+                <th>Precio Unitario</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>`;
+
+      // Recorrer los items de la compra y buscar su nombre
+      compra.items.forEach(item => {
+        // Buscar en listaProductos el producto con el mismo código
+        const prodEncontrado = listaProductos.find(p => p.codigo === item.productoCodigo);
+        let nombreProducto = "Desconocido";
+        if (prodEncontrado) {
+          nombreProducto = prodEncontrado.nombre;
+        }
+        // Mostrar "MED001 - Acetaminofén" en la columna
+        const productoCompleto = item.productoCodigo + " - " + nombreProducto;
+
+        pedidoHTML += `
+              <tr>
+                <td>${productoCompleto}</td>
+                <td>${item.unidad}</td>
+                <td>${item.cantidad}</td>
+                <td>${item.precioUnitario.toFixed(2)}</td>
+                <td>${item.total.toFixed(2)}</td>
+              </tr>`;
+      });
+
+      pedidoHTML += `
+            </tbody>
+          </table>
+          <h2 class="text-right">Total: ${compra.totalCompra.toFixed(2)}</h2>
+        </body>
+        </html>`;
+
+      const nuevaVentana = window.open('', '_blank');
+      nuevaVentana.document.write(pedidoHTML);
+      nuevaVentana.document.close();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Inventario Actualizado</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    .text-center {
+      text-align: center;
+    }
+    .total-inventario {
+      font-weight: bold;
+      font-size: 1em;
+      text-align: right;
+      padding: 10px;
+      background-color: #e9ecef;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón para volver al menú principal -->
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <div class="container">
+    <h1>Inventario Actualizado</h1>
+    <table id="tablaInventario">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Lote</th>
+          <th>Fecha Venc.</th>
+          <th>Unidad</th>
+          <th>Cantidad</th>
+          <th>Precio Compra</th>
+          <th>Valor Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filas generadas dinámicamente -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="7" class="total-inventario">Valor Total del Inventario:</td>
+          <td id="totalInventario" class="total-inventario">0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <script>
+    /*
+      Al cargar la página:
+      1) Obtenemos 'entradas', 'ventas', 'salidas' y ahora 'devoluciones' de localStorage.
+      2) Construimos un array 'inventario' sumando las entradas.
+      3) Restamos las ventas y las salidas según (código + lote).
+      4) Ajustamos según las devoluciones:
+         - Si tipoDevolucion == 'cliente', sumamos la cantidad
+         - Si tipoDevolucion == 'proveedor', restamos la cantidad
+      5) Mostramos la tabla con las cantidades finales.
+    */
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Leer localStorage
+      const storedEntradas = localStorage.getItem('entradas');
+      const storedVentas   = localStorage.getItem('ventas');
+      const storedSalidas  = localStorage.getItem('salidas');
+      const storedDevoluciones = localStorage.getItem('devoluciones'); // NUEVO
+
+      let entradas = storedEntradas ? JSON.parse(storedEntradas) : [];
+      let ventas   = storedVentas   ? JSON.parse(storedVentas)   : [];
+      let salidas  = storedSalidas  ? JSON.parse(storedSalidas)  : [];
+      let devoluciones = storedDevoluciones ? JSON.parse(storedDevoluciones) : [];
+
+      // Construir inventario base con entradas
+      let inventario = [];
+
+      // 1) Sumar todas las ENTRADAS
+      entradas.forEach(entrada => {
+        entrada.items.forEach(item => {
+          // Buscamos si ya existe (codigo + lote)
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (!reg) {
+            reg = {
+              codigo: item.productoCodigo,
+              nombre: item.productoNombre || "",
+              lote: item.lote || "",
+              fechaVenc: item.fechaVenc || "",
+              unidad: item.unidad || "",
+              cantidad: 0,
+              precioCompra: parseFloat(item.precioUnitario) || 0
+            };
+            inventario.push(reg);
+          }
+          reg.cantidad += parseFloat(item.cantidad) || 0;
+        });
+      });
+
+      // 2) Restar todas las VENTAS
+      ventas.forEach(venta => {
+        venta.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= parseFloat(item.cantidad) || 0;
+          }
+        });
+      });
+
+      // 3) Restar todas las SALIDAS
+      salidas.forEach(salida => {
+        salida.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= parseFloat(item.cantidad) || 0;
+          }
+        });
+      });
+
+      // 4) Ajustar segun las DEVOLUCIONES
+      //    Si tipoDevolucion == 'cliente', sumamos
+      //    Si tipoDevolucion == 'proveedor', restamos
+      devoluciones.forEach(dev => {
+        dev.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (!reg) {
+            // Si no existe, crearlo
+            reg = {
+              codigo: item.productoCodigo,
+              nombre: item.productoNombre || "",
+              lote: item.lote || "",
+              fechaVenc: item.fechaVenc || "",
+              unidad: item.unidad || "",
+              cantidad: 0,
+              precioCompra: parseFloat(item.precioUnitario) || 0
+            };
+            inventario.push(reg);
+          }
+          // Dependiendo del tipo de devolución
+          if (dev.tipoDevolucion === 'cliente') {
+            // Devuelta por cliente => regresa al inventario
+            reg.cantidad += parseFloat(item.cantidad) || 0;
+          } else if (dev.tipoDevolucion === 'proveedor') {
+            // Devuelta a proveedor => sale del inventario
+            reg.cantidad -= parseFloat(item.cantidad) || 0;
+          }
+        });
+      });
+
+      // 5) Renderizar la tabla con el inventario final
+      renderInventario(inventario);
+    });
+
+    function renderInventario(inventario) {
+      const tbody = document.querySelector('#tablaInventario tbody');
+      const tdTotalInv = document.getElementById('totalInventario');
+      tbody.innerHTML = '';
+      let totalGlobal = 0;
+
+      // Filtramos para no mostrar registros con cantidad <= 0 (opcional)
+      inventario = inventario.filter(item => item.cantidad > 0);
+
+      if (inventario.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 8;
+        cell.classList.add('text-center');
+        cell.textContent = "No hay inventario disponible.";
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        tdTotalInv.textContent = "0.00";
+        return;
+      }
+
+      inventario.forEach(item => {
+        const fila = document.createElement('tr');
+
+        // Cálculo valor total
+        const valorTotal = item.cantidad * item.precioCompra;
+        totalGlobal += valorTotal;
+
+        fila.appendChild(crearCelda(item.codigo));
+        fila.appendChild(crearCelda(item.nombre));
+        fila.appendChild(crearCelda(item.lote));
+        fila.appendChild(crearCelda(item.fechaVenc));
+        fila.appendChild(crearCelda(item.unidad));
+        fila.appendChild(crearCelda(item.cantidad));
+        fila.appendChild(crearCelda(item.precioCompra.toFixed(2)));
+        fila.appendChild(crearCelda(valorTotal.toFixed(2)));
+
+        tbody.appendChild(fila);
+      });
+
+      tdTotalInv.textContent = totalGlobal.toFixed(2);
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+  </script>
+
+</body>
+</html>

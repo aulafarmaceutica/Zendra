@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Sistema de Ventas e Inventario</title>
+  <style>
+body::before {
+  content: "Profe Diego Fdo Echeverri P";
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-60%);
+  font-size: 40px;
+  color: rgba(0, 0, 0, 0.11);
+  z-index: 0;
+  pointer-events: none;
+  white-space: nowrap;
+}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .menu-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin: 5px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    form .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    form .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    form .form-group input {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-actions {
+      grid-column: 1 / -1;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .form-actions button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn-save {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .btn-clear {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-danger {
+      background-color: #dc3545;
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    .btn-danger:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+<!-- Contenedor con logo al lado del título -->
+<div class="container" style="display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px;">
+  <img src="logo-aula-diego.png" alt="Logo El Aula de Diego" style="max-width: 120px; height: auto;">
+  <div style="text-align: left;">
+    <h1 style="margin: 0;">Sistema de Ventas e Inventario</h1>
+    <h2 style="margin: 0;">Información de la Empresa</h2>
+  </div>
+</div>
+
+    <form id="empresaForm">
+      <div class="form-group">
+        <label for="empresaNombre">Nombre de la Empresa:</label>
+        <input type="text" id="empresaNombre" required>
+      </div>
+      <div class="form-group">
+        <label for="empresaNit">NIT:</label>
+        <input type="text" id="empresaNit" required>
+      </div>
+      <div class="form-group">
+        <label for="empresaTelefono">Teléfono:</label>
+        <input type="text" id="empresaTelefono" required>
+      </div>
+      <div class="form-group">
+        <label for="empresaCorreo">Correo Electrónico:</label>
+        <input type="email" id="empresaCorreo" required>
+      </div>
+      <div class="form-group">
+        <label for="empresaDirector">Director Responsable:</label>
+        <input type="text" id="empresaDirector" required>
+      </div>
+      <div class="form-group">
+        <label for="empresaDireccion">Dirección:</label>
+        <input type="text" id="empresaDireccion" required>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn-save">Guardar Empresa</button>
+        <button type="button" class="btn-clear" onclick="borrarEmpresa()">Borrar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="container">
+    <div class="menu-container">
+      <a class="menu-button" href="proveedores.html">Proveedores</a>
+      <a class="menu-button" href="clientes.html">Clientes</a>
+      <a class="menu-button" href="productos.html">Productos</a>
+      <a class="menu-button" href="compras.html">Compras</a>
+      <a class="menu-button" href="entradas.html">Entradas</a>
+      <a class="menu-button" href="ventas.html">Ventas</a>
+      <a class="menu-button" href="salidas.html">Salidas</a>
+      <a class="menu-button" href="inventario.html">Inventario</a>
+      <a class="menu-button" href="devoluciones.html">Devoluciones</a>
+    </div>
+  </div>
+
+  <div class="container" style="text-align:center;">
+    <button class="btn-danger" onclick="borrarTodosMovimientos()">Borrar TODOS los movimientos</button>
+  </div>
+
+  <script>
+    const empresaKey = "empresaInfo";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const empresaData = localStorage.getItem(empresaKey);
+      if (empresaData) {
+        const empresa = JSON.parse(empresaData);
+        document.getElementById('empresaNombre').value = empresa.nombre || "";
+        document.getElementById('empresaNit').value = empresa.nit || "";
+        document.getElementById('empresaTelefono').value = empresa.telefono || "";
+        document.getElementById('empresaCorreo').value = empresa.correo || "";
+        document.getElementById('empresaDirector').value = empresa.director || "";
+        document.getElementById('empresaDireccion').value = empresa.direccion || "";
+      }
+    });
+
+    document.getElementById('empresaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const empresa = {
+        nombre: document.getElementById('empresaNombre').value.trim(),
+        nit: document.getElementById('empresaNit').value.trim(),
+        telefono: document.getElementById('empresaTelefono').value.trim(),
+        correo: document.getElementById('empresaCorreo').value.trim(),
+        director: document.getElementById('empresaDirector').value.trim(),
+        direccion: document.getElementById('empresaDireccion').value.trim()
+      };
+      localStorage.setItem(empresaKey, JSON.stringify(empresa));
+      alert('Información de la empresa guardada.');
+    });
+
+    function borrarEmpresa() {
+      if (confirm("¿Estás seguro de borrar la información de la empresa?")) {
+        localStorage.removeItem(empresaKey);
+        document.getElementById('empresaForm').reset();
+        alert("Información de la empresa borrada. Ahora puedes ingresar datos nuevos.");
+      }
+    }
+
+    function borrarTodosMovimientos() {
+      const pass = prompt("Ingrese la clave para borrar todos los movimientos:");
+      if (pass === "sena") {
+        localStorage.removeItem("entradas");
+        localStorage.removeItem("salidas");
+        localStorage.removeItem("ventas");
+        localStorage.removeItem("salidasCounter");
+        localStorage.removeItem("ventasCounter");
+        localStorage.removeItem("proveedores");
+        localStorage.removeItem("clientes");
+        localStorage.removeItem("compras");
+        localStorage.removeItem("productos");
+        alert("Se han borrado todos los movimientos y datos principales.");
+      } else {
+        alert("Clave incorrecta. No se borró nada.");
+      }
+    }
+  </script>
+
+  <!-- Script del Bot de Chatbase -->
+  <script>
+    (function(){
+      if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+        window.chatbase = (...args) => {
+          if(!window.chatbase.q){ window.chatbase.q = [] }
+          window.chatbase.q.push(args)
+        };
+        window.chatbase = new Proxy(window.chatbase, {
+          get(target, prop){
+            if(prop === "q"){ return target.q }
+            return (...args) => target(prop, ...args)
+          }
+        })
+      }
+      const onLoad = function(){
+        const script = document.createElement("script");
+        script.src = "https://www.chatbase.co/embed.min.js";
+        script.id = "6MkiTjm1OJSXymGZWHhJW";
+        script.domain = "www.chatbase.co";
+        document.body.appendChild(script)
+      };
+      if(document.readyState === "complete"){
+        onLoad()
+      } else {
+        window.addEventListener("load", onLoad)
+      }
+    })();
+  </script>
+</body>
+</html>

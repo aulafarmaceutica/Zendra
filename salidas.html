@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Módulo de Salidas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .empresa-info {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+    }
+    .empresa-info p {
+      margin: 4px 0;
+    }
+    .form-group {
+      margin-top: 10px;
+    }
+    .form-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+      vertical-align: middle;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    .btn-add-item, .btn-delete-item, .btn-view-doc {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 0.9em;
+    }
+    .btn-add-item:hover, .btn-delete-item:hover, .btn-view-doc:hover {
+      opacity: 0.9;
+    }
+    .btn-submit, .btn-reset {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 0 10px;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .btn-reset {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    /* Campo para “A quién se presta” (se muestra/oculta dinámicamente) */
+    #prestamoGroup {
+      display: none; /* Oculto por defecto */
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botón para volver al menú principal -->
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <div class="container">
+    <h1>Módulo de Salidas</h1>
+    
+    <!-- Información de la Empresa (cargada desde localStorage "empresaInfo") -->
+    <div class="empresa-info" id="empresaInfoDiv"></div>
+    
+    <!-- Seleccionamos el tipo de salida: Prestamo, Traslado, Baja, Pérdida, etc. -->
+    <div class="form-group">
+      <label for="tipoSalida">Tipo de Salida:</label>
+      <select id="tipoSalida">
+        <option value="">Seleccione tipo...</option>
+        <option value="prestamo">Préstamo</option>
+        <option value="traslado">Traslado</option>
+        <option value="baja">Baja</option>
+        <option value="perdida">Pérdida</option>
+        <option value="obsequio">Obsequio</option>
+      </select>
+    </div>
+    
+    <!-- Campo dinámico: ¿A quién se presta la mercancía? (solo si tipo == "prestamo") -->
+    <div class="form-group" id="prestamoGroup">
+      <label for="destinatarioPrestamo">¿A quién se presta la mercancía?</label>
+      <input type="text" id="destinatarioPrestamo" placeholder="Nombre o entidad" />
+    </div>
+    
+    <!-- Consecutivo para la salida -->
+    <div class="form-group">
+      <label for="salidaId">ID Salida / Movimiento:</label>
+      <input type="text" id="salidaId" readonly />
+    </div>
+
+    <!-- Formulario principal de Salidas -->
+    <form id="salidaForm" style="margin-top:20px;">
+      <table id="tablaSalidas">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Lote</th>
+            <th>Fecha Venc.</th>
+            <th>Unidad</th>
+            <th>Cant. Disp.</th>
+            <th>Cant. Salida</th>
+            <th>Precio Compra</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se agregarán filas dinámicamente -->
+        </tbody>
+      </table>
+      <button type="button" class="btn-add-item" onclick="agregarFilaSalida()">Agregar Ítem</button>
+      
+      <div style="margin-top:15px;">
+        <label for="totalSalida"><strong>Total Salida:</strong></label>
+        <input type="number" id="totalSalida" step="0.01" readonly />
+      </div>
+      
+      <div class="button-group">
+        <button type="submit" class="btn-submit">Guardar Salida</button>
+        <button type="reset" class="btn-reset">Limpiar</button>
+        <button type="button" class="btn-add-item" onclick="generarDocumentoSalida()">Ver/Generar Documento</button>
+      </div>
+    </form>
+    
+    <!-- Sección de Historial de Salidas -->
+    <div class="container" style="margin-top:40px;">
+      <h2>Historial de Salidas</h2>
+      <table id="tablaHistorialSalidas">
+        <thead>
+          <tr>
+            <th>ID Movimiento</th>
+            <th>Tipo</th>
+            <th>Fecha</th>
+            <th>Total Salida</th>
+            <th>Destinatario (Préstamo)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se generarán dinámicamente -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    /******************************************************************************
+     * 1) Carga de la info de la empresa
+     ******************************************************************************/
+    function cargarEmpresa() {
+      const storedEmpresa = localStorage.getItem('empresaInfo');
+      const div = document.getElementById('empresaInfoDiv');
+      if (storedEmpresa) {
+        const empresa = JSON.parse(storedEmpresa);
+        div.innerHTML = `
+          <p><strong>${empresa.nombre}</strong></p>
+          <p>NIT: ${empresa.nit}</p>
+          <p>Tel: ${empresa.telefono}</p>
+          <p>Correo: ${empresa.correo}</p>
+          <p>Director: ${empresa.director}</p>
+          <p>Dirección: ${empresa.direccion}</p>
+        `;
+      } else {
+        div.innerHTML = "<p>No se encontró información de la empresa.</p>";
+      }
+    }
+
+    /******************************************************************************
+     * 2) Generar ID/Consecutivo para la salida
+     ******************************************************************************/
+    function getSalidaId() {
+      let counter = localStorage.getItem("salidasCounter");
+      if (!counter) {
+        counter = 1;
+      } else {
+        counter = parseInt(counter, 10);
+      }
+      const salidaId = "S-" + String(counter).padStart(3, "0");
+      return salidaId;
+    }
+    function incrementarSalidasCounter() {
+      let counter = localStorage.getItem("salidasCounter");
+      if (!counter) counter = 1; 
+      else counter = parseInt(counter, 10) + 1;
+      localStorage.setItem("salidasCounter", counter);
+    }
+
+    /******************************************************************************
+     * 3) Obtener inventario
+     ******************************************************************************/
+    function obtenerInventario() {
+      let inventario = [];
+      const storedEntradas = localStorage.getItem('entradas');
+      const storedVentas   = localStorage.getItem('ventas');  // por si usas "ventas"
+      const storedSalidas  = localStorage.getItem('salidas'); // por si hay otras salidas
+
+      let entradas = storedEntradas ? JSON.parse(storedEntradas) : [];
+      let ventas   = storedVentas   ? JSON.parse(storedVentas)   : [];
+      let salidas  = storedSalidas  ? JSON.parse(storedSalidas)  : [];
+
+      // Sumar entradas
+      entradas.forEach(entrada => {
+        entrada.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (!reg) {
+            reg = {
+              codigo: item.productoCodigo,
+              productoNombre: item.productoNombre,
+              unidad: item.unidad,
+              lote: item.lote,
+              fechaVencimiento: item.fechaVenc,
+              cantidad: 0,
+              precioCompra: item.precioUnitario
+            };
+            inventario.push(reg);
+          }
+          reg.cantidad += item.cantidad;
+        });
+      });
+
+      // Restar ventas
+      ventas.forEach(venta => {
+        venta.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= item.cantidad;
+          }
+        });
+      });
+
+      // Restar salidas
+      salidas.forEach(salida => {
+        salida.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= item.cantidad;
+          }
+        });
+      });
+
+      return inventario;
+    }
+
+    /******************************************************************************
+     * 4) Lógica para armar las filas de Salida
+     ******************************************************************************/
+    const tipoSalidaSelect     = document.getElementById('tipoSalida');
+    const prestamoGroup        = document.getElementById('prestamoGroup');
+    const destinatarioPrestamo = document.getElementById('destinatarioPrestamo');
+    const salidaIdInput        = document.getElementById('salidaId');
+    const tablaSalidasBody     = document.querySelector('#tablaSalidas tbody');
+    const totalSalidaInput     = document.getElementById('totalSalida');
+    const salidaForm           = document.getElementById('salidaForm');
+
+    // Mostrar/ocultar el campo “A quién se presta” cuando el tipoSalida == "prestamo"
+    tipoSalidaSelect.addEventListener('change', () => {
+      const tipo = tipoSalidaSelect.value;
+      if (tipo === "prestamo") {
+        prestamoGroup.style.display = "block";
+      } else {
+        prestamoGroup.style.display = "none";
+        destinatarioPrestamo.value = ""; // Limpiar
+      }
+
+      if (tipo) {
+        salidaIdInput.value = getSalidaId(); 
+      } else {
+        salidaIdInput.value = "";
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarEmpresa();
+      renderHistorialSalidas();
+    });
+
+    function agregarFilaSalida() {
+      const inventario = obtenerInventario();
+      const row = document.createElement('tr');
+
+      // -- Producto
+      const tdProducto = document.createElement('td');
+      const selectProducto = document.createElement('select');
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = "";
+      defaultOpt.textContent = "Seleccione un producto";
+      selectProducto.appendChild(defaultOpt);
+
+      // Mapa de productos
+      const mapaProductos = {};
+      inventario.forEach(item => {
+        if (item.cantidad > 0) {
+          if (!mapaProductos[item.codigo]) {
+            mapaProductos[item.codigo] = {
+              nombre: item.productoNombre,
+              registros: []
+            };
+          }
+          mapaProductos[item.codigo].registros.push(item);
+        }
+      });
+      for (let codigo in mapaProductos) {
+        const opt = document.createElement('option');
+        opt.value = codigo;
+        opt.textContent = codigo + " - " + mapaProductos[codigo].nombre;
+        selectProducto.appendChild(opt);
+      }
+      tdProducto.appendChild(selectProducto);
+      row.appendChild(tdProducto);
+
+      // -- Lote
+      const tdLote = document.createElement('td');
+      const selectLote = document.createElement('select');
+      selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+      tdLote.appendChild(selectLote);
+      row.appendChild(tdLote);
+
+      // -- Fecha Venc.
+      const tdFvenc = document.createElement('td');
+      tdFvenc.textContent = "";
+      row.appendChild(tdFvenc);
+
+      // -- Unidad
+      const tdUnidad = document.createElement('td');
+      tdUnidad.textContent = "";
+      row.appendChild(tdUnidad);
+
+      // -- Cant. Disponible
+      const tdDisp = document.createElement('td');
+      tdDisp.textContent = "";
+      row.appendChild(tdDisp);
+
+      // -- Cant. Salida
+      const tdCantidad = document.createElement('td');
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type = 'number';
+      inputCantidad.min = '1';
+      inputCantidad.value = '1';
+      inputCantidad.required = true;
+      tdCantidad.appendChild(inputCantidad);
+      row.appendChild(tdCantidad);
+
+      // -- Precio Compra
+      const tdPrecioCompra = document.createElement('td');
+      const inputPrecioCompra = document.createElement('input');
+      inputPrecioCompra.type = 'number';
+      inputPrecioCompra.step = '0.01';
+      inputPrecioCompra.min = '0';
+      inputPrecioCompra.value = '0';
+      inputPrecioCompra.required = true;
+      tdPrecioCompra.appendChild(inputPrecioCompra);
+      row.appendChild(tdPrecioCompra);
+
+      // -- Total
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = "0.00";
+      row.appendChild(tdTotal);
+
+      // -- Acciones
+      const tdAcciones = document.createElement('td');
+      const btnDelete = document.createElement('button');
+      btnDelete.type = 'button';
+      btnDelete.textContent = 'Quitar';
+      btnDelete.classList.add('btn-delete-item');
+      btnDelete.addEventListener('click', () => {
+        row.remove();
+        recalcularTotalSalida();
+      });
+      tdAcciones.appendChild(btnDelete);
+      row.appendChild(tdAcciones);
+
+      // Eventos
+      selectProducto.addEventListener('change', () => {
+        const codigo = selectProducto.value;
+        selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+        tdUnidad.textContent = "";
+        tdFvenc.textContent  = "";
+        tdDisp.textContent   = "";
+        inputPrecioCompra.value = "0";
+        tdTotal.textContent  = "0.00";
+
+        if (!codigo) return;
+        // Filtrar registros
+        const regs = mapaProductos[codigo].registros;
+        regs.forEach(r => selectLote.appendChild(crearOpcionLote(r)));
+      });
+
+      selectLote.addEventListener('change', () => {
+        const loteSel = selectLote.selectedOptions[0];
+        if (!loteSel) return;
+        tdUnidad.textContent = loteSel.dataset.unidad || "";
+        tdFvenc.textContent  = loteSel.dataset.fvenc  || "";
+        tdDisp.textContent   = loteSel.dataset.disp   || "0";
+        inputPrecioCompra.value = loteSel.dataset.pc   || "0.00";
+        recalcularFila();
+        recalcularTotalSalida();
+      });
+
+      inputCantidad.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalSalida();
+      });
+      inputPrecioCompra.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalSalida();
+      });
+
+      function crearOpcionLote(registro) {
+        const opt = document.createElement('option');
+        opt.value = registro.lote;
+        opt.textContent = registro.lote + " (venc: " + (registro.fechaVencimiento || "-") + ")";
+        opt.dataset.unidad = registro.unidad;
+        opt.dataset.fvenc  = registro.fechaVencimiento || "";
+        opt.dataset.disp   = registro.cantidad;
+        opt.dataset.pc     = registro.precioCompra;
+        return opt;
+      }
+
+      function recalcularFila() {
+        const cant = parseFloat(inputCantidad.value) || 0;
+        const pc   = parseFloat(inputPrecioCompra.value) || 0;
+        const tot  = cant * pc;
+        tdTotal.textContent = tot.toFixed(2);
+      }
+
+      tablaSalidasBody.appendChild(row);
+    }
+
+    function recalcularTotalSalida() {
+      let total = 0;
+      const rows = tablaSalidasBody.querySelectorAll('tr');
+      rows.forEach(row => {
+        const tdTotal = row.cells[7]; // índice 7 = "Total"
+        total += parseFloat(tdTotal.textContent);
+      });
+      totalSalidaInput.value = total.toFixed(2);
+    }
+
+    /******************************************************************************
+     * 5) Guardar la salida en localStorage
+     ******************************************************************************/
+    salidaForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!tipoSalidaSelect.value) {
+        alert("Por favor selecciona un tipo de salida (préstamo, traslado, baja, etc.).");
+        return;
+      }
+      if (!salidaIdInput.value) {
+        alert("No se generó un ID de salida. Elige un tipo de salida para generar el consecutivo.");
+        return;
+      }
+      const rows = tablaSalidasBody.querySelectorAll('tr');
+      if (rows.length === 0) {
+        alert("Agrega al menos un producto para la salida.");
+        return;
+      }
+      
+      const itemsSalida = [];
+      rows.forEach(row => {
+        const selectProd = row.cells[0].querySelector('select');
+        const prodValue  = selectProd?.value || "";
+        const prodText   = selectProd?.selectedOptions[0]?.textContent || "";
+        const splitted   = prodText.split(" - ");
+        const nombre     = splitted[1] || "";
+        
+        const selectLote = row.cells[1].querySelector('select');
+        const lote       = selectLote?.value || "";
+        const fvenc      = row.cells[2].textContent;
+        const unidad     = row.cells[3].textContent;
+        const cantSal    = parseFloat(row.cells[5].querySelector('input').value) || 0;
+        const pCompra    = parseFloat(row.cells[6].querySelector('input').value) || 0;
+        const total      = parseFloat(row.cells[7].textContent) || 0;
+        
+        itemsSalida.push({
+          productoCodigo:  prodValue,
+          productoNombre:  nombre,
+          lote:            lote,
+          fechaVenc:       fvenc,
+          unidad:          unidad,
+          cantidad:        cantSal,
+          precioUnitario:  pCompra,
+          total:           total
+        });
+      });
+
+      const nuevaSalida = {
+        id: salidaIdInput.value,   // Ej: S-001
+        tipo: tipoSalidaSelect.value, // "prestamo", "traslado", ...
+        fecha: new Date().toISOString().split("T")[0],
+        // Guardamos destinatario solo si es préstamo
+        destinatarioPrestamo: (tipoSalidaSelect.value === "prestamo")
+            ? (destinatarioPrestamo.value || "")
+            : "",
+        items: itemsSalida,
+        totalSalida: parseFloat(totalSalidaInput.value)
+      };
+
+      // Guardar
+      let salidasGuardadas = [];
+      const storedSalidas = localStorage.getItem('salidas');
+      if (storedSalidas) {
+        salidasGuardadas = JSON.parse(storedSalidas);
+      }
+      salidasGuardadas.push(nuevaSalida);
+      localStorage.setItem('salidas', JSON.stringify(salidasGuardadas));
+
+      // Incrementar contador general
+      incrementarSalidasCounter();
+
+      alert("Salida guardada con éxito.");
+      // Limpiar
+      salidaForm.reset();
+      tablaSalidasBody.innerHTML = "";
+      totalSalidaInput.value = "";
+      tipoSalidaSelect.value = "";
+      destinatarioPrestamo.value = "";
+      prestamoGroup.style.display = "none";
+      salidaIdInput.value = "";
+      renderHistorialSalidas();
+    });
+
+    /******************************************************************************
+     * 6) Historial de Salidas
+     ******************************************************************************/
+    function renderHistorialSalidas() {
+      const tablaHistorialBody = document.querySelector('#tablaHistorialSalidas tbody');
+      tablaHistorialBody.innerHTML = "";
+      let salidasGuardadas = [];
+      const storedSalidas = localStorage.getItem('salidas');
+      if (storedSalidas) {
+        salidasGuardadas = JSON.parse(storedSalidas);
+      }
+      if (salidasGuardadas.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 6;
+        cell.style.textAlign = "center";
+        cell.textContent = "No hay salidas registradas.";
+        row.appendChild(cell);
+        tablaHistorialBody.appendChild(row);
+        return;
+      }
+      // Mostrar cada salida
+      salidasGuardadas.forEach(salida => {
+        const row = document.createElement('tr');
+        row.appendChild(crearCelda(salida.id));
+        row.appendChild(crearCelda(salida.tipo));
+        row.appendChild(crearCelda(salida.fecha));
+        row.appendChild(crearCelda(salida.totalSalida.toFixed(2)));
+        row.appendChild(crearCelda(salida.destinatarioPrestamo || "")); // solo aplica si era "prestamo"
+
+        const tdAcc = document.createElement('td');
+        const btnView = document.createElement('button');
+        btnView.textContent = "Ver Doc";
+        btnView.classList.add("btn-view-doc");
+        btnView.addEventListener('click', () => verDocumentoSalida(salida.id));
+        tdAcc.appendChild(btnView);
+        row.appendChild(tdAcc);
+
+        tablaHistorialBody.appendChild(row);
+      });
+    }
+
+    function crearCelda(texto) {
+      const td = document.createElement('td');
+      td.textContent = texto;
+      return td;
+    }
+
+    /******************************************************************************
+     * 7) Generar/Ver el Documento de Salida
+     ******************************************************************************/
+    function generarDocumentoSalida() {
+      // Tomar la última salida
+      const storedSalidas = localStorage.getItem('salidas');
+      if (!storedSalidas) {
+        alert("No hay salidas registradas.");
+        return;
+      }
+      const salidasGuardadas = JSON.parse(storedSalidas);
+      const salida = salidasGuardadas[salidasGuardadas.length - 1];
+      verDocumentoSalida(salida.id);
+    }
+
+    function verDocumentoSalida(salidaId) {
+      const storedSalidas = localStorage.getItem('salidas');
+      if (!storedSalidas) {
+        alert("No hay salidas registradas.");
+        return;
+      }
+      const salidasGuardadas = JSON.parse(storedSalidas);
+      const salida = salidasGuardadas.find(s => s.id === salidaId);
+      if (!salida) {
+        alert("Salida no encontrada.");
+        return;
+      }
+      let empresa = {
+        nombre: "[Mi Empresa]",
+        nit: "[NIT]",
+        telefono: "",
+        correo: "",
+        director: "",
+        direccion: ""
+      };
+      const storedEmpresa = localStorage.getItem("empresaInfo");
+      if (storedEmpresa) {
+        empresa = JSON.parse(storedEmpresa);
+      }
+      // Generar el documento HTML
+      let docHTML = `
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Documento de Salida ${salida.id}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            h1 { text-align: center; }
+            .info { margin-bottom: 20px; }
+            .info p { margin: 4px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            table th, table td {
+              border: 1px solid #ccc;
+              padding: 8px;
+              text-align: left;
+              font-size: 0.9em;
+            }
+            table thead { background-color: #e9ecef; }
+            .text-right { text-align: right; }
+          </style>
+        </head>
+        <body>
+          <h1>Documento de Salida</h1>
+          <div class="info">
+            <p><strong>Empresa:</strong> ${empresa.nombre}</p>
+            <p><strong>NIT:</strong> ${empresa.nit}</p>
+            <p><strong>Teléfono:</strong> ${empresa.telefono}</p>
+            <p><strong>Correo:</strong> ${empresa.correo}</p>
+            <p><strong>Director:</strong> ${empresa.director}</p>
+            <p><strong>Dirección:</strong> ${empresa.direccion}</p>
+          </div>
+          <div class="info">
+            <p><strong>ID Salida:</strong> ${salida.id}</p>
+            <p><strong>Tipo:</strong> ${salida.tipo}</p>
+            <p><strong>Fecha:</strong> ${salida.fecha}</p>
+      `;
+      // Si es prestamo, mostrar a quién se presta
+      if (salida.tipo === "prestamo" && salida.destinatarioPrestamo) {
+        docHTML += `<p><strong>Prestado a:</strong> ${salida.destinatarioPrestamo}</p>`;
+      }
+
+      docHTML += `
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Lote</th>
+                <th>F.Venc</th>
+                <th>Cantidad</th>
+                <th>Precio Compra</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+      salida.items.forEach(item => {
+        docHTML += `
+              <tr>
+                <td>${item.productoCodigo} - ${item.productoNombre}</td>
+                <td>${item.lote}</td>
+                <td>${item.fechaVenc}</td>
+                <td>${item.cantidad}</td>
+                <td>${item.precioUnitario.toFixed(2)}</td>
+                <td>${item.total.toFixed(2)}</td>
+              </tr>
+        `;
+      });
+      docHTML += `
+            </tbody>
+          </table>
+          <h2 class="text-right">Total Salida: ${salida.totalSalida.toFixed(2)}</h2>
+
+          <!-- Sección para firmas -->
+          <h3 style="margin-top:40px;">Firmas</h3>
+          <div style="margin-top: 20px; display: flex; justify-content: space-around;">
+            <div style="text-align: center;">
+              <p>_________________________</p>
+              <p><strong>Firma de quien Despacha</strong></p>
+            </div>
+            <div style="text-align: center;">
+              <p>_________________________</p>
+              <p><strong>Firma de quien Recibe</strong></p>
+            </div>
+          </div>
+
+        </body>
+        </html>
+      `;
+      
+      const ventana = window.open('', '_blank');
+      ventana.document.write(docHTML);
+      ventana.document.close();
+    }
+  </script>
+
+  <!-- Botón para borrar historial de salidas (opcional) -->
+  <button onclick="borrarHistorialSalidas()">Borrar Historial de Salidas</button>
+  <script>
+    function borrarHistorialSalidas() {
+      if (confirm("¿Estás seguro de borrar el historial de salidas?")) {
+        localStorage.removeItem('salidas');
+        renderHistorialSalidas();
+        alert("Historial de salidas eliminado.");
+      }
+    }
+  </script>
+
+</body>
+</html>

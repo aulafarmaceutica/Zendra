@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Módulo de Devoluciones</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+    }
+    table th, table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+      font-size: 0.9em;
+    }
+    table thead {
+      background-color: #e9ecef;
+    }
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .button-group button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn-submit {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .btn-reset {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .btn-add-item {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 5px 10px;
+    }
+    .btn-add-item:hover {
+      opacity: 0.9;
+    }
+    .btn-delete-item {
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 2px 5px;
+      font-size: 0.9em;
+    }
+    .btn-delete-item:hover {
+      opacity: 0.9;
+    }
+    /* Estilos para búsqueda de cliente */
+    .cliente-busqueda {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #e9ecef;
+      border-radius: 5px;
+    }
+    .cliente-busqueda input[type="text"] {
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      width: 200px;
+      margin-right: 10px;
+    }
+    .cliente-info {
+      margin-top: 10px;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <div class="container">
+    <h1>Módulo de Devoluciones</h1>
+
+    <!-- Sección de búsqueda de cliente -->
+    <div class="cliente-busqueda">
+      <label for="cedulaCliente"><strong>Ingrese número de cédula del cliente:</strong></label>
+      <input type="text" id="cedulaCliente" placeholder="Ej. 1023456789" />
+      <button type="button" onclick="buscarCliente()">Buscar Cliente</button>
+      <div id="clienteInfo" class="cliente-info"></div>
+    </div>
+
+    <!-- Formulario principal de Devoluciones -->
+    <form id="devolucionForm">
+      <label for="tipoDevolucion"><strong>Tipo de Devolución:</strong></label>
+      <select id="tipoDevolucion" required>
+        <option value="">Seleccione tipo...</option>
+        <option value="cliente">Devolución de Cliente (suma al inventario)</option>
+        <option value="proveedor">Devolución a Proveedor (resta del inventario)</option>
+      </select>
+
+      <label for="devolucionId"><strong>ID Devolución:</strong></label>
+      <input type="text" id="devolucionId" readonly />
+
+      <table id="tablaDevoluciones">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Lote</th>
+            <th>Fecha Venc.</th>
+            <th>Unidad</th>
+            <th>Cantidad</th>
+            <th>Precio Unit</th>
+            <th>Total</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Se agregarán filas dinámicamente -->
+        </tbody>
+      </table>
+      <button type="button" class="btn-add-item" onclick="agregarFilaDevolucion()">Agregar Ítem</button>
+
+      <div style="margin-top:15px;">
+        <label for="totalDevolucion"><strong>Total Devolución:</strong></label>
+        <input type="number" id="totalDevolucion" step="0.01" readonly />
+      </div>
+
+      <div class="button-group">
+        <button type="submit" class="btn-submit">Guardar Devolución</button>
+        <button type="reset" class="btn-reset">Limpiar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Historial de Devoluciones -->
+  <div class="container">
+    <h2>Historial de Devoluciones</h2>
+    <table id="tablaHistorialDevoluciones">
+      <thead>
+        <tr>
+          <th>ID Devolución</th>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Total</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Se mostrarán las devoluciones registradas -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // ======== VARIABLES GLOBALES ========
+    let devoluciones = [];
+    let devolucionesCounter = 1; // se guarda en localStorage con clave 'devolucionesCounter'
+    let clienteSeleccionado = null; // Almacena la info del cliente buscado
+
+    // ======== REFERENCIAS AL DOM ========
+    const devolucionForm = document.getElementById('devolucionForm');
+    const tipoDevolucionSelect = document.getElementById('tipoDevolucion');
+    const devolucionIdInput = document.getElementById('devolucionId');
+    const tablaDevolucionesBody = document.querySelector('#tablaDevoluciones tbody');
+    const totalDevolucionInput = document.getElementById('totalDevolucion');
+    const tablaHistorialBody = document.querySelector('#tablaHistorialDevoluciones tbody');
+    const cedulaClienteInput = document.getElementById('cedulaCliente');
+    const clienteInfoDiv = document.getElementById('clienteInfo');
+
+    // ======== INICIALIZACIÓN ========
+    document.addEventListener('DOMContentLoaded', () => {
+      // Cargar devoluciones
+      const storedDevoluciones = localStorage.getItem('devoluciones');
+      if (storedDevoluciones) {
+        devoluciones = JSON.parse(storedDevoluciones);
+      }
+      // Cargar contador
+      const storedCounter = localStorage.getItem('devolucionesCounter');
+      if (storedCounter) {
+        devolucionesCounter = parseInt(storedCounter, 10);
+      }
+      renderHistorialDevoluciones();
+    });
+
+    // ======== EVENTOS ========
+    tipoDevolucionSelect.addEventListener('change', () => {
+      if (tipoDevolucionSelect.value) {
+        devolucionIdInput.value = generarDevolucionId();
+      } else {
+        devolucionIdInput.value = "";
+      }
+    });
+
+    devolucionForm.addEventListener('submit', e => {
+      e.preventDefault();
+      guardarDevolucion();
+    });
+
+    // ======== FUNCIONES ========
+    // Genera IDs como D-001, D-002, etc.
+    function generarDevolucionId() {
+      return 'D-' + String(devolucionesCounter).padStart(3, '0');
+    }
+
+    function incrementarDevolucionesCounter() {
+      devolucionesCounter++;
+      localStorage.setItem('devolucionesCounter', devolucionesCounter);
+    }
+
+    // Buscar cliente por cédula en localStorage
+    function buscarCliente() {
+      const cedula = cedulaClienteInput.value.trim();
+      if (!cedula) {
+        alert("Ingrese el número de cédula");
+        return;
+      }
+      const storedClientes = localStorage.getItem('clientes');
+      if (!storedClientes) {
+        alert("No hay clientes registrados en el sistema.");
+        return;
+      }
+      const clientes = JSON.parse(storedClientes);
+      // Se busca comparando "documento"
+      clienteSeleccionado = clientes.find(c => c.documento === cedula);
+      if (clienteSeleccionado) {
+        clienteInfoDiv.innerHTML = `<strong>Cliente encontrado:</strong> 
+          ${clienteSeleccionado.nombre} - ${clienteSeleccionado.ciudad} - ${clienteSeleccionado.departamento}`;
+      } else {
+        clienteInfoDiv.textContent = "Cliente no encontrado.";
+      }
+    }
+
+    // Armar el inventario actual (entradas - salidas - ventas)
+    function obtenerInventario() {
+      let inventario = [];
+      const storedEntradas = localStorage.getItem('entradas');
+      const storedSalidas  = localStorage.getItem('salidas');
+      const storedVentas   = localStorage.getItem('ventas');
+
+      let entradas = storedEntradas ? JSON.parse(storedEntradas) : [];
+      let salidas  = storedSalidas  ? JSON.parse(storedSalidas)  : [];
+      let ventas   = storedVentas   ? JSON.parse(storedVentas)   : [];
+
+      // Sumar ENTRADAS
+      entradas.forEach(e => {
+        e.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (!reg) {
+            reg = {
+              codigo: item.productoCodigo,
+              productoNombre: item.productoNombre,
+              lote: item.lote,
+              fechaVenc: item.fechaVenc,
+              unidad: item.unidad,
+              cantidad: 0,
+              precioCompra: item.precioUnitario
+            };
+            inventario.push(reg);
+          }
+          reg.cantidad += item.cantidad;
+        });
+      });
+      // Restar SALIDAS
+      salidas.forEach(s => {
+        s.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= item.cantidad;
+          }
+        });
+      });
+      // Restar VENTAS
+      ventas.forEach(v => {
+        v.items.forEach(item => {
+          let reg = inventario.find(r => r.codigo === item.productoCodigo && r.lote === item.lote);
+          if (reg) {
+            reg.cantidad -= item.cantidad;
+          }
+        });
+      });
+      return inventario;
+    }
+
+    // Agregar fila a la tabla de devoluciones
+    function agregarFilaDevolucion() {
+      const inventario = obtenerInventario();
+      const row = document.createElement('tr');
+
+      // Producto
+      const tdProd = document.createElement('td');
+      const selectProd = document.createElement('select');
+      const optDefault = document.createElement('option');
+      optDefault.value = "";
+      optDefault.textContent = "Seleccione un producto";
+      selectProd.appendChild(optDefault);
+
+      // Mapa de productos en inventario
+      const mapa = {};
+      inventario.forEach(item => {
+        if (item.cantidad > 0) {
+          if (!mapa[item.codigo]) {
+            mapa[item.codigo] = {
+              nombre: item.productoNombre,
+              registros: []
+            };
+          }
+          mapa[item.codigo].registros.push(item);
+        }
+      });
+
+      // Llenar combo de productos
+      for (let codigo in mapa) {
+        const opt = document.createElement('option');
+        opt.value = codigo;
+        opt.textContent = codigo + " - " + mapa[codigo].nombre;
+        selectProd.appendChild(opt);
+      }
+      tdProd.appendChild(selectProd);
+      row.appendChild(tdProd);
+
+      // Lote
+      const tdLote = document.createElement('td');
+      const selectLote = document.createElement('select');
+      selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+      tdLote.appendChild(selectLote);
+      row.appendChild(tdLote);
+
+      // Fecha Venc
+      const tdVenc = document.createElement('td');
+      tdVenc.textContent = "";
+      row.appendChild(tdVenc);
+
+      // Unidad
+      const tdUnidad = document.createElement('td');
+      tdUnidad.textContent = "";
+      row.appendChild(tdUnidad);
+
+      // Cantidad
+      const tdCantidad = document.createElement('td');
+      const inputCant = document.createElement('input');
+      inputCant.type = 'number';
+      inputCant.min = '1';
+      inputCant.value = '1';
+      inputCant.required = true;
+      tdCantidad.appendChild(inputCant);
+      row.appendChild(tdCantidad);
+
+      // Precio Unit
+      const tdPrecio = document.createElement('td');
+      const inputPrecio = document.createElement('input');
+      inputPrecio.type = 'number';
+      inputPrecio.step = '0.01';
+      inputPrecio.min = '0';
+      inputPrecio.value = '0';
+      inputPrecio.required = true;
+      tdPrecio.appendChild(inputPrecio);
+      row.appendChild(tdPrecio);
+
+      // Total
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = "0.00";
+      row.appendChild(tdTotal);
+
+      // Acciones
+      const tdAcc = document.createElement('td');
+      const btnDelete = document.createElement('button');
+      btnDelete.type = 'button';
+      btnDelete.textContent = 'Quitar';
+      btnDelete.classList.add('btn-delete-item');
+      btnDelete.addEventListener('click', () => {
+        row.remove();
+        recalcularTotalDevolucion();
+      });
+      tdAcc.appendChild(btnDelete);
+      row.appendChild(tdAcc);
+
+      // Eventos de cambio
+      selectProd.addEventListener('change', () => {
+        const cod = selectProd.value;
+        selectLote.innerHTML = "<option value=''>Seleccione lote</option>";
+        tdUnidad.textContent = "";
+        tdVenc.textContent   = "";
+        inputPrecio.value    = "0";
+        tdTotal.textContent  = "0.00";
+        if (!cod) return;
+
+        const regs = mapa[cod].registros;
+        regs.forEach(r => {
+          const op = document.createElement('option');
+          op.value = r.lote;
+          op.textContent = r.lote + " (venc: " + (r.fechaVenc || "-") + ")";
+          op.dataset.unidad = r.unidad;
+          op.dataset.fvenc  = r.fechaVenc || "";
+          op.dataset.pc     = r.priceCompra;
+          selectLote.appendChild(op);
+        });
+      });
+
+      selectLote.addEventListener('change', () => {
+        const opt = selectLote.selectedOptions[0];
+        if (!opt) return;
+        tdUnidad.textContent = opt.dataset.unidad || "";
+        tdVenc.textContent   = opt.dataset.fvenc  || "";
+        recalcularFila();
+        recalcularTotalDevolucion();
+      });
+
+      inputCant.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalDevolucion();
+      });
+
+      inputPrecio.addEventListener('input', () => {
+        recalcularFila();
+        recalcularTotalDevolucion();
+      });
+
+      function recalcularFila() {
+        const cant = parseFloat(inputCant.value) || 0;
+        const pre  = parseFloat(inputPrecio.value) || 0;
+        tdTotal.textContent = (cant * pre).toFixed(2);
+      }
+
+      tablaDevolucionesBody.appendChild(row);
+    }
+
+    // Recalcular el total de la devolución
+    function recalcularTotalDevolucion() {
+      let total = 0;
+      const rows = document.querySelectorAll('#tablaDevoluciones tbody tr');
+      rows.forEach(r => {
+        const tdTotal = r.cells[6]; // col 6 = total
+        total += parseFloat(tdTotal.textContent) || 0;
+      });
+      totalDevolucionInput.value = total.toFixed(2);
+    }
+
+    // Guardar la devolución en localStorage
+    function guardarDevolucion() {
+      if (!tipoDevolucionSelect.value) {
+        alert("Seleccione el tipo de devolución.");
+        return;
+      }
+      if (!devolucionIdInput.value) {
+        alert("No hay ID de devolución. Seleccione un tipo.");
+        return;
+      }
+      const rows = document.querySelectorAll('#tablaDevoluciones tbody tr');
+      if (rows.length === 0) {
+        alert("Agregue al menos un ítem para la devolución.");
+        return;
+      }
+
+      // Recopilar ítems
+      const items = [];
+      rows.forEach(r => {
+        const selectProd  = r.cells[0].querySelector('select');
+        const prodValue   = selectProd?.value || "";
+        const prodText    = selectProd?.selectedOptions[0]?.textContent || "";
+        const splitted    = prodText.split(" - ");
+        const nombre      = splitted[1] || "";
+
+        const selectLote  = r.cells[1].querySelector('select');
+        const lote        = selectLote.value || "";
+        const fvenc       = r.cells[2].textContent;
+        const unidad      = r.cells[3].textContent;
+        const cant        = parseFloat(r.cells[4].querySelector('input').value) || 0;
+        const pUnit       = parseFloat(r.cells[5].querySelector('input').value) || 0;
+        const total       = parseFloat(r.cells[6].textContent) || 0;
+
+        items.push({
+          productoCodigo: prodValue,
+          productoNombre: nombre,
+          lote: lote,
+          fechaVenc: fvenc,
+          unidad: unidad,
+          cantidad: cant,
+          precioUnitario: pUnit,
+          total: total
+        });
+      });
+
+      const nuevaDevol = {
+        id: devolucionIdInput.value,
+        fecha: new Date().toISOString().split('T')[0],
+        tipoDevolucion: tipoDevolucionSelect.value,
+        items: items,
+        totalDevolucion: parseFloat(totalDevolucionInput.value) || 0,
+        cliente: clienteSeleccionado ? {
+          nombre: clienteSeleccionado.nombre,
+          documento: clienteSeleccionado.documento,
+          telefono: clienteSeleccionado.telefono,
+          correo: clienteSeleccionado.correo,
+          direccion: clienteSeleccionado.direccion
+        } : null
+      };
+
+      // Guardar en array y localStorage
+      devoluciones.push(nuevaDevol);
+      localStorage.setItem('devoluciones', JSON.stringify(devoluciones));
+      incrementarDevolucionesCounter();
+
+      alert("Devolución guardada con éxito.");
+      // Limpiar formulario
+      devolucionForm.reset();
+      tablaDevolucionesBody.innerHTML = "";
+      totalDevolucionInput.value = "";
+      devolucionIdInput.value = "";
+      tipoDevolucionSelect.value = "";
+      cedulaClienteInput.value = "";
+      clienteInfoDiv.textContent = "";
+      clienteSeleccionado = null;
+
+      // Refrescar historial
+      renderHistorialDevoluciones();
+    }
+
+    // Renderizar el historial de devoluciones
+    function renderHistorialDevoluciones() {
+      tablaHistorialBody.innerHTML = "";
+      if (devoluciones.length === 0) {
+        const row = document.createElement('tr');
+        const cell = document.createElement('td');
+        cell.colSpan = 5;
+        cell.style.textAlign = 'center';
+        cell.textContent = "No hay devoluciones registradas.";
+        row.appendChild(cell);
+        tablaHistorialBody.appendChild(row);
+        return;
+      }
+
+      devoluciones.forEach(dev => {
+        const row = document.createElement('tr');
+        row.appendChild(crearCelda(dev.id));
+        row.appendChild(crearCelda(dev.fecha));
+        row.appendChild(crearCelda(dev.tipoDevolucion));
+        row.appendChild(crearCelda(dev.totalDevolucion.toFixed(2)));
+
+        // Acciones
+        const tdAcc = document.createElement('td');
+
+        // Botón Ver Detalle
+        const btnView = document.createElement('button');
+        btnView.textContent = "Ver Detalle";
+        btnView.classList.add('btn-add-item');
+        btnView.addEventListener('click', () => verDetalleDevolucion(dev.id));
+        tdAcc.appendChild(btnView);
+
+        // Botón Imprimir Nota Crédito
+        const btnImprimir = document.createElement('button');
+        btnImprimir.textContent = "Imprimir Nota Crédito";
+        btnImprimir.classList.add('btn-add-item');
+        btnImprimir.style.marginLeft = "5px";
+        btnImprimir.addEventListener('click', () => imprimirNotaCredito(dev.id));
+        tdAcc.appendChild(btnImprimir);
+
+        row.appendChild(tdAcc);
+        tablaHistorialBody.appendChild(row);
+      });
+    }
+
+    // Ver Detalle (alerta con info)
+    function verDetalleDevolucion(devolucionId) {
+      const dev = devoluciones.find(d => d.id === devolucionId);
+      if (!dev) {
+        alert("Devolución no encontrada.");
+        return;
+      }
+      let msg = `ID: ${dev.id}\nFecha: ${dev.fecha}\nTipo: ${dev.tipoDevolucion}\nTotal: ${dev.totalDevolucion}\n\nItems:\n`;
+      dev.items.forEach(i => {
+        msg += `- ${i.productoCodigo} Lote:${i.lote} Cant:${i.cantidad}\n`;
+      });
+      // Si la devolución tiene información de cliente
+      if (dev.cliente) {
+        msg += `\nCliente:\nNombre: ${dev.cliente.nombre}\nCédula: ${dev.cliente.documento}\nTeléfono: ${dev.cliente.telefono}\nCorreo: ${dev.cliente.correo}\nDirección: ${dev.cliente.direccion}`;
+      }
+      alert(msg);
+    }
+
+    // ======== NOTA CRÉDITO (DISEÑO MODERNO) ========
+    function imprimirNotaCredito(devolucionId) {
+      const dev = devoluciones.find(d => d.id === devolucionId);
+      if (!dev) {
+        alert("Devolución no encontrada.");
+        return;
+      }
+
+      // 1) Tomar datos de la empresa
+      const empresaData = localStorage.getItem("empresaInfo");
+      let empresa = {};
+      if (empresaData) {
+        empresa = JSON.parse(empresaData);
+      }
+
+      // 2) Iniciar HTML de la nueva ventana
+      let html = `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+        <meta charset="UTF-8">
+        <title>Nota Crédito - ${dev.id}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            color: #333;
+          }
+          .header {
+            text-align: center;
+            margin-bottom: 30px;
+          }
+          h1 {
+            font-size: 1.8em;
+            margin: 0;
+            color: #007bff;
+          }
+          .subtitle {
+            font-size: 1.1em;
+            margin-top: 5px;
+            color: #555;
+          }
+          .card {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background-color: #fafafa;
+          }
+          .card h2 {
+            margin-top: 0;
+            color: #007bff;
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+          }
+          .info-grid {
+            display: grid;
+            grid-template-columns: 150px auto;
+            gap: 5px 15px;
+            margin-bottom: 10px;
+          }
+          .info-grid p {
+            margin: 2px 0;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+          }
+          th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            font-size: 0.9em;
+          }
+          th {
+            background-color: #f5f5f5;
+          }
+          tfoot td {
+            font-weight: bold;
+          }
+          .no-cliente {
+            font-style: italic;
+            color: #666;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Nota Crédito</h1>
+          <p class="subtitle">Documento de Soporte</p>
+        </div>
+
+        <!-- Tarjeta: Información de la Empresa -->
+        <div class="card">
+          <h2>Información de la Empresa</h2>
+          <div class="info-grid">
+            <p><strong>Nombre:</strong></p>
+            <p>${empresa.nombre || ""}</p>
+
+            <p><strong>NIT:</strong></p>
+            <p>${empresa.nit || ""}</p>
+
+            <p><strong>Teléfono:</strong></p>
+            <p>${empresa.telefono || ""}</p>
+
+            <p><strong>Correo:</strong></p>
+            <p>${empresa.correo || ""}</p>
+
+            <p><strong>Director:</strong></p>
+            <p>${empresa.director || ""}</p>
+
+            <p><strong>Dirección:</strong></p>
+            <p>${empresa.direccion || ""}</p>
+          </div>
+        </div>
+
+        <!-- Tarjeta: Información del Cliente -->
+        <div class="card">
+          <h2>Información del Cliente</h2>
+          ${
+            dev.cliente
+              ? `
+                <div class="info-grid">
+                  <p><strong>Nombre:</strong></p>
+                  <p>${dev.cliente.nombre || ""}</p>
+
+                  <p><strong>Cédula:</strong></p>
+                  <p>${dev.cliente.documento || ""}</p>
+
+                  <p><strong>Teléfono:</strong></p>
+                  <p>${dev.cliente.telefono || ""}</p>
+
+                  <p><strong>Correo:</strong></p>
+                  <p>${dev.cliente.correo || ""}</p>
+
+                  <p><strong>Dirección:</strong></p>
+                  <p>${dev.cliente.direccion || ""}</p>
+                </div>
+              `
+              : `<p class="no-cliente">No se registró información del cliente.</p>`
+          }
+        </div>
+
+        <!-- Tarjeta: Detalles de la Devolución -->
+        <div class="card">
+          <h2>Detalles de la Devolución</h2>
+          <div class="info-grid">
+            <p><strong>ID Devolución:</strong></p>
+            <p>${dev.id}</p>
+
+            <p><strong>Fecha:</strong></p>
+            <p>${dev.fecha}</p>
+
+            <p><strong>Tipo de Devolución:</strong></p>
+            <p>${dev.tipoDevolucion}</p>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Lote</th>
+                <th>F.Venc</th>
+                <th>Unidad</th>
+                <th>Cant.</th>
+                <th>Precio Unit</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+      `;
+
+      // Agregar cada ítem de la devolución
+      dev.items.forEach(item => {
+        html += `
+              <tr>
+                <td>${item.productoCodigo} - ${item.productoNombre}</td>
+                <td>${item.lote}</td>
+                <td>${item.fechaVenc || ""}</td>
+                <td>${item.unidad}</td>
+                <td>${item.cantidad}</td>
+                <td>${item.precioUnitario.toFixed(2)}</td>
+                <td>${item.total.toFixed(2)}</td>
+              </tr>
+        `;
+      });
+
+      // Cierre de la tabla
+      html += `
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="6" style="text-align:right;">Total Devolución:</td>
+                <td>${dev.totalDevolucion.toFixed(2)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+      </body>
+      </html>
+      `;
+
+      // Abrir en nueva ventana e inyectar el HTML
+      const win = window.open('', '_blank');
+      win.document.write(html);
+      win.document.close();
+    }
+
+    function crearCelda(txt) {
+      const td = document.createElement('td');
+      td.textContent = txt;
+      return td;
+    }
+  </script>
+
+</body>
+</html>
