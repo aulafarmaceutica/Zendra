@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Registro de Temperatura y Humedad</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="diseño.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="funcionalidad.js" defer></script>
+</head>
+<body>
+  <!-- Botón Volver al Menú -->
+  <a href="index.html" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px; margin: 20px;">
+    Volver al Menú
+  </a>
+
+  <!-- Header con logo y título -->
+  <header class="header">
+    <img src="mi-logo.png" alt="Logo Aula Diego" class="logo">
+    <h1>Registro de Temperatura y Humedad</h1>
+  </header>
+
+  <div class="card">
+    <form id="registroForm">
+      <div><label for="fechaReg">Fecha</label><input type="date" id="fechaReg" disabled></div>
+      <div><label for="horaReg">Hora</label><input type="time" id="horaReg" disabled></div>
+      <div><label for="zona">Zona</label><select id="zona" required><option value="Farmacia">Farmacia (Ambiente)</option></select></div>
+      <div><label for="sensor">Parámetro</label><select id="sensor" required><option value="">Seleccionar…</option><option value="ambiente">Temperatura ambiente (°C)</option><option value="refrigeracion">Temperatura refrigeración (°C)</option><option value="humedad">Humedad relativa (%)</option></select></div>
+      <div><label for="valor">Valor actual</label><input type="number" step="0.1" id="valor" required></div>
+      <div><label for="valorMin">Valor mínimo</label><input type="number" step="0.1" id="valorMin"></div>
+      <div><label for="valorMax">Valor máximo</label><input type="number" step="0.1" id="valorMax"></div>
+      <div><label for="responsable">Responsable</label><input type="text" id="responsable" required value="Diego Echeverri"></div>
+      <div class="full-width"><label for="obs">Observaciones</label><textarea id="obs" rows="2"></textarea></div>
+      <div class="full-width align-right"><button type="submit">Registrar</button></div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h2>Gráficas</h2>
+    <div class="month-filter"><label for="monthSelect">Mes:</label><select id="monthSelect"><option value="all">Todos</option>
+      <option value="2025-01">Enero 2025</option><option value="2025-02">Febrero 2025</option><option value="2025-03">Marzo 2025</option><option value="2025-04">Abril 2025</option>
+      <option value="2025-05">Mayo 2025</option><option value="2025-06">Junio 2025</option><option value="2025-07">Julio 2025</option><option value="2025-08">Agosto 2025</option>
+      <option value="2025-09">Septiembre 2025</option><option value="2025-10">Octubre 2025</option><option value="2025-11">Noviembre 2025</option><option value="2025-12">Diciembre 2025</option>
+    </select></div>
+    <div class="chart-section">
+      <div class="chart-header"><h3>Temperatura Ambiente</h3><div class="calibration-fields"><label for="calAmbiente">Calibración:</label><input type="date" id="calAmbiente"><label for="nextCalAmbiente">Próxima:</label><input type="date" id="nextCalAmbiente" disabled></div></div>
+      <canvas id="chartAmbiente"></canvas>
+    </div>
+    <div class="chart-section">
+      <div class="chart-header"><h3>Temperatura Refrigeración</h3><div class="calibration-fields"><label for="calRefrigeracion">Calibración:</label><input type="date" id="calRefrigeracion"><label for="nextCalRefrigeracion">Próxima:</label><input type="date" id="nextCalRefrigeracion" disabled></div></div>
+      <canvas id="chartRefrigeracion"></canvas>
+    </div>
+    <div class="chart-section">
+      <div class="chart-header"><h3>Humedad Relativa</h3><div class="calibration-fields"><label for="calHumedad">Calibración:</label><input type="date" id="calHumedad"><label for="nextCalHumedad">Próxima:</label><input type="date" id="nextCalHumedad" disabled></div></div>
+      <canvas id="chartHumedad"></canvas>
+    </div>
+  </div>
+
+  <div class="grid-3">
+    <div class="card"><h3>Registros Temperatura Ambiente</h3><table><thead><tr><th>Fecha</th><th>Hora</th><th>Zona</th><th>Actual</th><th>Mín.</th><th>Máx.</th><th>Resp.</th><th>Obs.</th><th>Acción</th></tr></thead><tbody id="tbodyAmbiente"></tbody></table></div>
+    <div class="card"><h3>Registros Temperatura Refrigeración</h3><table><thead><tr><th>Fecha</th><th>Hora</th><th>Zona</th><th>Actual</th><th>Mín.</th><th>Máx.</th><th>Resp.</th><th>Obs.</th><th>Acción</th></tr></thead><tbody id="tbodyRefrigeracion"></tbody></table></div>
+    <div class="card"><h3>Registros Humedad Relativa</h3><table><thead><tr><th>Fecha</th><th>Hora</th><th>Zona</th><th>Valor</th><th>Resp.</th><th>Obs.</th><th>Acción</th></tr></thead><tbody id="tbodyHumedad"></tbody></table></div>
+  </div>
+
+  <div class="card"><h3>Carga masiva de registros (CSV)</h3><input type="file" id="bulkFileInput" accept=".csv"><button type="button" id="bulkUploadBtn">Cargar masivamente</button></div>
+  <div class="card full-width align-right"><button type="button" id="clearDataBtn">Borrar todo</button></div>
+</body>
+</html>
