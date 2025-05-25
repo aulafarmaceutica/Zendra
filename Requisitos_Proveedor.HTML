@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Requisitos para la Inscripción de Proveedores</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f9fa;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #004085;
+    }
+    .menu-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .menu-button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      margin-bottom: 20px;
+    }
+    th, td {
+      border: 1px solid #dee2e6;
+      padding: 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background-color: #e9ecef;
+    }
+    tr:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+    input[type="file"] {
+      width: 95%;
+    }
+    .btn-submit {
+      display: block;
+      width: 150px;
+      margin: 0 auto;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn-submit:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <a class="menu-button" href="proveedores.html">Volver A Creación de Proveedores</a>
+  <h1>Requisitos para la Inscripción de Proveedores</h1>
+  <form>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Nombre del archivo</th>
+          <th>Requisito</th>
+          <th>Cargar documento</th>
+        </tr>
+      </thead>
+      <tbody id="tablaRequisitos"></tbody>
+    </table>
+    <button class="btn-submit" type="submit">Grabar</button>
+  </form>
+
+  <script>
+    const requisitos = [
+      ["Registro Único Tributario (RUT)", "Con fecha de generación no mayor a 1 año"],
+      ["Certificación Bancaria", "Certificación del Banco donde especifique la cuenta para realizar los pagos."],
+      ["Certificado de Existencia y Representación Legal", "Certificado de existencia y representación legal (No mayor a 60 días)."],
+      ["Cartas de Referencia Comercial", "Dos (2) Referencias comerciales."],
+      ["Certificado BPM o Capacidad de Producción", "Certificado de Buenas Prácticas de Manufactura o Certificado de Capacidad de Producción expedido por el INVIMA."],
+      ["Carta de Distribución Autorizada", "En caso de ser distribuidor presentar carta de distribución emitida por el laboratorio."],
+      ["Certificado de Distribución y Almacenamiento", "Certificación para distribución y almacenamiento."],
+      ["Plan de Devolución Posconsumo", "Plan de gestión de devoluciones."],
+      ["Ficha Técnica del Producto", "Ficha técnica actualizada."],
+      ["Compromiso sobre Activos de Información", "Compromiso sobre activos de información."],
+      ["Compromiso de Protección de Datos", "Compromiso de protección de datos."],
+      ["Declaración de No Trabajo Infantil ni Forzoso", "No contratación de menores ni trabajo forzoso."],
+      ["Compromiso sobre Diferencias Contractuales", "Diferencias por incumplimiento."],
+      ["Compromiso sobre Vencimientos", "Compromiso de vencimientos."],
+      ["Normas para Proveedores de Osteosíntesis", "Normas para osteosíntesis."],
+      ["Compromiso Sustancias Químicas Peligrosas", "Sustancias químicas peligrosas."],
+      ["Compromiso de Entregas a Entidades", "Compromiso de entregas a entidades."],
+      ["Certificado BPE para Magistrales", "BPE para magistrales."],
+      ["Hoja de Seguridad SQP", "Hoja de seguridad producto SQP."],
+      ["Certificado de Calibración o Conformidad", "Calibración o conformidad del equipo."],
+      ["Historial de Mantenimiento", "Mantenimiento preventivo."],
+      ["Hoja de Vida del Operador", "Hoja de vida operador."],
+      ["Certificado de Entrenamiento del Personal", "Entrenamiento del personal."],
+      ["Entrenamiento en el Hospital", "Entrenamiento en el hospital."],
+      ["Plan de Contingencia", "Plan de contingencia."],
+      ["Trazabilidad de Reusables", "Trazabilidad de componentes reutilizables."],
+      ["CGCALIDAD", "Certificado de Implementación del Sistema de Gestión de la Calidad de su Compañía o de producto."],
+      ["CGESTAMBIENTAL", "Certificado firmado por el Representante Legal, en que conste que su compañía desarrolla modelos de Gestión Ambiental (ejemplo ISO 14000)."],
+      ["COMPCONSI", "Carta de compromiso de Material en Consignación."],
+      ["Compromiso Transporte Seguro", "Procedimiento de transporte y cadena de frío."],
+      ["Formato de Vinculación de Proveedores", "Formato de vinculación."],
+      ["Estados Financieros", "Estados financieros."],
+      ["Declaración de Renta", "Declaración de renta."],
+      ["Cédula del Representante Legal", "Documento del representante legal."],
+      ["Autorización de Tratamiento de Datos Personales", "Autorización tratamiento de datos personales."],
+      ["CERTARL", "Certificado por parte de la ARL donde indique el porcentaje de cumplimiento para el año en curso."],
+      ["Consulta en Listas Restrictivas", "Verificación en bases de datos nacionales e internacionales de personas o entidades sospechosas de estar involucradas en actividades de lavado de activos y financiación del terrorismo (LA/FT), como parte del cumplimiento del SARLAFT."]
+    ];
+
+    const tbody = document.getElementById("tablaRequisitos");
+    requisitos.forEach((item, index) => {
+      const row = `<tr>
+        <td>${index + 1}</td>
+        <td>${item[0]}</td>
+        <td>${item[1]}</td>
+        <td><input type="file" name="file_${index + 1}"></td>
+      </tr>`;
+      tbody.innerHTML += row;
+    });
+  </script>
+</body>
+</html>
