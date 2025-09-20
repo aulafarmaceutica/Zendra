@@ -1,122 +1,323 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Entradas Manuales</title>
-  <link rel="stylesheet" href="style.css"> <!-- Tu CSS principal -->
+  <meta charset="UTF-8" />
+  <title>Entradas Manuales (Otros conceptos)</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
   <style>
-    /* Ajustes básicos */
-    .concepto-group {
-      margin-bottom: 10px; /* separa el combo del texto */
+    .page-title{ text-align:center; margin:10px 0 8px; }
+    .hint{ color:#666; font-size:.95rem; margin:6px 0 16px; }
+    .concepto-group{ margin:10px 0 12px; }
+    .table-wrap{ overflow:auto; border:1px solid #eee; border-radius:12px; }
+    table.list{ width:100%; border-collapse:collapse; background:#fff; font-size:.95rem; }
+    table.list thead{ position:sticky; top:0; background:#f1f4fb; z-index:1; }
+    table.list th, table.list td{ border:1px solid #e6e9ef; padding:8px; vertical-align:middle; text-align:left; }
+    table.list input, table.list select{
+      width:100%; padding:8px; border:1px solid #cfcfcf; border-radius:8px; background:#fff;
     }
-    /* Línea extra */
-    .espaciado-vertical {
-      margin: 30px 0; /* se verán dos renglones de espacio */
-    }
-
-    /* Mantén tus estilos de la tabla,
-       pero si deseas, quita table-layout: fixed para que no comprima tanto */
-    .form-items table {
-      width: 100%;
-      margin-top: 20px;
-      border-collapse: collapse;
-      /* table-layout: fixed; <-- remuévelo si deseas que se autoajuste */
-    }
-    .form-items th, .form-items td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      vertical-align: middle;
-      text-align: left;
-      font-size: 0.9rem;
-    }
-    .form-items thead {
-      background-color: #e9ecef;
-    }
-    /* ... mantén el resto de estilos (btn-add-item, btn-remove, etc.) ... */
+    .right{ text-align:right; }
+    .row-actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:12px 0; }
+    .btn-slim{ padding:10px 16px; border-radius:10px; font-weight:700; border:0; cursor:pointer; }
+    .btn-blue{ background:#1669d9; color:#fff; }
+    .btn-blue:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+    .btn-remove{ background:#dc3545; color:#fff; border:0; border-radius:8px; padding:8px 12px; cursor:pointer; }
+    .btn-remove:hover{ filter:brightness(1.05); transform:translateY(-1px); }
+    .total-box{ margin-top:12px; text-align:right; }
+    .total-box input{ width:160px; text-align:right; font-weight:800; }
+    .muted{ color:#777; }
+    .badge{ display:inline-block; padding:2px 8px; border-radius:10px; background:#e8f5e9; color:#1e7e34; font-weight:700; font-size:.8rem; }
+    .error{ display:inline-block; padding:6px 10px; border-radius:10px; background:#fdecea; color:#a0231c; font-weight:700; }
   </style>
 </head>
 <body>
-  <!-- Botón menú -->
-  <a class="menu-button" href="index.html">Volver al Menú</a>
 
-  <div class="container">
-    <h1>Entradas Manuales</h1>
-    <p>Registra aquí las entradas que no provienen de órdenes de compra ni de devoluciones.</p>
+<a class="menu-button" href="index.html"><i class="fa-solid fa-arrow-left"></i> Volver al Menú</a>
 
-    <!-- Formulario principal -->
-    <form id="entradaForm">
-      <!-- Selección de concepto -->
-      <div class="concepto-group">
-        <label for="conceptoEntrada" style="font-weight: bold;">Concepto de Entrada:</label>
-        <select id="conceptoEntrada" required>
-          <option value="">Seleccione...</option>
-          <option value="prestamo devuelto">Préstamo Devuelto</option>
-          <option value="traslado recibido">Traslado Recibido</option>
-          <option value="ajuste inventario">Ajuste de Inventario</option>
-          <option value="donacion">Donación</option>
-          <option value="otros">Otros</option>
-        </select>
-      </div>
+<div class="container">
+  <h1 class="page-title">Entradas Manuales</h1>
+  <p class="hint">Registra aquí las entradas que <strong>no provienen de órdenes de compra ni de devoluciones</strong>.</p>
 
-      <!-- Espaciado vertical extra -->
-      <div class="espaciado-vertical"></div>
+  <!-- Concepto -->
+  <form id="entradaForm">
+    <div class="concepto-group">
+      <label for="conceptoEntrada" style="font-weight:bold;">Concepto de Entrada:</label>
+      <select id="conceptoEntrada" required>
+        <option value="">Seleccione...</option>
+        <option value="prestamo devuelto">Préstamo Devuelto</option>
+        <option value="traslado recibido">Traslado Recibido</option>
+        <option value="ajuste inventario">Ajuste de Inventario</option>
+        <option value="donacion">Donación</option>
+        <option value="otros">Otros</option>
+      </select>
+    </div>
+  </form>
 
-      <!-- Tabla de ítems -->
-      <div class="form-items">
-        <table id="tablaItems">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Unidad</th>
-              <th>Cantidad</th>
-              <th>Precio Unitario</th>
-              <th>Lote</th>
-              <th>Fecha Venc.</th>
-              <th>Reg. San.</th>
-              <th>Total</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Filas dinámicas -->
-          </tbody>
-        </table>
-        <button type="button" class="btn-add-item" id="btnAddItem">Agregar Ítem</button>
-      </div>
-
-      <div style="margin-top:20px; text-align:right;">
-        <label for="totalEntrada" style="font-weight: bold; margin-right:5px;">Total de Entrada:</label>
-        <input type="number" id="totalEntrada" step="0.01" value="0" readonly style="width:120px;" />
-      </div>
-
-      <div class="form-actions" style="margin-top: 30px;">
-        <button type="submit" class="btn-save-entrada">Guardar Entrada</button>
-        <button type="reset" class="btn-clear">Limpiar</button>
-      </div>
-    </form>
-  </div>
-
-  <hr>
-
-  <!-- Historial de Entradas -->
-  <div class="container">
-    <h2>Historial de Entradas Manuales</h2>
-    <table id="tablaEntradasGuardadas">
+  <!-- Tabla -->
+  <div class="table-wrap">
+    <table id="tablaItems" class="list">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Concepto</th>
-          <th>Fecha</th>
-          <th>Total Entrada</th>
-          <th>Acciones</th>
+          <th style="min-width:260px;">Producto</th>
+          <th style="min-width:110px;">Unidad</th>
+          <th style="min-width:120px;">Lote</th>
+          <th style="min-width:130px;">Fecha Venc.</th>
+          <th style="min-width:110px;">Cantidad</th>
+          <th style="min-width:140px;">Precio Compra</th>
+          <th style="min-width:140px;">Valor Total</th>
+          <th class="right" style="min-width:120px;">Acciones</th>
         </tr>
       </thead>
-      <tbody><!-- Se mostrarán las entradas guardadas --></tbody>
+      <tbody></tbody>
     </table>
   </div>
 
-  <script>
-    /* ... aquí el mismo JS que ya tienes ... */
-  </script>
+  <div class="row-actions">
+    <button id="btnAddItem" type="button" class="btn-slim btn-blue">
+      <i class="fa-solid fa-plus"></i> Agregar Ítem
+    </button>
+    <span class="muted">Los productos se cargan desde <strong>medicamentos</strong> (maestro de Productos).</span>
+  </div>
+
+  <div class="total-box">
+    <label for="totalEntrada"><strong>Total de Entrada:</strong></label>
+    <input type="number" id="totalEntrada" step="0.01" value="0" readonly />
+  </div>
+
+  <div class="form-actions" style="margin-top:18px;">
+    <button id="btnGuardar" type="button" class="btn-save">
+      <i class="fa-solid fa-floppy-disk"></i> Guardar Entrada
+    </button>
+    <button id="btnLimpiar" type="button" class="btn-clear">
+      <i class="fa-solid fa-broom"></i> Limpiar
+    </button>
+  </div>
+
+  <p id="status" class="muted"></p>
+</div>
+
+<script>
+/* ===========================
+   Utilidades
+=========================== */
+const tbody = document.querySelector('#tablaItems tbody');
+const totalEntradaEl = document.getElementById('totalEntrada');
+const statusEl = document.getElementById('status');
+
+function toNum(x){ const n = parseFloat(x); return isNaN(n) ? 0 : n; }
+function getMeds(){ return JSON.parse(localStorage.getItem('medicamentos') || '[]'); }
+function setMeds(arr){ localStorage.setItem('medicamentos', JSON.stringify(arr)); }
+
+/* ===========================
+   Fila con SELECT de productos (igual que Compras)
+=========================== */
+function addFila(pref = {}){
+  const tr = document.createElement('tr');
+
+  // Producto
+  const tdProd = document.createElement('td');
+  const sel = document.createElement('select');
+  sel.required = true;
+  const opt0 = document.createElement('option');
+  opt0.value = ''; opt0.textContent = 'Seleccione un producto';
+  sel.appendChild(opt0);
+
+  const meds = getMeds();
+  meds.forEach(p=>{
+    const op = document.createElement('option');
+    op.value = String(p.codigo);
+    op.textContent = `${p.codigo} - ${p.nombre}`;
+    op.dataset.unidad = p.unidad || "";
+    op.dataset.precioCompra = p.precioCompra || 0;
+    sel.appendChild(op);
+  });
+
+  if(pref.codigo){ sel.value = String(pref.codigo); }
+  tdProd.appendChild(sel);
+  tr.appendChild(tdProd);
+
+  // Unidad
+  const tdUnidad = document.createElement('td');
+  const inpUnidad = document.createElement('input');
+  inpUnidad.placeholder = 'Unidad';
+  inpUnidad.readOnly = true;
+  tdUnidad.appendChild(inpUnidad);
+  tr.appendChild(tdUnidad);
+
+  // Lote
+  const tdLote = document.createElement('td');
+  const inpLote = document.createElement('input');
+  inpLote.placeholder = 'Lote';
+  tdLote.appendChild(inpLote);
+  tr.appendChild(tdLote);
+
+  // Fecha venc
+  const tdVenc = document.createElement('td');
+  const inpVenc = document.createElement('input');
+  inpVenc.type = 'date';
+  tdVenc.appendChild(inpVenc);
+  tr.appendChild(tdVenc);
+
+  // Cantidad
+  const tdCant = document.createElement('td');
+  const inpCant = document.createElement('input');
+  inpCant.type = 'number'; inpCant.min = '0'; inpCant.step = '1';
+  tdCant.appendChild(inpCant);
+  tr.appendChild(tdCant);
+
+  // Precio compra
+  const tdPrecio = document.createElement('td');
+  const inpPrecio = document.createElement('input');
+  inpPrecio.type = 'number'; inpPrecio.min = '0'; inpPrecio.step = '0.01';
+  tdPrecio.appendChild(inpPrecio);
+  tr.appendChild(tdPrecio);
+
+  // Total fila
+  const tdTotal = document.createElement('td'); tdTotal.className = 'right';
+  const inpTotal = document.createElement('input');
+  inpTotal.type = 'number'; inpTotal.step = '0.01'; inpTotal.readOnly = true; inpTotal.value = '0.00';
+  tdTotal.appendChild(inpTotal);
+  tr.appendChild(tdTotal);
+
+  // Acciones
+  const tdAcc = document.createElement('td'); tdAcc.className = 'right';
+  const btnDel = document.createElement('button');
+  btnDel.type = 'button'; btnDel.className = 'btn-remove'; btnDel.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+  btnDel.addEventListener('click', ()=>{ tr.remove(); recalcularTotal(); });
+  tdAcc.appendChild(btnDel);
+  tr.appendChild(tdAcc);
+
+  // Eventos
+  sel.addEventListener('change', ()=>{
+    const o = sel.options[sel.selectedIndex];
+    inpUnidad.value = o.dataset.unidad || '';
+    // precargo precio compra del maestro si existe
+    if((inpPrecio.value === '' || Number(inpPrecio.value) === 0) && o.dataset.precioCompra){
+      inpPrecio.value = Number(o.dataset.precioCompra).toFixed(2);
+    }
+    recalc();
+  });
+  function recalc(){
+    inpTotal.value = (toNum(inpCant.value) * toNum(inpPrecio.value)).toFixed(2);
+    recalcularTotal();
+  }
+  inpCant.addEventListener('input', recalc);
+  inpPrecio.addEventListener('input', recalc);
+
+  tbody.appendChild(tr);
+}
+
+function recalcularTotal(){
+  let acc = 0;
+  tbody.querySelectorAll('tr').forEach(tr=>{
+    const v = tr.children[6].querySelector('input').value || '0';
+    acc += toNum(v);
+  });
+  totalEntradaEl.value = acc.toFixed(2);
+}
+
+/* ===========================
+   Guardar entrada (¡aquí está el cambio!)
+=========================== */
+document.getElementById('btnGuardar').addEventListener('click', ()=>{
+  const concepto = document.getElementById('conceptoEntrada').value;
+  if(!concepto){ alert('Selecciona el concepto de entrada.'); return; }
+
+  const meds = getMeds();
+  const idx = new Map(meds.map(m => [String(m.codigo), m]));
+
+  const filas = [...tbody.querySelectorAll('tr')];
+  if(!filas.length){ alert('Agrega al menos un ítem.'); return; }
+
+  const items = [];
+  const errores = [];
+
+  filas.forEach((tr,i)=>{
+    const sel = tr.children[0].querySelector('select');
+    const cod = sel.value;
+    const unidad = tr.children[1].querySelector('input').value || '';
+    const lote   = tr.children[2].querySelector('input').value || '';
+    const venc   = tr.children[3].querySelector('input').value || '';
+    const cant   = toNum(tr.children[4].querySelector('input').value);
+    const precio = toNum(tr.children[5].querySelector('input').value);
+    const total  = toNum(tr.children[6].querySelector('input').value);
+
+    const prod = idx.get(String(cod));
+    if(!prod){ errores.push(`Fila ${i+1}: seleccione un producto válido.`); return; }
+    if(cant <= 0){ errores.push(`Fila ${i+1}: cantidad inválida.`); return; }
+    if(precio < 0){ errores.push(`Fila ${i+1}: precio inválido.`); return; }
+
+    // Actualizar inventario en maestro
+    prod.existencia = (parseFloat(prod.existencia)||0) + cant;
+    if(precio > 0){
+      prod.precioCompra = precio;
+      const util = parseFloat(prod.utilidad)||0;
+      const pv = precio + (precio*util/100);
+      prod.precioVenta = Number(pv.toFixed(2));
+    }
+    const ex = parseFloat(prod.existencia)||0;
+    const pv2 = parseFloat(prod.precioVenta)||0;
+    prod.monto = Number((ex*pv2).toFixed(2));
+
+    // >>> CAMBIO: guardo ambos juegos de nombres de campo
+    items.push({
+      // Lo que Inventario espera
+      productoCodigo: prod.codigo,
+      productoNombre: prod.nombre,
+      precioUnitario: precio,
+
+      // Duplicados amigables (para listados)
+      codigo: prod.codigo,
+      nombre: prod.nombre,
+      precioCompra: precio,
+
+      unidad: unidad || (prod.unidad||''),
+      lote, fechaVenc: venc,
+      cantidad: cant,
+      valorTotal: total
+    });
+  });
+
+  if(errores.length){
+    statusEl.className = 'error';
+    statusEl.textContent = 'Corrige: ' + errores.slice(0,5).join(' | ') + (errores.length>5?' ...':'');
+    return;
+  }
+
+  // Guardar maestro actualizado
+  setMeds(meds);
+
+  // Guardar movimiento entradas (histórico)
+  const entradas  = JSON.parse(localStorage.getItem('entradas') || '[]');
+  let entradasCounter = parseInt(localStorage.getItem('entradasCounter') || '0', 10);
+  entradasCounter += 1;
+
+  entradas.push({
+    id: entradasCounter,
+    concepto,
+    fecha: new Date().toISOString(),
+    total: toNum(totalEntradaEl.value),
+    items
+  });
+  localStorage.setItem('entradas', JSON.stringify(entradas));
+  localStorage.setItem('entradasCounter', String(entradasCounter));
+
+  statusEl.className = 'badge';
+  statusEl.textContent = `Entrada #${entradasCounter} (${concepto}) guardada. Inventario actualizado.`;
+  alert('¡Entrada guardada e inventario actualizado!');
+});
+
+/* Limpiar y agregar fila */
+document.getElementById('btnLimpiar').addEventListener('click', ()=>{
+  tbody.innerHTML = ''; addFila(); totalEntradaEl.value = '0.00';
+  statusEl.textContent = ''; statusEl.className = 'muted';
+});
+document.getElementById('btnAddItem').addEventListener('click', ()=> addFila());
+
+/* Init */
+addFila();
+</script>
+
 </body>
 </html>
