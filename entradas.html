@@ -31,11 +31,17 @@
       margin-bottom: 20px;
       cursor: pointer;
     }
-    .back-btn:hover { background-color: #0056b3; }
-
-    .form-group { margin-bottom: 15px; }
-    .form-group label { font-weight: bold; margin-bottom: 5px; display: block; }
-
+    .back-btn:hover {
+      background-color: #0056b3;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      display: block;
+    }
     select, input, textarea {
       width: 100%;
       padding: 8px;
@@ -43,7 +49,6 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -57,8 +62,9 @@
       font-size: 0.9em;
       vertical-align: middle;
     }
-    table thead { background-color: #e9ecef; }
-
+    table thead {
+      background-color: #e9ecef;
+    }
     .btn-load {
       background-color: #007bff;
       color: #fff;
@@ -69,7 +75,6 @@
       cursor: pointer;
     }
     .btn-load:hover { opacity: 0.9; }
-
     .btn-add-item {
       margin-top: 10px;
       background-color: #007bff;
@@ -80,7 +85,6 @@
       padding: 5px 10px;
     }
     .btn-add-item:hover { opacity: 0.9; }
-
     .btn-delete-item {
       background-color: #dc3545;
       color: white;
@@ -91,7 +95,6 @@
       font-size: 0.9em;
     }
     .btn-delete-item:hover { opacity: 0.9; }
-
     .button-group {
       text-align: center;
       margin-top: 20px;
@@ -106,30 +109,13 @@
     }
     .btn-submit { background-color: #28a745; color: #fff; }
     .btn-reset  { background-color: #dc3545; color: #fff; }
-
     #ordenInfo {
       border: 1px solid #ccc;
       padding: 10px;
       margin-bottom: 20px;
       display: none;
     }
-
-    /* Sección Responsable */
-    .firma-card {
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 20px;
-      background: #fafafa;
-    }
-    .firma-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
-    }
-    .firma-grid .form-group { margin: 0; }
-
-    /* Sección Historial */
+    /* Sección de Historial */
     #historialSection { margin-top: 40px; display: none; }
     #tablaHistorial th, #tablaHistorial td {
       border: 1px solid #ccc;
@@ -151,7 +137,7 @@
   </style>
 </head>
 <body>
-  <!-- Volver -->
+  <!-- Botón para volver al menú principal -->
   <button class="back-btn" onclick="window.location.href='index.html'">Volver al Menú</button>
 
   <div class="container">
@@ -167,7 +153,7 @@
       <button type="button" class="btn-load" onclick="toggleHistorial()">Ver Historial de Actas</button>
     </div>
 
-    <!-- Formulario de Ingreso -->
+    <!-- Formulario de Ingreso de Mercancía -->
     <form id="entradaForm">
       <div id="ordenInfo">
         <h3>Detalles de la Orden de Compra</h3>
@@ -195,31 +181,11 @@
         </thead>
         <tbody></tbody>
       </table>
-
       <button type="button" class="btn-add-item" onclick="agregarFilaManual()">Agregar Ítem Manual</button>
 
       <div class="form-group" style="margin-top:15px;">
         <label for="totalEntrada">Total de Entrada:</label>
         <input type="number" id="totalEntrada" step="0.01" readonly>
-      </div>
-
-      <!-- Responsable de recepción -->
-      <div class="firma-card">
-        <h3 style="text-align:left; margin-top:0;">Firma del Responsable de Recepción</h3>
-        <div class="firma-grid">
-          <div class="form-group">
-            <label for="respNombre">Nombre:</label>
-            <input type="text" id="respNombre" placeholder="Nombre del responsable" required>
-          </div>
-          <div class="form-group">
-            <label for="respCargo">Cargo:</label>
-            <input type="text" id="respCargo" placeholder="Cargo del responsable" required>
-          </div>
-          <div class="form-group">
-            <label for="respFecha">Fecha:</label>
-            <input type="date" id="respFecha" required>
-          </div>
-        </div>
       </div>
 
       <div class="button-group">
@@ -230,7 +196,7 @@
     </form>
   </div>
 
-  <!-- Historial -->
+  <!-- Sección de Historial -->
   <div class="container" id="historialSection">
     <h2>Historial de Actas de Recepción</h2>
     <table id="tablaHistorial">
@@ -259,10 +225,6 @@
     const entradaForm       = document.getElementById('entradaForm');
     const totalEntradaInput = document.getElementById('totalEntrada');
 
-    const respNombre = document.getElementById('respNombre');
-    const respCargo  = document.getElementById('respCargo');
-    const respFecha  = document.getElementById('respFecha');
-
     const historialSection  = document.getElementById('historialSection');
     const tablaHistorialBody= document.querySelector('#tablaHistorial tbody');
 
@@ -276,9 +238,6 @@
         option.textContent = `Orden #${compra.id} - ${compra.fecha}`;
         ordenCompraSelect.appendChild(option);
       });
-
-      // Fecha por defecto: hoy
-      respFecha.value = new Date().toISOString().split("T")[0];
 
       const storedEntradas = localStorage.getItem('entradas');
       if (storedEntradas) entradas = JSON.parse(storedEntradas);
@@ -437,6 +396,7 @@
       tdActions.appendChild(btnDelete);
       row.appendChild(tdActions);
 
+      // Recalcular
       const recalc = () => {
         const total = (parseFloat(inputCantidad.value)||0) * (parseFloat(inputPrecio.value)||0);
         tdTotal.textContent = total.toFixed(2);
@@ -546,6 +506,7 @@
       tdActions.appendChild(btnDelete);
       row.appendChild(tdActions);
 
+      // Eventos
       selectProducto.addEventListener('change', ()=>{
         const u = selectProducto.options[selectProducto.selectedIndex].dataset.unidad || "";
         tdUnidad.textContent = u;
@@ -573,20 +534,15 @@
       e.preventDefault();
       if (!compraSeleccionada) { alert("Primero cargue una Orden de Compra."); return; }
 
-      // Validar responsable
-      const errores = [];
-      if (!respNombre.value.trim()) errores.push("Nombre del responsable es obligatorio.");
-      if (!respCargo.value.trim())  errores.push("Cargo del responsable es obligatorio.");
-      if (!respFecha.value)         errores.push("Fecha del responsable es obligatoria.");
-
-      // Validar filas
       const rows = tablaEntradasBody.querySelectorAll('tr');
-      if (!rows.length) errores.push("No hay ítems en la tabla.");
+      if (!rows.length) { alert("No hay ítems en la tabla."); return; }
 
+      let errores = [];
       let itemsEntrada = [];
+
       rows.forEach((row,i)=>{
         const idx = i+1;
-        // Producto
+        // Producto (desde texto o select)
         let codigo = "", nombre = "";
         const sel = row.children[0].querySelector('select');
         if (sel) {
@@ -647,12 +603,7 @@
         ordenId: compraSeleccionada.id,
         fechaIngreso: new Date().toISOString().split("T")[0],
         items: itemsEntrada,
-        totalEntrada: parseFloat(totalEntradaInput.value)||0,
-        responsable: {
-          nombre: respNombre.value.trim(),
-          cargo : respCargo.value.trim(),
-          fecha : respFecha.value
-        }
+        totalEntrada: parseFloat(totalEntradaInput.value)||0
       };
 
       const guardadas = JSON.parse(localStorage.getItem('entradas') || '[]');
@@ -667,9 +618,6 @@
       ordenInfoDiv.style.display = 'none';
       compraSeleccionada = null;
       ordenCompraSelect.value = "";
-      // restaurar fecha de hoy en el form de firma
-      respFecha.value = new Date().toISOString().split("T")[0];
-
       renderHistorial();
     });
 
@@ -677,7 +625,7 @@
       const rows = tablaEntradasBody.querySelectorAll('tr');
       if (!rows.length) { alert("No hay ítems para generar el acta."); return; }
       if (!compraSeleccionada) { alert("No hay orden de compra cargada."); return; }
-      alert("Ejemplo: aquí generas el HTML del acta con la info actual (opcional).");
+      alert("Ejemplo: aquí generas el HTML del acta con la info actual.");
     }
 
     function verActa(entradaId) {
@@ -700,9 +648,7 @@
         table{width:100%;border-collapse:collapse;margin-top:20px}
         th,td{border:1px solid #ccc;padding:8px;text-align:left}
         thead{background:#e9ecef}
-        .firma{margin-top:24px;border:1px solid #e0e0e0;padding:12px;border-radius:8px;background:#fafafa}
-        .firma p{margin:6px 0;}
-        .text-right{text-align:right}
+        .firma{margin-top:60px}
       </style></head><body>
       <h1>Acta de Recepción</h1>
       <p><strong>ID Entrada:</strong> ${ent.id}</p>
@@ -731,17 +677,27 @@
         </tr>`;
       });
       html += `</tbody></table>
-      <h2 class="text-right">Total Entrada: ${Number(ent.totalEntrada).toFixed(2)}</h2>
+      <h2 style="text-align:right">Total Entrada: ${Number(ent.totalEntrada).toFixed(2)}</h2>
       <div class="firma">
-        <p><strong>Firma del Responsable de Recepción</strong></p>
-        <p><strong>Nombre:</strong> ${ent.responsable?.nombre || ""}</p>
-        <p><strong>Cargo:</strong> ${ent.responsable?.cargo  || ""}</p>
-        <p><strong>Fecha:</strong> ${ent.responsable?.fecha  || ""}</p>
-      </div>
-      </body></html>`;
+        <p><strong>Firma del Responsable de Recepción:</strong></p>
+        <p>Nombre: _______________________</p>
+        <p>Cargo: ________________________</p>
+        <p>Fecha: ________________________</p>
+      </div></body></html>`;
 
       const w = window.open('','_blank');
       w.document.write(html); w.document.close();
+    }
+  </script>
+
+  <button onclick="borrarHistorial()">Borrar Historial de Entradas</button>
+  <script>
+    function borrarHistorial() {
+      if (confirm("¿Estás seguro de eliminar el historial de entradas?")) {
+        localStorage.removeItem('entradas');
+        document.querySelector('#tablaHistorial tbody').innerHTML = "";
+        alert("Historial de entradas eliminado.");
+      }
     }
   </script>
 </body>
