@@ -4,6 +4,11 @@
   <meta charset="UTF-8">
   <title>Sistema de Ventas e Inventario</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- Font Awesome (versión Free confiable) -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+
   <style>
     body::before {
       content: "Profe Diego Fdo Echeverri P";
@@ -17,33 +22,21 @@
       pointer-events: none;
       white-space: nowrap;
     }
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px 40px;
-      margin-top: 20px;
-    }
-    form .form-group input {
-      padding: 12px;
-      font-size: 16px;
-    }
-    .form-actions button {
-      padding: 12px 30px;
-      font-size: 16px;
-      margin: 10px;
-    }
   </style>
 </head>
 <body>
-<div class="container" style="display: flex; align-items: center; justify-content: center; gap: 40px; margin-bottom: 20px;">
-  <img src="logo-aula-diego.png" alt="Logo Zendra" style="max-width: 300px; height: auto;">
-  <div style="text-align: left;">
-    <h1 style="margin: 0;">Sistema de Ventas e Inventario</h1>
-    <h2 style="margin: 0;">Información de la Empresa</h2>
+
+<!-- ENCABEZADO -->
+<div class="header-card">
+  <img src="logo-aula-diego.png" alt="Logo Aula de Diego" />
+  <div class="header-text">
+    <h1>Sistema de Ventas e Inventario</h1>
+    <h2>Información de la Empresa</h2>
   </div>
 </div>
 
-<form id="empresaForm">
+<!-- FORMULARIO DE EMPRESA -->
+<form id="empresaForm" class="container">
   <div class="form-group">
     <label for="empresaNombre">Nombre de la Empresa:</label>
     <input type="text" id="empresaNombre" required>
@@ -74,23 +67,66 @@
   </div>
 </form>
 
-<div class="container">
-  <div class="menu-container">
-    <a class="menu-button" href="proveedores.html">Proveedores</a>
-    <a class="menu-button" href="clientes.html">Clientes</a>
-    <a class="menu-button" href="productos.html">Productos</a>
-    <a class="menu-button" href="compras.html">Compras</a>
-    <a class="menu-button" href="entradas.html">Entradas</a>
-    <a class="menu-button" href="ventas.html">Ventas</a>
-    <a class="menu-button" href="salidas.html">Salidas</a>
-    <a class="menu-button" href="inventario.html">Inventario</a>
-    <a class="menu-button" href="devoluciones.html">Devoluciones</a>
-    <a class="menu-button" href="temperatura.html">Control de factores ambientales</a>
-    <a class="menu-button" href="https://formulasmedicas.tiiny.site/" target="_blank">Fórmulas Médicas</a>
+<!-- SECCIONES DE MENÚ -->
+<div class="sections">
+
+  <!-- Gestión de terceros -->
+  <div class="section-card">
+    <h3 class="section-title">Gestión de terceros</h3>
+    <div class="btn-grid">
+      <a class="app-btn" href="proveedores.html">
+        <i class="fa-solid fa-truck"></i> Proveedores
+      </a>
+      <a class="app-btn" href="clientes.html">
+        <i class="fa-solid fa-id-card"></i> Clientes
+      </a>
+    </div>
+  </div>
+
+  <!-- Movimientos -->
+  <div class="section-card">
+    <h3 class="section-title">Movimientos</h3>
+    <div class="btn-grid">
+      <a class="app-btn" href="compras.html">
+        <i class="fa-solid fa-cart-shopping"></i> Compras
+      </a>
+      <a class="app-btn" href="entradas.html">
+        <i class="fa-solid fa-boxes-stacked"></i> Entradas
+      </a>
+      <a class="app-btn" href="ventas.html">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Ventas
+      </a>
+      <a class="app-btn" href="salidas.html">
+        <i class="fa-solid fa-dolly"></i> Salidas
+      </a>
+      <a class="app-btn" href="devoluciones.html">
+        <i class="fa-solid fa-rotate-left"></i> Devoluciones
+      </a>
+    </div>
+  </div>
+
+  <!-- Soporte y control -->
+  <div class="section-card">
+    <h3 class="section-title">Soporte y control</h3>
+    <div class="btn-grid">
+      <a class="app-btn" href="productos.html">
+        <i class="fa-solid fa-capsules"></i> Productos
+      </a>
+      <a class="app-btn" href="inventario.html">
+        <i class="fa-solid fa-warehouse"></i> Inventario
+      </a>
+      <a class="app-btn" href="temperatura.html">
+        <i class="fa-solid fa-temperature-half"></i> Factores ambientales
+      </a>
+      <a class="app-btn" href="https://formulasmedicas.tiiny.site/" target="_blank">
+        <i class="fa-solid fa-prescription-bottle-medical"></i> Fórmulas Médicas
+      </a>
+    </div>
   </div>
 </div>
 
-<div class="container" style="text-align:center;">
+<!-- BOTÓN DE BORRAR TODO -->
+<div class="danger-wrap">
   <button class="btn-danger" onclick="borrarTodosMovimientos()">Borrar TODOS los movimientos</button>
 </div>
 
@@ -130,20 +166,12 @@
       document.getElementById('empresaForm').reset();
       alert("Información de la empresa borrada. Ahora puedes ingresar datos nuevos.");
     }
-  }
+  }10:25 a. m. 20/09/2025
 
   function borrarTodosMovimientos() {
     const pass = prompt("Ingrese la clave para borrar todos los movimientos:");
     if (pass === "sena") {
-      localStorage.removeItem("entradas");
-      localStorage.removeItem("salidas");
-      localStorage.removeItem("ventas");
-      localStorage.removeItem("salidasCounter");
-      localStorage.removeItem("ventasCounter");
-      localStorage.removeItem("proveedores");
-      localStorage.removeItem("clientes");
-      localStorage.removeItem("compras");
-      localStorage.removeItem("productos");
+      localStorage.clear();
       alert("Se han borrado todos los movimientos y datos principales.");
     } else {
       alert("Clave incorrecta. No se borró nada.");
@@ -151,33 +179,5 @@
   }
 </script>
 
-<script>
-  (function(){
-    if(!window.chatbase || window.chatbase("getState") !== "initialized"){
-      window.chatbase = (...args) => {
-        if(!window.chatbase.q){ window.chatbase.q = [] }
-        window.chatbase.q.push(args)
-      };
-      window.chatbase = new Proxy(window.chatbase, {
-        get(target, prop){
-          if(prop === "q"){ return target.q }
-          return (...args) => target(prop, ...args)
-        }
-      })
-    }
-    const onLoad = function(){
-      const script = document.createElement("script");
-      script.src = "https://www.chatbase.co/embed.min.js";
-      script.id = "6MkiTjm1OJSXymGZWHhJW";
-      script.domain = "www.chatbase.co";
-      document.body.appendChild(script)
-    };
-    if(document.readyState === "complete"){
-      onLoad()
-    } else {
-      window.addEventListener("load", onLoad)
-    }
-  })();
-</script>
 </body>
 </html>
