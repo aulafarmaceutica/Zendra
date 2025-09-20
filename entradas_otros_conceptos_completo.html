@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Entradas Manuales</title>
+  <link rel="stylesheet" href="style.css"> <!-- Tu CSS principal -->
+  <style>
+    /* Ajustes básicos */
+    .concepto-group {
+      margin-bottom: 10px; /* separa el combo del texto */
+    }
+    /* Línea extra */
+    .espaciado-vertical {
+      margin: 30px 0; /* se verán dos renglones de espacio */
+    }
+
+    /* Mantén tus estilos de la tabla,
+       pero si deseas, quita table-layout: fixed para que no comprima tanto */
+    .form-items table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      /* table-layout: fixed; <-- remuévelo si deseas que se autoajuste */
+    }
+    .form-items th, .form-items td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      vertical-align: middle;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .form-items thead {
+      background-color: #e9ecef;
+    }
+    /* ... mantén el resto de estilos (btn-add-item, btn-remove, etc.) ... */
+  </style>
+</head>
+<body>
+  <!-- Botón menú -->
+  <a class="menu-button" href="index.html">Volver al Menú</a>
+
+  <div class="container">
+    <h1>Entradas Manuales</h1>
+    <p>Registra aquí las entradas que no provienen de órdenes de compra ni de devoluciones.</p>
+
+    <!-- Formulario principal -->
+    <form id="entradaForm">
+      <!-- Selección de concepto -->
+      <div class="concepto-group">
+        <label for="conceptoEntrada" style="font-weight: bold;">Concepto de Entrada:</label>
+        <select id="conceptoEntrada" required>
+          <option value="">Seleccione...</option>
+          <option value="prestamo devuelto">Préstamo Devuelto</option>
+          <option value="traslado recibido">Traslado Recibido</option>
+          <option value="ajuste inventario">Ajuste de Inventario</option>
+          <option value="donacion">Donación</option>
+          <option value="otros">Otros</option>
+        </select>
+      </div>
+
+      <!-- Espaciado vertical extra -->
+      <div class="espaciado-vertical"></div>
+
+      <!-- Tabla de ítems -->
+      <div class="form-items">
+        <table id="tablaItems">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Unidad</th>
+              <th>Cantidad</th>
+              <th>Precio Unitario</th>
+              <th>Lote</th>
+              <th>Fecha Venc.</th>
+              <th>Reg. San.</th>
+              <th>Total</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filas dinámicas -->
+          </tbody>
+        </table>
+        <button type="button" class="btn-add-item" id="btnAddItem">Agregar Ítem</button>
+      </div>
+
+      <div style="margin-top:20px; text-align:right;">
+        <label for="totalEntrada" style="font-weight: bold; margin-right:5px;">Total de Entrada:</label>
+        <input type="number" id="totalEntrada" step="0.01" value="0" readonly style="width:120px;" />
+      </div>
+
+      <div class="form-actions" style="margin-top: 30px;">
+        <button type="submit" class="btn-save-entrada">Guardar Entrada</button>
+        <button type="reset" class="btn-clear">Limpiar</button>
+      </div>
+    </form>
+  </div>
+
+  <hr>
+
+  <!-- Historial de Entradas -->
+  <div class="container">
+    <h2>Historial de Entradas Manuales</h2>
+    <table id="tablaEntradasGuardadas">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Concepto</th>
+          <th>Fecha</th>
+          <th>Total Entrada</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody><!-- Se mostrarán las entradas guardadas --></tbody>
+    </table>
+  </div>
+
+  <script>
+    /* ... aquí el mismo JS que ya tienes ... */
+  </script>
+</body>
+</html>
