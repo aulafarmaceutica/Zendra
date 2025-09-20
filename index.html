@@ -166,7 +166,7 @@
       document.getElementById('empresaForm').reset();
       alert("Información de la empresa borrada. Ahora puedes ingresar datos nuevos.");
     }
-  }10:25 a. m. 20/09/2025
+  }
 
   function borrarTodosMovimientos() {
     const pass = prompt("Ingrese la clave para borrar todos los movimientos:");
@@ -177,6 +177,36 @@
       alert("Clave incorrecta. No se borró nada.");
     }
   }
+</script>
+
+<!-- SNIPPET DE CHATBASE (burbuja de IA) -->
+<script>
+  (function(){
+    if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+      window.chatbase = (...args) => {
+        if(!window.chatbase.q){ window.chatbase.q = [] }
+        window.chatbase.q.push(args)
+      };
+      window.chatbase = new Proxy(window.chatbase, {
+        get(target, prop){
+          if(prop === "q"){ return target.q }
+          return (...args) => target(prop, ...args)
+        }
+      })
+    }
+    const onLoad = function(){
+      const script = document.createElement("script");
+      script.src = "https://www.chatbase.co/embed.min.js";
+      script.id = "6MkiTjm1OJSXymGZWHhJW";
+      script.domain = "www.chatbase.co";
+      document.body.appendChild(script)
+    };
+    if(document.readyState === "complete"){
+      onLoad()
+    } else {
+      window.addEventListener("load", onLoad)
+    }
+  })();
 </script>
 
 </body>
