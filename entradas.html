@@ -31,17 +31,11 @@
       margin-bottom: 20px;
       cursor: pointer;
     }
-    .back-btn:hover {
-      background-color: #0056b3;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      font-weight: bold;
-      margin-bottom: 5px;
-      display: block;
-    }
+    .back-btn:hover { background-color: #0056b3; }
+
+    .form-group { margin-bottom: 15px; }
+    .form-group label { font-weight: bold; margin-bottom: 5px; display: block; }
+
     select, input, textarea {
       width: 100%;
       padding: 8px;
@@ -49,6 +43,7 @@
       border-radius: 4px;
       box-sizing: border-box;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -62,9 +57,8 @@
       font-size: 0.9em;
       vertical-align: middle;
     }
-    table thead {
-      background-color: #e9ecef;
-    }
+    table thead { background-color: #e9ecef; }
+
     .btn-load {
       background-color: #007bff;
       color: #fff;
@@ -74,9 +68,8 @@
       padding: 8px 16px;
       cursor: pointer;
     }
-    .btn-load:hover {
-      opacity: 0.9;
-    }
+    .btn-load:hover { opacity: 0.9; }
+
     .btn-add-item {
       margin-top: 10px;
       background-color: #007bff;
@@ -86,9 +79,8 @@
       cursor: pointer;
       padding: 5px 10px;
     }
-    .btn-add-item:hover {
-      opacity: 0.9;
-    }
+    .btn-add-item:hover { opacity: 0.9; }
+
     .btn-delete-item {
       background-color: #dc3545;
       color: white;
@@ -98,9 +90,8 @@
       padding: 2px 5px;
       font-size: 0.9em;
     }
-    .btn-delete-item:hover {
-      opacity: 0.9;
-    }
+    .btn-delete-item:hover { opacity: 0.9; }
+
     .button-group {
       text-align: center;
       margin-top: 20px;
@@ -113,25 +104,33 @@
       font-size: 16px;
       cursor: pointer;
     }
-    .btn-submit {
-      background-color: #28a745;
-      color: #fff;
-    }
-    .btn-reset {
-      background-color: #dc3545;
-      color: #fff;
-    }
+    .btn-submit { background-color: #28a745; color: #fff; }
+    .btn-reset  { background-color: #dc3545; color: #fff; }
+
     #ordenInfo {
       border: 1px solid #ccc;
       padding: 10px;
       margin-bottom: 20px;
       display: none;
     }
-    /* Sección de Historial */
-    #historialSection {
-      margin-top: 40px;
-      display: none; /* se oculta inicialmente */
+
+    /* Sección Responsable */
+    .firma-card {
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+      background: #fafafa;
     }
+    .firma-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .firma-grid .form-group { margin: 0; }
+
+    /* Sección Historial */
+    #historialSection { margin-top: 40px; display: none; }
     #tablaHistorial th, #tablaHistorial td {
       border: 1px solid #ccc;
       padding: 8px;
@@ -148,13 +147,11 @@
       padding: 5px 10px;
       font-size: 0.9em;
     }
-    .btn-view-acta:hover {
-      opacity: 0.9;
-    }
+    .btn-view-acta:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
-  <!-- Botón para volver al menú principal -->
+  <!-- Volver -->
   <button class="back-btn" onclick="window.location.href='index.html'">Volver al Menú</button>
 
   <div class="container">
@@ -167,13 +164,11 @@
         <option value="">Seleccione una orden</option>
       </select>
       <button type="button" class="btn-load" onclick="cargarOrden()">Cargar Orden</button>
-      <!-- Botón para ver el historial de actas de recepción -->
       <button type="button" class="btn-load" onclick="toggleHistorial()">Ver Historial de Actas</button>
     </div>
 
-    <!-- Formulario de Ingreso de Mercancía -->
+    <!-- Formulario de Ingreso -->
     <form id="entradaForm">
-      <!-- Muestra los datos básicos de la orden -->
       <div id="ordenInfo">
         <h3>Detalles de la Orden de Compra</h3>
         <div id="detalleOrden"></div>
@@ -198,10 +193,9 @@
             <th>Acciones</th>
           </tr>
         </thead>
-        <tbody>
-          <!-- Filas generadas dinámicamente -->
-        </tbody>
+        <tbody></tbody>
       </table>
+
       <button type="button" class="btn-add-item" onclick="agregarFilaManual()">Agregar Ítem Manual</button>
 
       <div class="form-group" style="margin-top:15px;">
@@ -209,16 +203,34 @@
         <input type="number" id="totalEntrada" step="0.01" readonly>
       </div>
 
+      <!-- Responsable de recepción -->
+      <div class="firma-card">
+        <h3 style="text-align:left; margin-top:0;">Firma del Responsable de Recepción</h3>
+        <div class="firma-grid">
+          <div class="form-group">
+            <label for="respNombre">Nombre:</label>
+            <input type="text" id="respNombre" placeholder="Nombre del responsable" required>
+          </div>
+          <div class="form-group">
+            <label for="respCargo">Cargo:</label>
+            <input type="text" id="respCargo" placeholder="Cargo del responsable" required>
+          </div>
+          <div class="form-group">
+            <label for="respFecha">Fecha:</label>
+            <input type="date" id="respFecha" required>
+          </div>
+        </div>
+      </div>
+
       <div class="button-group">
         <button type="submit" class="btn-submit">Guardar Entrada</button>
         <button type="reset" class="btn-reset">Limpiar</button>
-        <!-- Botón para generar Acta de Recepción inmediatamente -->
         <button type="button" class="btn-load" onclick="generarActa()">Generar Acta de Recepción</button>
       </div>
     </form>
   </div>
 
-  <!-- Sección de Historial de Entradas (Actas de Recepción) -->
+  <!-- Historial -->
   <div class="container" id="historialSection">
     <h2>Historial de Actas de Recepción</h2>
     <table id="tablaHistorial">
@@ -231,42 +243,33 @@
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Filas generadas dinámicamente -->
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
   <script>
-    // Arrays en localStorage que usaremos:
-    // - "compras" (para cargar las órdenes de compra)
-    // - "proveedores" (opcional, para más info del proveedor)
-    // - "medicamentos" (lista de productos, con {codigo, nombre, unidad})
-    // - "entradas" (para guardar las entradas de mercancía)
-
     let compras = [];
-    let compraSeleccionada = null; // La orden de compra que se está cargando
-    let entradas = []; // Para cargar/guardar el historial de entradas
+    let compraSeleccionada = null;
+    let entradas = [];
 
-    // Referencias al DOM
     const ordenCompraSelect = document.getElementById('ordenCompraSelect');
-    const detalleOrdenDiv = document.getElementById('detalleOrden');
-    const ordenInfoDiv = document.getElementById('ordenInfo');
+    const detalleOrdenDiv   = document.getElementById('detalleOrden');
+    const ordenInfoDiv      = document.getElementById('ordenInfo');
     const tablaEntradasBody = document.querySelector('#tablaEntradas tbody');
-    const entradaForm = document.getElementById('entradaForm');
+    const entradaForm       = document.getElementById('entradaForm');
     const totalEntradaInput = document.getElementById('totalEntrada');
 
-    const historialSection = document.getElementById('historialSection');
-    const tablaHistorialBody = document.querySelector('#tablaHistorial tbody');
+    const respNombre = document.getElementById('respNombre');
+    const respCargo  = document.getElementById('respCargo');
+    const respFecha  = document.getElementById('respFecha');
+
+    const historialSection  = document.getElementById('historialSection');
+    const tablaHistorialBody= document.querySelector('#tablaHistorial tbody');
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Cargar las compras
       const storedCompras = localStorage.getItem('compras');
-      if (storedCompras) {
-        compras = JSON.parse(storedCompras);
-      }
+      if (storedCompras) compras = JSON.parse(storedCompras);
 
-      // Llenar el select con las compras existentes
       compras.forEach(compra => {
         const option = document.createElement('option');
         option.value = compra.id;
@@ -274,85 +277,52 @@
         ordenCompraSelect.appendChild(option);
       });
 
-      // Verificamos si hay "medicamentos"
-      const storedProductos = localStorage.getItem('medicamentos');
-      if (!storedProductos) {
-        // Crear lista de ejemplo
-        const ejemplo = [
-          { codigo: "MED001", nombre: "Acetaminofén 500mg", unidad: "Caja x 20" },
-          { codigo: "MED002", nombre: "Ibuprofeno 400mg", unidad: "Caja x 10" }
-        ];
-        localStorage.setItem('medicamentos', JSON.stringify(ejemplo));
-      }
+      // Fecha por defecto: hoy
+      respFecha.value = new Date().toISOString().split("T")[0];
 
-      // Cargar entradas (historial) y renderizar tabla
       const storedEntradas = localStorage.getItem('entradas');
-      if (storedEntradas) {
-        entradas = JSON.parse(storedEntradas);
-      }
+      if (storedEntradas) entradas = JSON.parse(storedEntradas);
       renderHistorial();
     });
 
-    // Mostrar/ocultar historial
     function toggleHistorial() {
-      if (historialSection.style.display === 'none' || !historialSection.style.display) {
-        historialSection.style.display = 'block';
-      } else {
-        historialSection.style.display = 'none';
-      }
+      historialSection.style.display = (historialSection.style.display === 'block') ? 'none' : 'block';
     }
 
     function renderHistorial() {
       tablaHistorialBody.innerHTML = '';
-      if (entradas.length === 0) {
-        const row = document.createElement('tr');
-        const cell = document.createElement('td');
-        cell.colSpan = 5;
-        cell.textContent = "No hay entradas registradas aún.";
-        row.appendChild(cell);
-        tablaHistorialBody.appendChild(row);
+      if (!entradas.length) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.colSpan = 5;
+        td.textContent = "No hay entradas registradas aún.";
+        tr.appendChild(td);
+        tablaHistorialBody.appendChild(tr);
         return;
       }
-
       entradas.forEach(ent => {
-        const row = document.createElement('tr');
-        row.appendChild(crearCelda(ent.id));
-        row.appendChild(crearCelda(ent.ordenId));
-        row.appendChild(crearCelda(ent.fechaIngreso));
-        row.appendChild(crearCelda(ent.totalEntrada.toFixed(2)));
-
-        // Acciones: Ver Acta
-        const tdAcc = document.createElement('td');
-        const btnView = document.createElement('button');
-        btnView.textContent = "Ver Acta";
-        btnView.classList.add('btn-view-acta');
-        btnView.addEventListener('click', () => verActa(ent.id));
-        tdAcc.appendChild(btnView);
-        row.appendChild(tdAcc);
-
-        tablaHistorialBody.appendChild(row);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${ent.id}</td>
+          <td>${ent.ordenId}</td>
+          <td>${ent.fechaIngreso}</td>
+          <td>${Number(ent.totalEntrada).toFixed(2)}</td>
+          <td><button class="btn-view-acta" onclick="verActa(${ent.id})">Ver Acta</button></td>
+        `;
+        tablaHistorialBody.appendChild(tr);
       });
     }
 
-    // Cargar la orden seleccionada
     function cargarOrden() {
       const id = parseInt(ordenCompraSelect.value, 10);
-      if (!id) {
-        alert("Seleccione una orden de compra.");
-        return;
-      }
+      if (!id) { alert("Seleccione una orden de compra."); return; }
       compraSeleccionada = compras.find(c => c.id === id);
-      if (!compraSeleccionada) {
-        alert("Orden no encontrada.");
-        return;
-      }
+      if (!compraSeleccionada) { alert("Orden no encontrada."); return; }
 
-      // Mostrar detalles
       ordenInfoDiv.style.display = 'block';
       let html = `<p><strong>Orden:</strong> ${compraSeleccionada.id}</p>`;
-      html += `<p><strong>Fecha:</strong> ${compraSeleccionada.fecha}</p>`;
+      html    += `<p><strong>Fecha:</strong> ${compraSeleccionada.fecha}</p>`;
 
-      // Obtener datos del proveedor
       const storedProveedores = localStorage.getItem('proveedores');
       if (storedProveedores) {
         const proveedores = JSON.parse(storedProveedores);
@@ -366,21 +336,14 @@
       }
       detalleOrdenDiv.innerHTML = html;
 
-      // Llenar la tabla de entradas con los ítems de la orden
       tablaEntradasBody.innerHTML = "";
-      compraSeleccionada.items.forEach(item => {
-        agregarFilaDesdeOrden(item);
-      });
+      compraSeleccionada.items.forEach(item => agregarFilaDesdeOrden(item));
       recalcularTotalEntrada();
     }
 
     function agregarFilaDesdeOrden(item) {
-      let listaProductos = [];
-      const storedProductos = localStorage.getItem('medicamentos');
-      if (storedProductos) {
-        listaProductos = JSON.parse(storedProductos);
-      }
-      const prod = listaProductos.find(p => p.codigo === item.productoCodigo);
+      let listaProductos = JSON.parse(localStorage.getItem('medicamentos') || '[]');
+      const prod = listaProductos.find(p => String(p.codigo) === String(item.productoCodigo));
       const nombreProducto = prod ? prod.nombre : "Desconocido";
 
       const row = document.createElement('tr');
@@ -395,534 +358,390 @@
       tdUnidad.textContent = item.unidad || "";
       row.appendChild(tdUnidad);
 
-      // Cantidad
+      // Cantidad (required)
       const tdCantidad = document.createElement('td');
       const inputCantidad = document.createElement('input');
-      inputCantidad.type = 'number';
-      inputCantidad.min = '1';
-      inputCantidad.value = item.cantidad;
+      inputCantidad.type = 'number'; inputCantidad.min = '1'; inputCantidad.value = item.cantidad;
       inputCantidad.required = true;
       tdCantidad.appendChild(inputCantidad);
       row.appendChild(tdCantidad);
 
-      // Precio Unitario
+      // Precio Unitario (required)
       const tdPrecio = document.createElement('td');
       const inputPrecio = document.createElement('input');
-      inputPrecio.type = 'number';
-      inputPrecio.step = '0.01';
-      inputPrecio.min = '0';
-      inputPrecio.value = item.precioUnitario;
-      inputPrecio.required = true;
+      inputPrecio.type = 'number'; inputPrecio.step = '0.01'; inputPrecio.min = '0';
+      inputPrecio.value = item.precioUnitario; inputPrecio.required = true;
       tdPrecio.appendChild(inputPrecio);
       row.appendChild(tdPrecio);
 
       // Total Unit
       const tdTotal = document.createElement('td');
-      tdTotal.textContent = item.total.toFixed(2);
+      tdTotal.textContent = (item.cantidad * item.precioUnitario).toFixed(2);
       row.appendChild(tdTotal);
 
-      // Lote
+      // Lote (required)
       const tdLote = document.createElement('td');
       const inputLote = document.createElement('input');
-      inputLote.type = 'text';
-      inputLote.placeholder = "N° de Lote";
+      inputLote.type = 'text'; inputLote.placeholder = "N° de Lote"; inputLote.required = true;
       tdLote.appendChild(inputLote);
       row.appendChild(tdLote);
 
-      // Fecha Venc.
+      // Fecha Venc (required)
       const tdVenc = document.createElement('td');
       const inputVenc = document.createElement('input');
-      inputVenc.type = 'date';
+      inputVenc.type = 'date'; inputVenc.required = true;
       tdVenc.appendChild(inputVenc);
       row.appendChild(tdVenc);
 
-      // Reg. San (texto)
+      // Reg. San (required)
       const tdRegSan = document.createElement('td');
       const inputRegSan = document.createElement('input');
-      inputRegSan.type = 'text';
-      inputRegSan.placeholder = "Reg. Sanitario";
+      inputRegSan.type = 'text'; inputRegSan.placeholder = "Reg. Sanitario"; inputRegSan.required = true;
       tdRegSan.appendChild(inputRegSan);
       row.appendChild(tdRegSan);
 
-      // Cantidad Revisada
-      const tdCantRevisada = document.createElement('td');
-      const inputCantRev = document.createElement('input');
-      inputCantRev.type = 'text';
-      inputCantRev.placeholder = "Revisada";
-      tdCantRevisada.appendChild(inputCantRev);
-      row.appendChild(tdCantRevisada);
-
-      // Transp/Manip (S/N)
-      const tdTransp = document.createElement('td');
-      const selectTransp = document.createElement('select');
-      let optSi = document.createElement('option');
-      optSi.value = "S";
-      optSi.textContent = "S";
-      let optNo = document.createElement('option');
-      optNo.value = "N";
-      optNo.textContent = "N";
-      selectTransp.appendChild(optSi);
-      selectTransp.appendChild(optNo);
-      tdTransp.appendChild(selectTransp);
-      row.appendChild(tdTransp);
-
-      // Cadena Frío (S/N)
-      const tdFrio = document.createElement('td');
-      const selectFrio = document.createElement('select');
-      let optSiF = document.createElement('option');
-      optSiF.value = "S";
-      optSiF.textContent = "S";
-      let optNoF = document.createElement('option');
-      optNoF.value = "N";
-      optNoF.textContent = "N";
-      selectFrio.appendChild(optSiF);
-      selectFrio.appendChild(optNoF);
-      tdFrio.appendChild(selectFrio);
-      row.appendChild(tdFrio);
-
-      // Aprobado (S/N)
-      const tdAprob = document.createElement('td');
-      const selectAprob = document.createElement('select');
-      let optSiA = document.createElement('option');
-      optSiA.value = "S";
-      optSiA.textContent = "S";
-      let optNoA = document.createElement('option');
-      optNoA.value = "N";
-      optNoA.textContent = "N";
-      selectAprob.appendChild(optSiA);
-      selectAprob.appendChild(optNoA);
-      tdAprob.appendChild(selectAprob);
-      row.appendChild(tdAprob);
-
-      // Acciones
-      const tdActions = document.createElement('td');
-      const btnDelete = document.createElement('button');
-      btnDelete.type = 'button';
-      btnDelete.textContent = 'Eliminar';
-      btnDelete.classList.add('btn-delete-item');
-      btnDelete.addEventListener('click', () => {
-        row.remove();
-        recalcularTotalEntrada();
-      });
-      tdActions.appendChild(btnDelete);
-      row.appendChild(tdActions);
-
-      // Escuchas para recalcular total
-      inputCantidad.addEventListener('input', () => {
-        const tot = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
-        tdTotal.textContent = tot.toFixed(2);
-        recalcularTotalEntrada();
-      });
-      inputPrecio.addEventListener('input', () => {
-        const tot = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
-        tdTotal.textContent = tot.toFixed(2);
-        recalcularTotalEntrada();
-      });
-
-      tablaEntradasBody.appendChild(row);
-    }
-
-    // Fila manual
-    function agregarFilaManual() {
-      const row = document.createElement('tr');
-
-      // Producto (select)
-      const tdProducto = document.createElement('td');
-      const selectProducto = document.createElement('select');
-      const defaultOption = document.createElement('option');
-      defaultOption.value = "";
-      defaultOption.textContent = "Seleccione un producto";
-      selectProducto.appendChild(defaultOption);
-
-      let listaProductos = [];
-      const storedProductos = localStorage.getItem('medicamentos');
-      if (storedProductos) {
-        listaProductos = JSON.parse(storedProductos);
-      }
-      listaProductos.forEach(prod => {
-        const option = document.createElement('option');
-        option.value = prod.codigo;
-        option.textContent = `${prod.codigo} - ${prod.nombre}`;
-        option.dataset.unidad = prod.unidad || "";
-        selectProducto.appendChild(option);
-      });
-      tdProducto.appendChild(selectProducto);
-      row.appendChild(tdProducto);
-
-      // Unidad
-      const tdUnidad = document.createElement('td');
-      tdUnidad.textContent = "";
-      row.appendChild(tdUnidad);
-
-      // Cantidad
-      const tdCantidad = document.createElement('td');
-      const inputCantidad = document.createElement('input');
-      inputCantidad.type = 'number';
-      inputCantidad.min = '1';
-      inputCantidad.value = '1';
-      inputCantidad.required = true;
-      tdCantidad.appendChild(inputCantidad);
-      row.appendChild(tdCantidad);
-
-      // Precio unitario
-      const tdPrecio = document.createElement('td');
-      const inputPrecio = document.createElement('input');
-      inputPrecio.type = 'number';
-      inputPrecio.step = '0.01';
-      inputPrecio.min = '0';
-      inputPrecio.required = true;
-      tdPrecio.appendChild(inputPrecio);
-      row.appendChild(tdPrecio);
-
-      // Total
-      const tdTotal = document.createElement('td');
-      tdTotal.textContent = "0.00";
-      row.appendChild(tdTotal);
-
-      // Lote
-      const tdLote = document.createElement('td');
-      const inputLote = document.createElement('input');
-      inputLote.type = 'text';
-      inputLote.placeholder = "N° de Lote";
-      tdLote.appendChild(inputLote);
-      row.appendChild(tdLote);
-
-      // Fecha Venc.
-      const tdVenc = document.createElement('td');
-      const inputVenc = document.createElement('input');
-      inputVenc.type = 'date';
-      tdVenc.appendChild(inputVenc);
-      row.appendChild(tdVenc);
-
-      // Reg. San
-      const tdRegSan = document.createElement('td');
-      const inputRegSan = document.createElement('input');
-      inputRegSan.type = 'text';
-      inputRegSan.placeholder = "Reg. Sanitario";
-      tdRegSan.appendChild(inputRegSan);
-      row.appendChild(tdRegSan);
-
-      // Cant. Revisada
+      // Cant. Revisada (required, numérica)
       const tdCantRev = document.createElement('td');
       const inputCantRev = document.createElement('input');
-      inputCantRev.type = 'text';
-      inputCantRev.placeholder = "Revisada";
+      inputCantRev.type = 'number'; inputCantRev.min = '0'; inputCantRev.step = '1';
+      inputCantRev.placeholder = "Revisada"; inputCantRev.required = true;
       tdCantRev.appendChild(inputCantRev);
       row.appendChild(tdCantRev);
 
       // Transp/Manip
       const tdTransp = document.createElement('td');
       const selectTransp = document.createElement('select');
-      let optSi = document.createElement('option');
-      optSi.value = "S";
-      optSi.textContent = "S";
-      let optNo = document.createElement('option');
-      optNo.value = "N";
-      optNo.textContent = "N";
-      selectTransp.appendChild(optSi);
-      selectTransp.appendChild(optNo);
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectTransp.appendChild(o); });
       tdTransp.appendChild(selectTransp);
       row.appendChild(tdTransp);
 
-      // Cadena Frío
+      // Cadena frío
       const tdFrio = document.createElement('td');
       const selectFrio = document.createElement('select');
-      let optSiF = document.createElement('option');
-      optSiF.value = "S";
-      optSiF.textContent = "S";
-      let optNoF = document.createElement('option');
-      optNoF.value = "N";
-      optNoF.textContent = "N";
-      selectFrio.appendChild(optSiF);
-      selectFrio.appendChild(optNoF);
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectFrio.appendChild(o); });
       tdFrio.appendChild(selectFrio);
       row.appendChild(tdFrio);
 
       // Aprobado
       const tdAprob = document.createElement('td');
       const selectAprob = document.createElement('select');
-      let optSiA = document.createElement('option');
-      optSiA.value = "S";
-      optSiA.textContent = "S";
-      let optNoA = document.createElement('option');
-      optNoA.value = "N";
-      optNoA.textContent = "N";
-      selectAprob.appendChild(optSiA);
-      selectAprob.appendChild(optNoA);
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectAprob.appendChild(o); });
       tdAprob.appendChild(selectAprob);
       row.appendChild(tdAprob);
 
       // Acciones
       const tdActions = document.createElement('td');
       const btnDelete = document.createElement('button');
-      btnDelete.type = 'button';
-      btnDelete.textContent = 'Eliminar';
-      btnDelete.classList.add('btn-delete-item');
-      btnDelete.addEventListener('click', () => {
-        row.remove();
-        recalcularTotalEntrada();
-      });
+      btnDelete.type = 'button'; btnDelete.textContent = 'Eliminar'; btnDelete.classList.add('btn-delete-item');
+      btnDelete.addEventListener('click', () => { row.remove(); recalcularTotalEntrada(); });
       tdActions.appendChild(btnDelete);
       row.appendChild(tdActions);
 
-      // Actualizar la unidad al cambiar producto
-      selectProducto.addEventListener('change', () => {
-        const unidad = selectProducto.options[selectProducto.selectedIndex].dataset.unidad || "";
-        tdUnidad.textContent = unidad;
-      });
-
-      // Recalcular total
-      inputCantidad.addEventListener('input', () => {
-        const tot = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
-        tdTotal.textContent = tot.toFixed(2);
+      const recalc = () => {
+        const total = (parseFloat(inputCantidad.value)||0) * (parseFloat(inputPrecio.value)||0);
+        tdTotal.textContent = total.toFixed(2);
         recalcularTotalEntrada();
-      });
-      inputPrecio.addEventListener('input', () => {
-        const tot = parseFloat(inputCantidad.value) * parseFloat(inputPrecio.value || 0);
-        tdTotal.textContent = tot.toFixed(2);
-        recalcularTotalEntrada();
-      });
+      };
+      inputCantidad.addEventListener('input', recalc);
+      inputPrecio.addEventListener('input', recalc);
 
       tablaEntradasBody.appendChild(row);
     }
 
-    // Recalcular total de la tabla de entradas
+    function agregarFilaManual() {
+      const row = document.createElement('tr');
+
+      // Producto (select)
+      const tdProducto = document.createElement('td');
+      const selectProducto = document.createElement('select');
+      const opt0 = document.createElement('option');
+      opt0.value = ""; opt0.textContent = "Seleccione un producto";
+      selectProducto.appendChild(opt0);
+
+      const listaProductos = JSON.parse(localStorage.getItem('medicamentos') || '[]');
+      listaProductos.forEach(p=>{
+        const o=document.createElement('option');
+        o.value=p.codigo; o.textContent=`${p.codigo} - ${p.nombre}`; o.dataset.unidad=p.unidad||"";
+        selectProducto.appendChild(o);
+      });
+      tdProducto.appendChild(selectProducto);
+      row.appendChild(tdProducto);
+
+      // Unidad
+      const tdUnidad = document.createElement('td');
+      row.appendChild(tdUnidad);
+
+      // Cantidad (required)
+      const tdCantidad = document.createElement('td');
+      const inputCantidad = document.createElement('input');
+      inputCantidad.type='number'; inputCantidad.min='1'; inputCantidad.value='1'; inputCantidad.required = true;
+      tdCantidad.appendChild(inputCantidad);
+      row.appendChild(tdCantidad);
+
+      // Precio unit (required)
+      const tdPrecio=document.createElement('td');
+      const inputPrecio=document.createElement('input');
+      inputPrecio.type='number'; inputPrecio.step='0.01'; inputPrecio.min='0'; inputPrecio.required = true;
+      tdPrecio.appendChild(inputPrecio);
+      row.appendChild(tdPrecio);
+
+      // Total
+      const tdTotal=document.createElement('td'); tdTotal.textContent='0.00';
+      row.appendChild(tdTotal);
+
+      // Lote (required)
+      const tdLote=document.createElement('td');
+      const inputLote=document.createElement('input');
+      inputLote.type='text'; inputLote.placeholder='N° de Lote'; inputLote.required = true;
+      tdLote.appendChild(inputLote);
+      row.appendChild(tdLote);
+
+      // Fecha (required)
+      const tdVenc=document.createElement('td');
+      const inputVenc=document.createElement('input');
+      inputVenc.type='date'; inputVenc.required = true;
+      tdVenc.appendChild(inputVenc);
+      row.appendChild(tdVenc);
+
+      // Reg. San (required)
+      const tdRegSan=document.createElement('td');
+      const inputRegSan=document.createElement('input');
+      inputRegSan.type='text'; inputRegSan.placeholder='Reg. Sanitario'; inputRegSan.required = true;
+      tdRegSan.appendChild(inputRegSan);
+      row.appendChild(tdRegSan);
+
+      // Cant. Revisada (required numérica)
+      const tdCantRev=document.createElement('td');
+      const inputCantRev=document.createElement('input');
+      inputCantRev.type='number'; inputCantRev.min='0'; inputCantRev.step='1'; inputCantRev.placeholder='Revisada'; inputCantRev.required = true;
+      tdCantRev.appendChild(inputCantRev);
+      row.appendChild(tdCantRev);
+
+      // Transp/Manip
+      const tdTransp=document.createElement('td');
+      const selectTransp=document.createElement('select');
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectTransp.appendChild(o); });
+      tdTransp.appendChild(selectTransp);
+      row.appendChild(tdTransp);
+
+      // Cadena frío
+      const tdFrio=document.createElement('td');
+      const selectFrio=document.createElement('select');
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectFrio.appendChild(o); });
+      tdFrio.appendChild(selectFrio);
+      row.appendChild(tdFrio);
+
+      // Aprobado
+      const tdAprob=document.createElement('td');
+      const selectAprob=document.createElement('select');
+      ["S","N"].forEach(v=>{ const o=document.createElement('option'); o.value=v; o.textContent=v; selectAprob.appendChild(o); });
+      tdAprob.appendChild(selectAprob);
+      row.appendChild(tdAprob);
+
+      // Acciones
+      const tdActions=document.createElement('td');
+      const btnDelete=document.createElement('button');
+      btnDelete.type='button'; btnDelete.textContent='Eliminar'; btnDelete.classList.add('btn-delete-item');
+      btnDelete.addEventListener('click', ()=>{ row.remove(); recalcularTotalEntrada(); });
+      tdActions.appendChild(btnDelete);
+      row.appendChild(tdActions);
+
+      selectProducto.addEventListener('change', ()=>{
+        const u = selectProducto.options[selectProducto.selectedIndex].dataset.unidad || "";
+        tdUnidad.textContent = u;
+      });
+      const recalc=()=>{
+        const total=(parseFloat(inputCantidad.value)||0)*(parseFloat(inputPrecio.value)||0);
+        tdTotal.textContent=total.toFixed(2);
+        recalcularTotalEntrada();
+      };
+      inputCantidad.addEventListener('input',recalc);
+      inputPrecio.addEventListener('input',recalc);
+
+      tablaEntradasBody.appendChild(row);
+    }
+
     function recalcularTotalEntrada() {
       let total = 0;
-      const rows = tablaEntradasBody.querySelectorAll('tr');
-      rows.forEach(row => {
-        const tdTotal = row.children[4];
-        total += parseFloat(tdTotal.textContent);
+      tablaEntradasBody.querySelectorAll('tr').forEach(row=>{
+        total += parseFloat(row.children[4].textContent)||0;
       });
       totalEntradaInput.value = total.toFixed(2);
     }
 
-    // Al guardar la entrada, se crea un registro en "entradas" y podrías actualizar "inventario"
     entradaForm.addEventListener('submit', (e) => {
       e.preventDefault();
-      if (!compraSeleccionada) {
-        alert("Primero cargue una Orden de Compra.");
-        return;
-      }
-      // Recopilar datos
+      if (!compraSeleccionada) { alert("Primero cargue una Orden de Compra."); return; }
+
+      // Validar responsable
+      const errores = [];
+      if (!respNombre.value.trim()) errores.push("Nombre del responsable es obligatorio.");
+      if (!respCargo.value.trim())  errores.push("Cargo del responsable es obligatorio.");
+      if (!respFecha.value)         errores.push("Fecha del responsable es obligatoria.");
+
+      // Validar filas
       const rows = tablaEntradasBody.querySelectorAll('tr');
-      const itemsEntrada = [];
-      rows.forEach(row => {
-        const productoTexto = row.children[0].textContent;
+      if (!rows.length) errores.push("No hay ítems en la tabla.");
+
+      let itemsEntrada = [];
+      rows.forEach((row,i)=>{
+        const idx = i+1;
+        // Producto
         let codigo = "", nombre = "";
-        const firstChild = row.children[0].querySelector('select');
-        if (firstChild) {
-          // Fila manual
-          const sel = firstChild;
+        const sel = row.children[0].querySelector('select');
+        if (sel) {
+          if (!sel.value) { errores.push(`Fila ${idx}: seleccione un producto.`); return; }
           codigo = sel.value;
-          const opt = sel.options[sel.selectedIndex];
-          if (opt) {
-            const splitted = opt.textContent.split(" - ");
-            nombre = splitted[1] || "Desconocido";
-          }
+          const t = sel.options[sel.selectedIndex].textContent.split(" - ");
+          nombre = t[1] || "Desconocido";
         } else {
-          // Fila de la orden
-          const splitted = productoTexto.split(" - ");
-          codigo = splitted[0];
-          nombre = splitted[1] || "";
+          const t = (row.children[0].textContent||"").split(" - ");
+          codigo = t[0]; nombre = t[1] || "";
         }
 
         const unidad = row.children[1].textContent;
-        const cantidad = parseFloat(row.children[2].querySelector('input').value) || 0;
-        const precioUnitario = parseFloat(row.children[3].querySelector('input').value) || 0;
-        const total = parseFloat(row.children[4].textContent) || 0;
-        const lote = row.children[5].querySelector('input').value.trim();
-        const fechaVenc = row.children[6].querySelector('input').value;
-        const regSan = row.children[7].querySelector('input').value.trim();
-        const cantRevisada = row.children[8].querySelector('input').value.trim();
-        const transpManip = row.children[9].querySelector('select').value;
-        const cadenaFrio = row.children[10].querySelector('select').value;
-        const aprobado = row.children[11].querySelector('select').value;
+        const cant   = parseFloat(row.children[2].querySelector('input').value)||0;
+        const precio = parseFloat(row.children[3].querySelector('input').value)||0;
+        const total  = parseFloat(row.children[4].textContent)||0;
+        const lote   = row.children[5].querySelector('input').value.trim();
+        const fvenc  = row.children[6].querySelector('input').value;
+        const reg    = row.children[7].querySelector('input').value.trim();
+        const crev   = parseFloat(row.children[8].querySelector('input').value);
+
+        if (cant <= 0)  errores.push(`Fila ${idx}: cantidad inválida.`);
+        if (precio < 0) errores.push(`Fila ${idx}: precio inválido.`);
+        if (!lote)      errores.push(`Fila ${idx}: Lote obligatorio.`);
+        if (!fvenc)     errores.push(`Fila ${idx}: Fecha de vencimiento obligatoria.`);
+        if (!reg)       errores.push(`Fila ${idx}: Registro sanitario obligatorio.`);
+        if (isNaN(crev) || crev < 0) errores.push(`Fila ${idx}: Cantidad revisada inválida.`);
+        if (!isNaN(crev) && crev > cant) errores.push(`Fila ${idx}: Cant. revisada no puede ser mayor que la cantidad.`);
+
+        const transp = row.children[9].querySelector('select').value;
+        const frio   = row.children[10].querySelector('select').value;
+        const apr    = row.children[11].querySelector('select').value;
 
         itemsEntrada.push({
           productoCodigo: codigo,
           productoNombre: nombre,
           unidad,
-          cantidad,
-          precioUnitario,
+          cantidad: cant,
+          precioUnitario: precio,
           total,
           lote,
-          fechaVenc,
-          regSan,
-          cantRevisada,
-          transpManip,
-          cadenaFrio,
-          aprobado
+          fechaVenc: fvenc,
+          regSan: reg,
+          cantRevisada: crev,
+          transpManip: transp,
+          cadenaFrio: frio,
+          aprobado: apr
         });
       });
 
+      if (errores.length) {
+        alert("Corrige los siguientes puntos:\n\n- " + errores.join("\n- "));
+        return;
+      }
+
       const nuevaEntrada = {
-        id: new Date().getTime(), // ID único
+        id: Date.now(),
         ordenId: compraSeleccionada.id,
         fechaIngreso: new Date().toISOString().split("T")[0],
         items: itemsEntrada,
-        totalEntrada: parseFloat(totalEntradaInput.value)
+        totalEntrada: parseFloat(totalEntradaInput.value)||0,
+        responsable: {
+          nombre: respNombre.value.trim(),
+          cargo : respCargo.value.trim(),
+          fecha : respFecha.value
+        }
       };
 
-      // Guardar en "entradas"
-      let entradasGuardadas = [];
-      const storedEntradas = localStorage.getItem('entradas');
-      if (storedEntradas) {
-        entradasGuardadas = JSON.parse(storedEntradas);
-      }
-      entradasGuardadas.push(nuevaEntrada);
-      localStorage.setItem('entradas', JSON.stringify(entradasGuardadas));
-      entradas = entradasGuardadas; // Actualizar en memoria
+      const guardadas = JSON.parse(localStorage.getItem('entradas') || '[]');
+      guardadas.push(nuevaEntrada);
+      localStorage.setItem('entradas', JSON.stringify(guardadas));
+      entradas = guardadas;
 
       alert("Entrada guardada con éxito. Puedes generar el acta o ver el historial.");
-      // Limpiar
       entradaForm.reset();
       tablaEntradasBody.innerHTML = "";
       totalEntradaInput.value = "";
       ordenInfoDiv.style.display = 'none';
       compraSeleccionada = null;
       ordenCompraSelect.value = "";
+      // restaurar fecha de hoy en el form de firma
+      respFecha.value = new Date().toISOString().split("T")[0];
 
-      // Renderizamos historial de nuevo
       renderHistorial();
     });
 
-    // Generar Acta de Recepción de la entrada actual (si se ha cargado algo)
     function generarActa() {
-      // Se puede generar con la info actual en la tabla (sin guardar),
-      // o de la última entrada guardada. Aquí lo haremos con la tabla actual:
-      // Podrías adaptarlo para generar la del "nuevaEntrada" luego de guardarlo.
       const rows = tablaEntradasBody.querySelectorAll('tr');
-      if (rows.length === 0) {
-        alert("No hay ítems para generar el acta.");
-        return;
-      }
-      if (!compraSeleccionada) {
-        alert("No hay orden de compra cargada.");
-        return;
-      }
-      alert("Función de ejemplo: aquí generarías el HTML del acta con la info de la tabla actual.");
+      if (!rows.length) { alert("No hay ítems para generar el acta."); return; }
+      if (!compraSeleccionada) { alert("No hay orden de compra cargada."); return; }
+      alert("Ejemplo: aquí generas el HTML del acta con la info actual (opcional).");
     }
 
-    // Ver Acta de un ID de entrada guardada
     function verActa(entradaId) {
-      const ent = entradas.find(e => e.id === entradaId);
-      if (!ent) {
-        alert("Entrada no encontrada.");
-        return;
-      }
+      const ent = entradas.find(e=>e.id===entradaId);
+      if(!ent){ alert("Entrada no encontrada."); return; }
 
-      // Podemos obtener más datos del proveedor, igual que en 'cargarOrden'
-      let proveedorInfo = {};
       let provNombre = "";
-      const compraRef = compras.find(c => c.id === ent.ordenId);
+      const compraRef = compras.find(c=>c.id===ent.ordenId);
       if (compraRef) {
-        const storedProveedores = localStorage.getItem('proveedores');
-        if (storedProveedores) {
-          const proveedores = JSON.parse(storedProveedores);
-          const prov = proveedores.find(p => p.id == compraRef.proveedorId);
-          if (prov) {
-            proveedorInfo = prov;
-            provNombre = prov.nombre;
-          }
-        }
+        const proveedores = JSON.parse(localStorage.getItem('proveedores') || '[]');
+        const prov = proveedores.find(p=>p.id==compraRef.proveedorId);
+        if (prov) provNombre = prov.nombre;
       }
 
-      // Generar HTML para el acta, incluyendo la sección de firma
-      let actaHTML = `
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Acta de Recepción #${entradaId}</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
-          h1 { text-align: center; color: #008000; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          table th, table td { border: 1px solid #ccc; padding: 8px; text-align: left; }
-          table thead { background-color: #e9ecef; }
-          .text-right { text-align: right; }
-          .info { margin-bottom: 10px; }
-          .info strong { display: inline-block; width: 130px; }
-          .firma { margin-top: 60px; }
-        </style>
-      </head>
-      <body>
-        <h1>Acta de Recepción</h1>
-        <div class="info">
-          <p><strong>ID Entrada:</strong> ${ent.id}</p>
-          <p><strong>Orden ID:</strong> ${ent.ordenId}</p>
-          <p><strong>Fecha Ingreso:</strong> ${ent.fechaIngreso}</p>
-          <p><strong>Proveedor:</strong> ${provNombre}</p>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Unidad</th>
-              <th>Cant.</th>
-              <th>Precio</th>
-              <th>Total</th>
-              <th>Lote</th>
-              <th>F.Venc</th>
-              <th>Reg.San</th>
-              <th>Revisada</th>
-              <th>Transp/Manip</th>
-              <th>Cadena Frío</th>
-              <th>Aprobado</th>
-            </tr>
-          </thead>
-          <tbody>`;
-      ent.items.forEach(item => {
-        actaHTML += `
-            <tr>
-              <td>${item.productoCodigo} - ${item.productoNombre}</td>
-              <td>${item.unidad}</td>
-              <td>${item.cantidad}</td>
-              <td>${item.precioUnitario.toFixed(2)}</td>
-              <td>${item.total.toFixed(2)}</td>
-              <td>${item.lote}</td>
-              <td>${item.fechaVenc || ""}</td>
-              <td>${item.regSan || ""}</td>
-              <td>${item.cantRevisada || ""}</td>
-              <td>${item.transpManip || ""}</td>
-              <td>${item.cadenaFrio || ""}</td>
-              <td>${item.aprobado || ""}</td>
-            </tr>`;
+      let html = `
+      <html><head><meta charset="UTF-8"><title>Acta #${ent.id}</title>
+      <style>
+        body{font-family:Arial,sans-serif;margin:20px;color:#333}
+        h1{text-align:center;color:#008000}
+        table{width:100%;border-collapse:collapse;margin-top:20px}
+        th,td{border:1px solid #ccc;padding:8px;text-align:left}
+        thead{background:#e9ecef}
+        .firma{margin-top:24px;border:1px solid #e0e0e0;padding:12px;border-radius:8px;background:#fafafa}
+        .firma p{margin:6px 0;}
+        .text-right{text-align:right}
+      </style></head><body>
+      <h1>Acta de Recepción</h1>
+      <p><strong>ID Entrada:</strong> ${ent.id}</p>
+      <p><strong>Orden ID:</strong> ${ent.ordenId}</p>
+      <p><strong>Fecha Ingreso:</strong> ${ent.fechaIngreso}</p>
+      <p><strong>Proveedor:</strong> ${provNombre}</p>
+      <table><thead><tr>
+        <th>Producto</th><th>Unidad</th><th>Cant.</th><th>Precio</th>
+        <th>Total</th><th>Lote</th><th>F.Venc</th><th>Reg.San</th>
+        <th>Revisada</th><th>Transp/Manip</th><th>Cadena Frío</th><th>Aprobado</th>
+      </tr></thead><tbody>`;
+      ent.items.forEach(it=>{
+        html += `<tr>
+          <td>${it.productoCodigo} - ${it.productoNombre}</td>
+          <td>${it.unidad}</td>
+          <td>${it.cantidad}</td>
+          <td>${Number(it.precioUnitario).toFixed(2)}</td>
+          <td>${Number(it.total).toFixed(2)}</td>
+          <td>${it.lote}</td>
+          <td>${it.fechaVenc||""}</td>
+          <td>${it.regSan||""}</td>
+          <td>${it.cantRevisada||""}</td>
+          <td>${it.transpManip||""}</td>
+          <td>${it.cadenaFrio||""}</td>
+          <td>${it.aprobado||""}</td>
+        </tr>`;
       });
-      actaHTML += `
-          </tbody>
-        </table>
-        <h2 class="text-right">Total Entrada: ${ent.totalEntrada.toFixed(2)}</h2>
-        <div class="firma">
-          <p><strong>Firma del Responsable de Recepción:</strong></p>
-          <p>Nombre: _____________________________________________</p>
-          <p>Cargo: _______________________________________________</p>
-          <p>Fecha: _______________________________________________</p>
-        </div>
-      </body>
-      </html>
-      `;
-      const nuevaVentana = window.open('', '_blank');
-      nuevaVentana.document.write(actaHTML);
-      nuevaVentana.document.close();
-    }
+      html += `</tbody></table>
+      <h2 class="text-right">Total Entrada: ${Number(ent.totalEntrada).toFixed(2)}</h2>
+      <div class="firma">
+        <p><strong>Firma del Responsable de Recepción</strong></p>
+        <p><strong>Nombre:</strong> ${ent.responsable?.nombre || ""}</p>
+        <p><strong>Cargo:</strong> ${ent.responsable?.cargo  || ""}</p>
+        <p><strong>Fecha:</strong> ${ent.responsable?.fecha  || ""}</p>
+      </div>
+      </body></html>`;
 
-    function crearCelda(texto) {
-      const td = document.createElement('td');
-      td.textContent = texto;
-      return td;
-    }
-  </script>
-  <button onclick="borrarHistorial()">Borrar Historial de Entradas</button>
-
-  <script>
-    function borrarHistorial() {
-      if (confirm("¿Estás seguro de eliminar el historial de entradas?")) {
-        localStorage.removeItem('entradas');
-        // Actualizar la tabla de historial (asumiendo que tienes una función para ello)
-        document.querySelector('#tablaHistorial tbody').innerHTML = "";
-        alert("Historial de entradas eliminado.");
-      }
+      const w = window.open('','_blank');
+      w.document.write(html); w.document.close();
     }
   </script>
 </body>
