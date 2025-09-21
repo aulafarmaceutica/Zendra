@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Domicilios y Traslados - Zendra</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --primary:#0d6efd; --success:#198754; --danger:#dc3545; --warning:#ffc107; --info:#0dcaf0;
+      --muted:#6c757d; --bg:#f8f9fa; --card:#ffffff; --line:#dee2e6; --light-blue:#e7f3ff;
+      --green-light:#d1f2eb; --red-light:#f8d7da; --yellow-light:#fff3cd;
+    }
+    *{box-sizing:border-box; margin:0; padding:0;}
+    
+    body{
+      font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+      background:var(--bg);
+      margin:20px;
+      color:#333;
+      line-height:1.5;
+    }
+    
+    a.menu-button{
+      display:inline-block;
+      background:var(--primary);
+      color:#fff;
+      text-decoration:none;
+      padding:10px 16px;
+      border-radius:8px;
+      margin-bottom:20px;
+      font-weight:500;
+      transition:all 0.2s ease;
+      box-shadow:0 2px 4px rgba(13,110,253,0.2);
+    }
+    a.menu-button:hover{
+      background:#0b5ed7;
+      transform:translateY(-1px);
+      box-shadow:0 4px 8px rgba(13,110,253,0.3);
+    }
+    
+    .container{
+      max-width:1500px;
+      margin:auto;
+      background:var(--card);
+      border-radius:12px;
+      padding:30px;
+      box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    }
+    
+    h1{
+      margin:0 0 8px;
+      text-align:center;
+      color:var(--primary);
+      font-size:2rem;
+      font-weight:600;
+    }
+    
+    h3{
+      color:var(--primary);
+      margin:20px 0 15px;
+      font-size:1.3rem;
+      border-bottom:2px solid var(--light-blue);
+      padding-bottom:8px;
+    }
+    
+    h4{
+      color:#495057;
+      margin:15px 0 10px;
+      font-size:1.1rem;
+    }
+    
+    .sub{
+      color:#666;
+      text-align:center;
+      margin-bottom:25px;
+      font-size:1rem;
+      font-style:italic;
+    }
+    
+    .grid{display:grid; gap:20px;}
+    @media(min-width:768px){ 
+      .grid-2{grid-template-columns:repeat(2,1fr);} 
+      .grid-3{grid-template-columns:repeat(3,1fr);} 
+      .grid-4{grid-template-columns:repeat(4,1fr);}
+    }
+    
+    label{
+      font-weight:600;
+      font-size:0.95rem;
+      margin-bottom:8px;
+      display:block;
+      color:#495057;
+    }
+    
+    input[type=text],input[type=number],input[type=date],input[type=time],input[type=tel],select,textarea{
+      width:100%;
+      padding:12px 14px;
+      border:2px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      font-size:0.95rem;
+      transition:border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    input:focus, select:focus, textarea:focus{
+      outline:none;
+      border-color:var(--primary);
+      box-shadow:0 0 0 3px rgba(13,110,253,0.1);
+    }
+    
+    textarea{
+      min-height:90px;
+      resize:vertical;
+      font-family:inherit;
+    }
+    
+    .info-box{
+      border:2px solid var(--line);
+      border-radius:10px;
+      padding:20px;
+      background:var(--light-blue);
+      margin-bottom:15px;
+    }
+    
+    .alert-box{
+      border:2px solid var(--warning);
+      background:var(--yellow-light);
+      border-radius:10px;
+      padding:15px;
+      margin:15px 0;
+    }
+    
+    .success-box{
+      border:2px solid var(--success);
+      background:var(--green-light);
+      border-radius:10px;
+      padding:15px;
+      margin:15px 0;
+    }
+    
+    .temp-control-box{
+      border:2px solid #17a2b8;
+      background:#e8f4f8;
+      border-radius:10px;
+      padding:20px;
+      margin:15px 0;
+    }
+    
+    .muted{
+      color:#6b7280;
+      font-size:0.9rem;
+      margin-top:5px;
+    }
+    
+    .rowline{
+      height:2px;
+      background:linear-gradient(90deg, var(--primary), var(--light-blue));
+      margin:25px 0;
+      border-radius:1px;
+    }
+    
+    .btn{
+      border:0;
+      border-radius:8px;
+      padding:12px 20px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:0.95rem;
+      transition:all 0.2s ease;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    
+    .btn:hover{
+      transform:translateY(-1px);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .btn-success{background:var(--success); color:#fff;}
+    .btn-success:hover{background:#157347;}
+    
+    .btn-danger{background:var(--danger); color:#fff;}
+    .btn-danger:hover{background:#bb2d3b;}
+    
+    .btn-primary{background:var(--primary); color:#fff;}
+    .btn-primary:hover{background:#0b5ed7;}
+    
+    .btn-warning{background:var(--warning); color:#000;}
+    .btn-warning:hover{background:#ffcd39;}
+    
+    .btn-secondary{background:#6c757d; color:#fff;}
+    .btn-secondary:hover{background:#5c636a;}
+    
+    .btn:disabled{
+      opacity:0.6;
+      cursor:not-allowed;
+      transform:none;
+    }
+    
+    .actions{
+      text-align:center;
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-top:20px;
+    }
+    
+    table{
+      width:100%;
+      border-collapse:collapse;
+      background:#fff;
+      border-radius:10px;
+      overflow:hidden;
+      box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    }
+    
+    th,td{
+      padding:12px 10px;
+      text-align:left;
+      font-size:0.9rem;
+      border-bottom:1px solid var(--line);
+    }
+    
+    thead{
+      background:linear-gradient(135deg, var(--primary), #0b5ed7);
+      color:white;
+    }
+    
+    tbody tr:hover{
+      background:var(--light-blue);
+    }
+    
+    .pill{
+      display:inline-block;
+      background:var(--light-blue);
+      color:var(--primary);
+      border:1px solid var(--primary);
+      padding:4px 12px;
+      border-radius:50px;
+      font-size:0.8rem;
+      font-weight:500;
+    }
+    
+    .status-pill{
+      padding:4px 10px;
+      border-radius:20px;
+      font-size:0.8rem;
+      font-weight:600;
+    }
+    
+    .status-domicilio{
+      background:var(--green-light);
+      color:var(--success);
+      border:1px solid var(--success);
+    }
+    
+    .status-traslado{
+      background:var(--yellow-light);
+      color:#856404;
+      border:1px solid var(--warning);
+    }
+    
+    .right{text-align:right;}
+    .center{text-align:center;}
+    
+    .form-group{
+      margin-bottom:20px;
+    }
+    
+    .radio-group{
+      display:flex;
+      gap:20px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin:10px 0;
+    }
+    
+    .radio-group label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:500;
+      margin-bottom:0;
+      cursor:pointer;
+    }
+    
+    input[type="radio"], input[type="checkbox"]{
+      width:auto;
+      margin:0;
+    }
+    
+    .temp-indicator{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-top:8px;
+    }
+    
+    .temp-ok{color:var(--success); font-weight:600;}
+    .temp-warning{color:var(--warning); font-weight:600;}
+    .temp-danger{color:var(--danger); font-weight:600;}
+    
+    .document-summary{
+      background:white;
+      border:2px solid var(--line);
+      border-radius:8px;
+      padding:15px;
+      margin-top:10px;
+    }
+    
+    .document-summary.has-doc{
+      border-color:var(--success);
+      background:var(--green-light);
+    }
+    
+    .btn-small{
+      padding:6px 12px;
+      font-size:0.85rem;
+    }
+    
+    .temp-section{
+      display:grid;
+      gap:15px;
+      margin-top:15px;
+    }
+    
+    @media(min-width:768px){
+      .temp-section{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+    
+    .temp-card{
+      border:2px solid var(--line);
+      border-radius:10px;
+      padding:15px;
+      background:#fff;
+    }
+    
+    .temp-card.active{
+      border-color:var(--primary);
+      background:var(--light-blue);
+    }
+    
+    .temp-card h5{
+      margin:0 0 10px;
+      color:var(--primary);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    
+    /* Responsive adjustments */
+    @media(max-width:767px){
+      .container{
+        margin:10px;
+        padding:20px;
+      }
+      
+      .grid{
+        grid-template-columns:1fr !important;
+      }
+      
+      .actions{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      
+      .btn{
+        justify-content:center;
+      }
+      
+      table{
+        font-size:0.8rem;
+      }
+      
+      th,td{
+        padding:8px 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="menu-button" href="index.html">← Volver al Menú</a>
+
+  <div class="container">
+    <h1>📦 Registro de Domicilios y Traslados</h1>
+    <p class="sub">Sistema completo de envíos con control de temperatura, trazabilidad y gestión de destinatarios.</p>
+
+    <!-- DATOS DE CONTEXTO -->
+    <div class="info-box" id="empresaInfo"></div>
+
+    <!-- FORM PRINCIPAL -->
+    <div class="grid grid-3">
+      <div class="form-group">
+        <label for="tipoRegistro">🏷️ Tipo de registro</label>
+        <select id="tipoRegistro">
+          <option value="">Seleccione el tipo...</option>
+          <option value="domicilio">🏠 Domicilio a cliente</option>
+          <option value="traslado">🚛 Traslado de mercancía</option>
+        </select>
+        <p class="muted">El formulario se adapta según el tipo seleccionado.</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="fecha">📅 Fecha</label>
+        <input type="date" id="fecha">
+      </div>
+      
+      <div class="form-group">
+        <label for="hora">🕒 Hora de salida</label>
+        <input type="time" id="hora">
+        <p class="muted">Hora programada de envío</p>
+      </div>
+
+      <div class="form-group">
+        <label for="pesoTotal">⚖️ Peso total (Kg)</label>
+        <input type="number" id="pesoTotal" step="0.01" value="0.00" min="0">
+      </div>
+      
+      <div class="form-group">
+        <label for="numBolsas">📦 Número de bolsas/cajas</label>
+        <input type="number" id="numBolsas" min="1" value="1">
+        <p class="muted">Cantidad de unidades de empaque</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="responsable">👤 Domiciliario / Responsable</label>
+        <input type="text" id="responsable" placeholder="Nombre completo de quien entrega">
+      </div>
+      
+      <div class="form-group">
+        <label for="placa">🚗 Placa / Identificación del medio</label>
+        <input type="text" id="placa" placeholder="Ej: ABC-123 (Opcional)">
+      </div>
+
+      <div class="form-group">
+        <label for="estadoEquipo">🧰 Estado del equipo de transporte</label>
+        <select id="estadoEquipo">
+          <option value="">Seleccione estado...</option>
+          <option value="excelente">✅ Excelente</option>
+          <option value="bueno">👍 Bueno</option>
+          <option value="regular">⚠️ Regular</option>
+          <option value="malo">❌ Malo - Requiere revisión</option>
+        </select>
+        <p class="muted">Estado de maleta/cajón de transporte</p>
+      </div>
+
+      <!-- Información del destinatario -->
+      <div class="form-group" style="grid-column:1/-1;">
+        <div class="success-box">
+          <h4>👤 Información del destinatario</h4>
+          <div class="grid grid-3" style="margin-top:15px;">
+            <div>
+              <label for="nombreDestinatario">👤 Nombre de quien recibe</label>
+              <input type="text" id="nombreDestinatario" placeholder="Nombre completo del destinatario">
+            </div>
+            <div>
+              <label for="cedulaDestinatario">🆔 Cédula del destinatario</label>
+              <input type="text" id="cedulaDestinatario" placeholder="Número de identificación">
+            </div>
+            <div>
+              <label for="telefonoDestinatario">📞 Teléfono de contacto</label>
+              <input type="tel" id="telefonoDestinatario" placeholder="Para confirmación de entrega">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información específica de domicilio -->
+      <div id="infoDomicilio" class="form-group" style="display:none; grid-column:1/-1;">
+        <div class="alert-box">
+          <h4>📍 Información adicional de domicilio</h4>
+          <div class="grid grid-2" style="margin-top:15px;">
+            <div>
+              <label for="direccionEntrega">🏠 Dirección de entrega</label>
+              <input type="text" id="direccionEntrega" placeholder="Dirección completa del cliente">
+            </div>
+            <div>
+              <label for="referenciasDireccion">🗺️ Referencias de ubicación</label>
+              <input type="text" id="referenciasDireccion" placeholder="Puntos de referencia, apartamento, etc.">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información específica de traslado -->
+      <div id="infoTraslado" class="form-group" style="display:none; grid-column:1/-1;">
+        <div class="info-box">
+          <h4>🏢 Información de traslado entre sedes</h4>
+          <div class="grid grid-2" style="margin-top:15px;">
+            <div>
+              <label for="sedeOrigen">🏪 Sede origen</label>
+              <input type="text" id="sedeOrigen" placeholder="Sede que envía">
+            </div>
+            <div>
+              <label for="sedeDestino">🏢 Sede destino</label>
+              <input type="text" id="sedeDestino" placeholder="Sede que recibe">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group" style="grid-column:1/-1;">
+        <label for="observaciones">📝 Observaciones</label>
+        <textarea id="observaciones" placeholder="Notas importantes, instrucciones especiales, novedades durante el transporte, etc."></textarea>
+      </div>
+    </div>
+
+    <!-- CONTROL DE TEMPERATURA -->
+    <div class="temp-control-box">
+      <h4>🌡️ Control de Temperatura</h4>
+      <p class="muted">Registre las temperaturas según el tipo de productos transportados</p>
+      
+      <div class="temp-section">
+        <!-- Temperatura de Refrigeración -->
+        <div class="temp-card" id="tempRefrigCard">
+          <h5>❄️ Productos Refrigerados</h5>
+          <div style="margin-bottom:15px;">
+            <input type="checkbox" id="tieneRefrig" style="margin-right:8px;">
+            <label for="tieneRefrig" style="display:inline; margin-bottom:0;">Transporta productos refrigerados</label>
+          </div>
+          <div id="refrigFields" style="display:none;">
+            <label for="tempRefrig">🌡️ Temperatura refrigeración (°C)</label>
+            <input type="number" id="tempRefrig" step="0.1" placeholder="Ej: 5.0" min="-5" max="15">
+            <div class="temp-indicator">
+              <span class="pill">Rango óptimo: 2–8°C</span>
+              <span id="tempRefrigStatus"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Temperatura Ambiente -->
+        <div class="temp-card" id="tempAmbCard">
+          <h5>🌡️ Productos Temperatura Ambiente</h5>
+          <div style="margin-bottom:15px;">
+            <input type="checkbox" id="tieneAmb" style="margin-right:8px;">
+            <label for="tieneAmb" style="display:inline; margin-bottom:0;">Transporta productos temperatura ambiente</label>
+          </div>
+          <div id="ambienteFields" style="display:none;">
+            <label for="tempAmbiente">🌡️ Temperatura ambiente (°C)</label>
+            <input type="number" id="tempAmbiente" step="0.1" placeholder="Ej: 22.0" min="10" max="40">
+            <div class="temp-indicator">
+              <span class="pill">Rango óptimo: 15–30°C</span>
+              <span id="tempAmbStatus"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rowline"></div>
+
+    <!-- DOCUMENTO RELACIONADO -->
+    <h3>📄 Documento relacionado</h3>
+    <div class="grid grid-2">
+      <div class="form-group">
+        <div class="info-box">
+          <label style="margin-bottom:10px;">🔍 Modo de selección</label>
+          <div class="radio-group">
+            <label><input type="radio" name="modoDoc" id="modoManual" checked> ✏️ Escribir manual</label>
+            <label><input type="radio" name="modoDoc" id="modoBuscar"> 🔍 Buscar existente</label>
+          </div>
+
+          <div id="manualBox">
+            <label for="docManual">📋 Número de documento</label>
+            <input type="text" id="docManual" placeholder="Ej: F-012 o S-034">
+            <p class="muted">💡 Puedes escribir el número de factura (venta) o de salida.</p>
+          </div>
+
+          <div id="buscarBox" style="display:none">
+            <label for="docSelect">📋 Seleccione el documento</label>
+            <select id="docSelect">
+              <option value="">Primero elija el tipo de registro...</option>
+            </select>
+            <p class="muted" id="ayudaDoc">💡 "Traslado" verás las salidas; "Domicilio a cliente" verás las ventas.</p>
+            <button class="btn btn-secondary btn-small" type="button" id="btnRefrescar">🔄 Refrescar lista</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="document-summary" id="documentSummary">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <strong>📋 Resumen del documento</strong>
+            <button class="btn btn-secondary btn-small" type="button" id="btnLimpiarResumen" title="Quitar selección">✖️</button>
+          </div>
+          <div id="resumenDoc" class="muted" style="margin-top:10px">📄 Sin documento seleccionado.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ACCIONES -->
+    <div class="actions">
+      <button class="btn btn-success" id="btnGuardar">💾 Guardar registro</button>
+      <button class="btn btn-primary" id="btnGuia">🖨️ Generar guía</button>
+      <button class="btn btn-warning" id="btnDuplicar">📋 Duplicar último</button>
+      <button class="btn btn-danger" id="btnLimpiar">🗑️ Limpiar</button>
+    </div>
+
+    <div class="rowline"></div>
+
+    <!-- HISTORIAL -->
+    <h3>📊 Historial de Domicilios / Traslados</h3>
+    <div class="info-box" style="padding:0">
+      <table id="tablaHistorial">
+        <thead>
+          <tr>
+            <th>🆔 ID</th>
+            <th>🏷️ Tipo</th>
+            <th>📅 Fecha</th>
+            <th>🕒 Hora</th>
+            <th>👤 Responsable</th>
+            <th>👤 Destinatario</th>
+            <th>📦 Bolsas/Cajas</th>
+            <th>🌡️ Temp.</th>
+            <th>🧰 Estado Equipo</th>
+            <th class="right">⚙️ Acciones</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+  </div><!--/container-->
+
+  <script>
+    /********** Utilidades **********/
+    const $ = sel => document.querySelector(sel);
+    const fmt = n => (Number(n)||0).toFixed(2);
+
+    function hoyISO(){ 
+      const d = new Date(); 
+      d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); 
+      return d.toISOString().slice(0,10); 
+    }
+    
+    function horaActual(){
+      const d = new Date();
+      return d.toTimeString().slice(0,5);
+    }
+
+    /* Empresa */
+    function cargarEmpresa(){
+      const div = $("#empresaInfo");
+      const data = localStorage.getItem("empresaInfo");
+      if(!data){ 
+        div.innerHTML = "<strong>🏢 Datos de la empresa</strong><br><span class='muted'>⚠️ No se encontró información de la empresa.</span>"; 
+        return; 
+      }
+      const e = JSON.parse(data);
+      div.innerHTML = `
+        <strong>🏢 ${e.nombre || "Sin nombre"}</strong> &nbsp; <span class="pill">${e.nit || "Sin NIT"}</span><br>
+        📞 Tel: ${e.telefono||"N/A"} · 📧 ${e.correo||"N/A"} · 👨‍💼 ${e.director||"N/A"}<br>
+        📍 ${e.direccion||"N/A"}
+      `;
+    }
+
+    /* Consecutivo domicilios */
+    function getDomId(){
+      let k = localStorage.getItem("domCounter");
+      k = k? parseInt(k,10) : 1;
+      return "D-" + String(k).padStart(3,"0");
+    }
+    
+    function incDomId(){
+      let k = localStorage.getItem("domCounter");
+      k = k? parseInt(k,10)+1 : 2;
+      localStorage.setItem("domCounter", k);
+    }
+
+    /* Validación de temperatura */
+    function validarTemperaturas(){
+      // Temperatura de refrigeración (2-8°C)
+      const tempRefrig = parseFloat($("#tempRefrig").value);
+      const statusRefrig = $("#tempRefrigStatus");
+      
+      if(!isNaN(tempRefrig) && $("#tieneRefrig").checked) {
+        if(tempRefrig >= 2 && tempRefrig <= 8) {
+          statusRefrig.innerHTML = '<span class="temp-ok">✅ Temperatura óptima</span>';
+        } else if(tempRefrig >= -1 && tempRefrig <= 12) {
+          statusRefrig.innerHTML = '<span class="temp-warning">⚠️ Fuera del rango ideal</span>';
+        } else {
+          statusRefrig.innerHTML = '<span class="temp-danger">❌ Temperatura crítica</span>';
+        }
+      } else {
+        statusRefrig.innerHTML = "";
+      }
+      
+      // Temperatura ambiente (15-30°C)
+      const tempAmb = parseFloat($("#tempAmbiente").value);
+      const statusAmb = $("#tempAmbStatus");
+      
+      if(!isNaN(tempAmb) && $("#tieneAmb").checked) {
+        if(tempAmb >= 15 && tempAmb <= 30) {
+          statusAmb.innerHTML = '<span class="temp-ok">✅ Temperatura óptima</span>';
+        } else if(tempAmb >= 10 && tempAmb <= 35) {
+          statusAmb.innerHTML = '<span class="temp-warning">⚠️ Fuera del rango ideal</span>';
+        } else {
+          statusAmb.innerHTML = '<span class="temp-danger">❌ Temperatura crítica</span>';
+        }
+      } else {
+        statusAmb.innerHTML = "";
+      }
+    }
+
+    /* Adaptación del formulario según tipo */
+    function adaptarFormulario(){
+      const tipo = $("#tipoRegistro").value;
+      const infoDom = $("#infoDomicilio");
+      const infoTras = $("#infoTraslado");
+      
+      if(tipo === "domicilio") {
+        infoDom.style.display = "block";
+        infoTras.style.display = "none";
+      } else if(tipo === "traslado") {
+        infoDom.style.display = "none";
+        infoTras.style.display = "block";
+      } else {
+        infoDom.style.display = "none";
+        infoTras.style.display = "none";
+      }
+    }
+
+    /* Control de checkboxes de temperatura */
+    function toggleTempFields(){
+      const refrigFields = $("#refrigFields");
+      const ambienteFields = $("#ambienteFields");
+      const refrigCard = $("#tempRefrigCard");
+      const ambCard = $("#tempAmbCard");
+      
+      if($("#tieneRefrig").checked) {
+        refrigFields.style.display = "block";
+        refrigCard.classList.add("active");
+      } else {
+        refrigFields.style.display = "none";
+        refrigCard.classList.remove("active");
+        $("#tempRefrig").value = "";
+        $("#tempRefrigStatus").innerHTML = "";
+      }
+      
+      if($("#tieneAmb").checked) {
+        ambienteFields.style.display = "block";
+        ambCard.classList.add("active");
+      } else {
+        ambienteFields.style.display = "none";
+        ambCard.classList.remove("active");
+        $("#tempAmbiente").value = "";
+        $("#tempAmbStatus").innerHTML = "";
+      }
+    }
+
+    /* Carga inicial */
+    document.addEventListener("DOMContentLoaded", ()=>{
+      cargarEmpresa();
+      $("#fecha").value = hoyISO();
+      $("#hora").value = horaActual();
+      renderHistorial();
+      
+      // Event listeners
+      $("#tipoRegistro").addEventListener("change", ()=>{
+        adaptarFormulario();
+        if($("#modoBuscar").checked) cargarListaDocs();
+        limpiarResumen();
+      });
+      
+      $("#tieneRefrig").addEventListener("change", toggleTempFields);
+      $("#tieneAmb").addEventListener("change", toggleTempFields);
+      $("#tempRefrig").addEventListener("input", validarTemperaturas);
+      $("#tempAmbiente").addEventListener("input", validarTemperaturas);
+      $("#modoManual").addEventListener("change", toggleModoDoc);
+      $("#modoBuscar").addEventListener("change", toggleModoDoc);
+      $("#btnRefrescar").addEventListener("click", cargarListaDocs);
+      $("#docSelect").addEventListener("change", mostrarResumenSeleccion);
+      $("#docManual").addEventListener("input", mostrarResumenManual);
+      $("#btnLimpiarResumen").addEventListener("click", limpiarResumen);
+      $("#btnGuardar").addEventListener("click", guardarRegistro);
+      $("#btnLimpiar").addEventListener("click", limpiarFormulario);
+      $("#btnGuia").addEventListener("click", generarGuiaUltimo);
+      $("#btnDuplicar").addEventListener("click", duplicarUltimo);
+    });
+
+    function toggleModoDoc(){
+      const manual = $("#modoManual").checked;
+      $("#manualBox").style.display = manual? "block":"none";
+      $("#buscarBox").style.display = manual? "none":"block";
+      limpiarResumen();
+      if(!manual) cargarListaDocs();
+    }
+
+    /* Cargar lista de documentos según tipo */
+    function cargarListaDocs(){
+      const tipo = $("#tipoRegistro").value;
+      const sel = $("#docSelect");
+      sel.innerHTML = "";
+      
+      if(!tipo){
+        sel.innerHTML = `<option value="">Primero elija el tipo de registro...</option>`;
+        return;
+      }
+      
+      if(tipo === "domicilio"){
+        const ventas = JSON.parse(localStorage.getItem("ventas") || "[]");
+        if(ventas.length===0){ 
+          sel.innerHTML = `<option value="">No hay ventas guardadas</option>`; 
+          return; 
+        }
+        sel.appendChild(new Option("Seleccione una venta...",""));
+        ventas.forEach(v => {
+          sel.appendChild(new Option(`Venta ${v.id} - ${v.fecha} - Total: $${fmt(v.total)}`, `venta_${v.id}`));
+        });
+      } else if(tipo === "traslado"){
+        const salidas = JSON.parse(localStorage.getItem("salidas") || "[]");
+        if(salidas.length===0){ 
+          sel.innerHTML = `<option value="">No hay salidas guardadas</option>`; 
+          return; 
+        }
+        sel.appendChild(new Option("Seleccione una salida...",""));
+        salidas.forEach(s => {
+          sel.appendChild(new Option(`Salida ${s.id} - ${s.fecha} - Tipo: ${s.tipo}`, `salida_${s.id}`));
+        });
+      }
+    }
+
+    function mostrarResumenSeleccion(){
+      const val = $("#docSelect").value;
+      if(!val) { limpiarResumen(); return; }
+      
+      const [tipo, id] = val.split("_");
+      let doc = null;
+      
+      if(tipo === "venta"){
+        const ventas = JSON.parse(localStorage.getItem("ventas") || "[]");
+        doc = ventas.find(v => v.id === id);
+      } else if(tipo === "salida"){
+        const salidas = JSON.parse(localStorage.getItem("salidas") || "[]");
+        doc = salidas.find(s => s.id === id);
+      }
+      
+      if(doc){
+        $("#resumenDoc").innerHTML = `
+          <strong>📋 ${tipo.toUpperCase()} ${doc.id}</strong><br>
+          📅 ${doc.fecha}<br>
+          💰 Total: $${fmt(doc.total || 0)}
+        `;
+        $("#documentSummary").classList.add("has-doc");
+      }
+    }
+
+    function mostrarResumenManual(){
+      const val = $("#docManual").value;
+      if(!val.trim()) { limpiarResumen(); return; }
+      
+      $("#resumenDoc").innerHTML = `
+        <strong>📋 Documento: ${val}</strong><br>
+        <span class="muted">💡 Documento ingresado manualmente</span>
+      `;
+      $("#documentSummary").classList.add("has-doc");
+    }
+
+    function limpiarResumen(){
+      $("#resumenDoc").innerHTML = "📄 Sin documento seleccionado.";
+      $("#documentSummary").classList.remove("has-doc");
+    }
+
+    /* Guardar registro */
+    function guardarRegistro(){
+      const tipo = $("#tipoRegistro").value;
+      if(!tipo) { alert("❌ Seleccione el tipo de registro"); return; }
+      
+      const responsable = $("#responsable").value.trim();
+      if(!responsable) { alert("❌ Ingrese el nombre del responsable"); return; }
+
+      const nombreDestinatario = $("#nombreDestinatario").value.trim();
+      if(!nombreDestinatario) { alert("❌ Ingrese el nombre del destinatario"); return; }
+
+      // Validar que al menos un tipo de temperatura esté seleccionado
+      const tieneRefrig = $("#tieneRefrig").checked;
+      const tieneAmb = $("#tieneAmb").checked;
+      if(!tieneRefrig && !tieneAmb) {
+        alert("❌ Debe seleccionar al menos un tipo de temperatura (refrigeración o ambiente)");
+        return;
+      }
+
+      const registro = {
+        id: getDomId(),
+        tipo,
+        fecha: $("#fecha").value,
+        hora: $("#hora").value,
+        pesoTotal: parseFloat($("#pesoTotal").value) || 0,
+        numBolsas: parseInt($("#numBolsas").value) || 1,
+        responsable,
+        placa: $("#placa").value.trim(),
+        estadoEquipo: $("#estadoEquipo").value,
+        // Información del destinatario
+        nombreDestinatario,
+        cedulaDestinatario: $("#cedulaDestinatario").value.trim(),
+        telefonoDestinatario: $("#telefonoDestinatario").value.trim(),
+        // Temperaturas
+        tieneRefrig,
+        tempRefrig: tieneRefrig ? (parseFloat($("#tempRefrig").value) || null) : null,
+        tieneAmb,
+        tempAmbiente: tieneAmb ? (parseFloat($("#tempAmbiente").value) || null) : null,
+        observaciones: $("#observaciones").value.trim(),
+        docRelacionado: $("#modoManual").checked ? $("#docManual").value.trim() : $("#docSelect").value,
+        // Campos específicos
+        direccionEntrega: $("#direccionEntrega").value.trim(),
+        referenciasDireccion: $("#referenciasDireccion").value.trim(),
+        sedeOrigen: $("#sedeOrigen").value.trim(),
+        sedeDestino: $("#sedeDestino").value.trim(),
+        timestamp: new Date().toISOString()
+      };
+
+      const registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      registros.push(registro);
+      localStorage.setItem("domicilios", JSON.stringify(registros));
+      
+      incDomId();
+      alert("✅ Registro guardado exitosamente!");
+      limpiarFormulario();
+      renderHistorial();
+    }
+
+    /* Duplicar último registro */
+    function duplicarUltimo(){
+      const registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      if(registros.length === 0) {
+        alert("ℹ️ No hay registros previos para duplicar");
+        return;
+      }
+      
+      const ultimo = registros[registros.length - 1];
+      
+      $("#tipoRegistro").value = ultimo.tipo;
+      $("#fecha").value = hoyISO(); // Fecha actual
+      $("#hora").value = horaActual(); // Hora actual
+      $("#pesoTotal").value = ultimo.pesoTotal;
+      $("#numBolsas").value = ultimo.numBolsas;
+      $("#responsable").value = ultimo.responsable;
+      $("#placa").value = ultimo.placa;
+      $("#estadoEquipo").value = ultimo.estadoEquipo;
+      $("#nombreDestinatario").value = ultimo.nombreDestinatario;
+      $("#cedulaDestinatario").value = ultimo.cedulaDestinatario;
+      $("#telefonoDestinatario").value = ultimo.telefonoDestinatario;
+      $("#tieneRefrig").checked = ultimo.tieneRefrig || false;
+      $("#tieneAmb").checked = ultimo.tieneAmb || false;
+      $("#tempRefrig").value = ultimo.tempRefrig || "";
+      $("#tempAmbiente").value = ultimo.tempAmbiente || "";
+      $("#observaciones").value = ultimo.observaciones;
+      $("#direccionEntrega").value = ultimo.direccionEntrega || "";
+      $("#referenciasDireccion").value = ultimo.referenciasDireccion || "";
+      $("#sedeOrigen").value = ultimo.sedeOrigen || "";
+      $("#sedeDestino").value = ultimo.sedeDestino || "";
+      
+      adaptarFormulario();
+      toggleTempFields();
+      validarTemperaturas();
+      
+      alert("📋 Datos del último registro cargados (con fecha y hora actuales)");
+    }
+
+    function limpiarFormulario(){
+      $("#tipoRegistro").value = "";
+      $("#fecha").value = hoyISO();
+      $("#hora").value = horaActual();
+      $("#pesoTotal").value = "0.00";
+      $("#numBolsas").value = "1";
+      $("#responsable").value = "";
+      $("#placa").value = "";
+      $("#estadoEquipo").value = "";
+      $("#nombreDestinatario").value = "";
+      $("#cedulaDestinatario").value = "";
+      $("#telefonoDestinatario").value = "";
+      $("#tieneRefrig").checked = false;
+      $("#tieneAmb").checked = false;
+      $("#tempRefrig").value = "";
+      $("#tempAmbiente").value = "";
+      $("#observaciones").value = "";
+      $("#docManual").value = "";
+      $("#direccionEntrega").value = "";
+      $("#referenciasDireccion").value = "";
+      $("#sedeOrigen").value = "";
+      $("#sedeDestino").value = "";
+      $("#modoManual").checked = true;
+      toggleModoDoc();
+      adaptarFormulario();
+      toggleTempFields();
+      limpiarResumen();
+    }
+
+    function renderHistorial(){
+      const tbody = $("#tablaHistorial tbody");
+      const registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      
+      if(registros.length === 0){
+        tbody.innerHTML = `<tr><td colspan="10" class="center muted">📄 No hay registros de domicilios/traslados.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = registros.map(r => {
+        let tempInfo = [];
+        if(r.tieneRefrig && r.tempRefrig !== null) tempInfo.push(`❄️${r.tempRefrig}°C`);
+        if(r.tieneAmb && r.tempAmbiente !== null) tempInfo.push(`🌡️${r.tempAmbiente}°C`);
+        
+        const estadoIcon = {
+          'excelente': '✅',
+          'bueno': '👍',
+          'regular': '⚠️',
+          'malo': '❌'
+        };
+        
+        return `
+          <tr>
+            <td><strong>${r.id}</strong></td>
+            <td><span class="status-pill status-${r.tipo}">${r.tipo === "domicilio" ? "🏠 Domicilio" : "🚛 Traslado"}</span></td>
+            <td>${r.fecha}</td>
+            <td>${r.hora || "N/A"}</td>
+            <td>${r.responsable}</td>
+            <td>${r.nombreDestinatario}</td>
+            <td class="center">${r.numBolsas || 1}</td>
+            <td class="center">${tempInfo.join('<br>') || "N/A"}</td>
+            <td class="center">${estadoIcon[r.estadoEquipo] || "N/A"}</td>
+            <td class="right">
+              <button class="btn btn-primary btn-small" onclick="verGuia('${r.id}')">👁️ Ver</button>
+              <button class="btn btn-danger btn-small" onclick="eliminarRegistro('${r.id}')">🗑️</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function eliminarRegistro(id){
+      if(!confirm(`¿Eliminar el registro ${id}?`)) return;
+      
+      let registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      registros = registros.filter(r => r.id !== id);
+      localStorage.setItem("domicilios", JSON.stringify(registros));
+      
+      renderHistorial();
+      alert("🗑️ Registro eliminado");
+    }
+
+    function verGuia(id){
+      const registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      const reg = registros.find(r => r.id === id);
+      if(!reg) { alert("❌ Registro no encontrado"); return; }
+      
+      generarGuiaHTML(reg);
+    }
+
+    function generarGuiaUltimo(){
+      const registros = JSON.parse(localStorage.getItem("domicilios") || "[]");
+      if(registros.length === 0) { alert("ℹ️ No hay registros para generar guía"); return; }
+      
+      generarGuiaHTML(registros[registros.length - 1]);
+    }
+
+    function generarGuiaHTML(reg){
+      const emp = JSON.parse(localStorage.getItem("empresaInfo") || "{}");
+      
+      const tipoTexto = reg.tipo === "domicilio" ? "🏠 DOMICILIO A CLIENTE" : "🚛 TRASLADO DE MERCANCÍA";
+      
+      let infoEspecifica = "";
+      if(reg.tipo === "domicilio") {
+        infoEspecifica = `
+          <p><strong>📍 Dirección de entrega:</strong> ${reg.direccionEntrega || "N/A"}</p>
+          <p><strong>🗺️ Referencias:</strong> ${reg.referenciasDireccion || "N/A"}</p>
+        `;
+      } else if(reg.tipo === "traslado") {
+        infoEspecifica = `
+          <p><strong>🏪 Sede origen:</strong> ${reg.sedeOrigen || "N/A"}</p>
+          <p><strong>🏢 Sede destino:</strong> ${reg.sedeDestino || "N/A"}</p>
+        `;
+      }
+      
+      const docHTML = reg.docRelacionado ? 
+        `<p><strong>📄 Documento relacionado:</strong> ${reg.docRelacionado}</p>` : "";
+
+      let tempHTML = "";
+      if(reg.tieneRefrig && reg.tempRefrig !== null) {
+        const statusRefrig = (reg.tempRefrig >= 2 && reg.tempRefrig <= 8) ? 'temp-ok' : 'temp-warning';
+        tempHTML += `
+          <div class="${statusRefrig}">
+            <strong>❄️ Productos refrigerados:</strong> ${reg.tempRefrig}°C
+            <br><span class="pill">Rango ideal: 2–8°C</span>
+          </div>
+        `;
+      }
+      
+      if(reg.tieneAmb && reg.tempAmbiente !== null) {
+        const statusAmb = (reg.tempAmbiente >= 15 && reg.tempAmbiente <= 30) ? 'temp-ok' : 'temp-warning';
+        tempHTML += `
+          <div class="${statusAmb}">
+            <strong>🌡️ Productos temperatura ambiente:</strong> ${reg.tempAmbiente}°C
+            <br><span class="pill">Rango ideal: 15–30°C</span>
+          </div>
+        `;
+      }
+
+      const estadoEquipoTexto = {
+        'excelente': '✅ Excelente',
+        'bueno': '👍 Bueno',
+        'regular': '⚠️ Regular',
+        'malo': '❌ Malo - Requiere revisión'
+      };
+
+      const html = `
+        <!DOCTYPE html>
+        <html><head>
+          <title>Guía ${reg.id} - ${emp.nombre || "Zendra"}</title>
+          <style>
+            body{font-family:Arial,Helvetica,sans-serif;margin:20px;line-height:1.6;}
+            .header{text-align:center;margin-bottom:30px;border-bottom:3px solid #0d6efd;padding-bottom:20px;}
+            .company-box{border:2px solid #dee2e6;padding:15px;border-radius:8px;margin-bottom:20px;background:#f8f9fa;}
+            .info-box{border:2px solid #0d6efd;padding:20px;border-radius:8px;margin-bottom:20px;background:#e7f3ff;}
+            .temp-warning{background:#fff3cd;border:2px solid #ffc107;padding:10px;border-radius:5px;margin:10px 0;}
+            .temp-ok{background:#d1f2eb;border:2px solid #198754;padding:10px;border-radius:5px;margin:10px 0;}
+            .signature-box{border:1px solid #ccc;height:80px;margin:20px 0;background:#fafafa;}
+            .destinatario-box{border:2px solid #28a745;background:#d1f2eb;padding:15px;border-radius:8px;margin:15px 0;}
+            h1{color:#0d6efd;margin:0;}
+            .pill{background:#e7f3ff;color:#0d6efd;border:1px solid #0d6efd;padding:4px 12px;border-radius:20px;font-size:0.9rem;}
+            .print-btn{background:#0d6efd;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;margin:10px;}
+            @media print { .print-btn{display:none;} }
+          </style>
+        </head><body>
+          <button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
+          
+          <div class="header">
+            <h1>📦 GUÍA DE ${tipoTexto}</h1>
+            <p>Sistema Zendra - Control de Envíos con Trazabilidad</p>
+          </div>
+
+          <div class="company-box">
+            <strong>🏢 ${emp.nombre||"Sin nombre de empresa"}</strong> · NIT: ${emp.nit||"N/A"}<br>
+            📞 ${emp.telefono||"N/A"} · 📧 ${emp.correo||"N/A"}<br>
+            📍 ${emp.direccion||"N/A"}
+          </div>
+
+          <div class="destinatario-box">
+            <strong>👤 INFORMACIÓN DEL DESTINATARIO</strong><br>
+            <strong>Nombre:</strong> ${reg.nombreDestinatario}<br>
+            <strong>Cédula:</strong> ${reg.cedulaDestinatario || "N/A"}<br>
+            <strong>Teléfono:</strong> ${reg.telefonoDestinatario || "N/A"}
+          </div>
+
+          <div class="info-box">
+            <p><strong>🆔 ID Guía:</strong> ${reg.id}</p>
+            <p><strong>🏷️ Tipo:</strong> ${tipoTexto}</p>
+            <p><strong>📅 Fecha:</strong> ${reg.fecha}</p>
+            <p><strong>🕒 Hora:</strong> ${reg.hora || "N/A"}</p>
+            <p><strong>⚖️ Peso total:</strong> ${fmt(reg.pesoTotal)} Kg</p>
+            <p><strong>📦 Número de bolsas/cajas:</strong> ${reg.numBolsas || 1}</p>
+            <p><strong>👤 Responsable de entrega:</strong> ${reg.responsable}</p>
+            <p><strong>🚗 Placa/Medio transporte:</strong> ${reg.placa || "N/A"}</p>
+            <p><strong>🧰 Estado del equipo:</strong> ${estadoEquipoTexto[reg.estadoEquipo] || "N/A"}</p>
+            ${infoEspecifica}
+            ${docHTML}
+            <p><strong>📝 Observaciones:</strong> ${reg.observaciones || "Ninguna"}</p>
+            
+            ${tempHTML}
+          </div>
+          
+          <div style="margin-top:40px;">
+            <p><strong>📝 Firma del responsable de entrega:</strong></p>
+            <div class="signature-box"></div>
+            <p>Nombre: _________________________ Fecha: _____________ Hora: _____________</p>
+          </div>
+          
+          <div style="margin-top:40px;">
+            <p><strong>📝 Firma del destinatario (quien recibe):</strong></p>
+            <div class="signature-box"></div>
+            <p><strong>Nombre:</strong> ${reg.nombreDestinatario}</p>
+            <p><strong>Cédula:</strong> ${reg.cedulaDestinatario || "_______________"} &nbsp;&nbsp; <strong>Fecha:</strong> _______________ &nbsp;&nbsp; <strong>Hora:</strong> _______________</p>
+          </div>
+          
+          <div style="margin-top:30px;font-size:0.9rem;color:#666;text-align:center;border-top:1px solid #ccc;padding-top:20px;">
+            <p>📱 <strong>Sistema Zendra</strong> - Gestión Farmacéutica Profesional</p>
+            <p>🌡️ Control de Temperatura | 📋 Trazabilidad Completa | ✅ Buenas Prácticas</p>
+            <p>⏰ Generado el: ${new Date().toLocaleString()}</p>
+          </div>
+        </body></html>
+      `;
+      
+      const w = window.open("","_blank"); 
+      w.document.write(html); 
+      w.document.close();
+    }
+  </script>
+</body>
+</html>
