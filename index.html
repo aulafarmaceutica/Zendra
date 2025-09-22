@@ -2,218 +2,871 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Sistema de Ventas e Inventario</title>
-  <link rel="stylesheet" href="style.css">
-
-  <!-- Font Awesome (versión Free confiable) -->
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zendra - Sistema de Gestión Farmacéutica</title>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
+    :root {
+      --primary: #2563eb;
+      --primary-light: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --secondary: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --success: #22c55e;
+      --info: #06b6d4;
+      
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+      
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+      --gradient-info: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      position: relative;
+      line-height: 1.6;
+    }
+    
+    /* Efecto de fondo animado */
     body::before {
-      content: "Profe Diego Fdo Echeverri P";
+      content: '';
       position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-60%);
-      font-size: 40px;
-      color: rgba(0, 0, 0, 0.11);
-      z-index: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.3) 0%, transparent 50%);
+      z-index: -1;
+      animation: bgShift 20s ease-in-out infinite;
+    }
+    
+    @keyframes bgShift {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.8; }
+    }
+    
+    /* Watermark mejorado */
+    body::after {
+      content: "Prof. Diego Fernando Echeverri P";
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.4);
+      z-index: 1000;
       pointer-events: none;
-      white-space: nowrap;
+      background: rgba(0, 0, 0, 0.1);
+      padding: 8px 16px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    /* Header moderno con logos originales */
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 1s ease-out;
+    }
+    
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .logo-container {
+      display: inline-flex;
+      align-items: center;
+      gap: 30px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 25px 40px;
+      border-radius: 25px;
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-xl);
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+    }
+    
+    .logo-container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .logo-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .logo-aula {
+      width: 120px;
+      height: auto;
+      border-radius: 15px;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+    }
+    
+    .logo-aula:hover {
+      transform: scale(1.05);
+    }
+    
+    .divider {
+      width: 2px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.5), transparent);
+    }
+    
+    .header-text {
+      text-align: left;
+    }
+    
+    .header-text h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .zendra-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-md);
+    }
+    
+    .header-text h2 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Formulario de empresa mejorado */
+    .empresa-section {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(20px);
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .empresa-section h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 25px;
+      text-align: center;
+    }
+    
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .form-group {
+      position: relative;
+    }
+    
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .form-actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Botones mejorados */
+    .btn {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+    }
+    
+    .btn-success {
+      background: var(--gradient-success);
+      color: white;
+    }
+    
+    .btn-danger {
+      background: var(--gradient-danger);
+      color: white;
+    }
+    
+    /* Secciones principales */
+    .main-sections {
+      display: grid;
+      gap: 30px;
+      animation: fadeInUp 1s ease-out 0.4s both;
+    }
+    
+    .section-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 35px;
+      box-shadow: var(--shadow-xl);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .section-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--gradient-primary);
+    }
+    
+    .section-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .section-title::before {
+      content: '';
+      width: 40px;
+      height: 4px;
+      background: var(--gradient-primary);
+      border-radius: 2px;
+    }
+    
+    /* Grid de botones mejorado */
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+    
+    .app-btn {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 20px 25px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border: 2px solid var(--gray-200);
+      border-radius: 15px;
+      text-decoration: none;
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .app-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--gradient-primary);
+      transition: left 0.3s ease;
+      z-index: -1;
+    }
+    
+    .app-btn:hover::before {
+      left: 0;
+    }
+    
+    .app-btn:hover {
+      color: white;
+      border-color: transparent;
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .app-btn i {
+      font-size: 1.4rem;
+      width: 30px;
+      text-align: center;
+    }
+    
+    /* Iconos específicos por sección */
+    .terceros .app-btn::before { background: var(--gradient-info); }
+    .movimientos .app-btn::before { background: var(--gradient-primary); }
+    .soporte .app-btn::before { background: var(--gradient-success); }
+    
+    /* Botón de peligro mejorado */
+    .danger-section {
+      text-align: center;
+      margin-top: 40px;
+      animation: fadeInUp 1s ease-out 0.6s both;
+    }
+    
+    .btn-danger-main {
+      background: var(--gradient-danger);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+    
+    .btn-danger-main:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+      
+      .logo-container {
+        flex-direction: column;
+        padding: 25px 20px;
+        gap: 20px;
+      }
+      
+      .logo-left {
+        flex-direction: row;
+        gap: 20px;
+      }
+      
+      .divider {
+        width: 80px;
+        height: 2px;
+        background: linear-gradient(to right, transparent, rgba(255,255,255,0.5), transparent);
+      }
+      
+      .header-text {
+        text-align: center;
+      }
+      
+      .header-text h1 {
+        font-size: 2.2rem;
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .header-text h2 {
+        font-size: 1rem;
+      }
+      
+      .logo-aula {
+        width: 80px;
+      }
+      
+      .zendra-logo {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .empresa-section,
+      .section-card {
+        padding: 25px 20px;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      
+      .btn-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      body::after {
+        bottom: 15px;
+        right: 15px;
+        font-size: 12px;
+        padding: 6px 12px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .header-text h1 {
+        font-size: 1.8rem;
+      }
+      
+      .section-title {
+        font-size: 1.4rem;
+      }
+      
+      .app-btn {
+        padding: 18px 20px;
+        font-size: 0.95rem;
+      }
+      
+      .logo-container {
+        padding: 20px 15px;
+      }
+    }
+    
+    /* Animaciones de entrada */
+    .app-btn {
+      animation: fadeInScale 0.6s ease-out both;
+    }
+    
+    .app-btn:nth-child(1) { animation-delay: 0.1s; }
+    .app-btn:nth-child(2) { animation-delay: 0.2s; }
+    .app-btn:nth-child(3) { animation-delay: 0.3s; }
+    .app-btn:nth-child(4) { animation-delay: 0.4s; }
+    .app-btn:nth-child(5) { animation-delay: 0.5s; }
+    .app-btn:nth-child(6) { animation-delay: 0.6s; }
+    .app-btn:nth-child(7) { animation-delay: 0.7s; }
+    
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    /* Efectos de carga */
+    .loading {
+      opacity: 0;
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
     }
   </style>
 </head>
-<body>
-
-<!-- ENCABEZADO -->
-<div class="header-card">
-  <img src="logo-aula-diego.png" alt="Logo Aula de Diego" />
-  <div class="header-text">
-    <h1>Sistema de Ventas e Inventario</h1>
-    <h2>Información de la Empresa</h2>
-  </div>
-</div>
-
-<!-- FORMULARIO DE EMPRESA -->
-<form id="empresaForm" class="container">
-  <div class="form-group">
-    <label for="empresaNombre">Nombre de la Empresa:</label>
-    <input type="text" id="empresaNombre" required>
-  </div>
-  <div class="form-group">
-    <label for="empresaNit">NIT:</label>
-    <input type="text" id="empresaNit" required>
-  </div>
-  <div class="form-group">
-    <label for="empresaTelefono">Teléfono:</label>
-    <input type="text" id="empresaTelefono" required>
-  </div>
-  <div class="form-group">
-    <label for="empresaCorreo">Correo Electrónico:</label>
-    <input type="email" id="empresaCorreo" required>
-  </div>
-  <div class="form-group">
-    <label for="empresaDirector">Director Responsable:</label>
-    <input type="text" id="empresaDirector" required>
-  </div>
-  <div class="form-group">
-    <label for="empresaDireccion">Dirección:</label>
-    <input type="text" id="empresaDireccion" required>
-  </div>
-  <div class="form-actions">
-    <button type="submit" class="btn-save">Guardar Empresa</button>
-    <button type="button" class="btn-clear" onclick="borrarEmpresa()">Borrar</button>
-  </div>
-</form>
-
-<!-- SECCIONES DE MENÚ -->
-<div class="sections">
-
-  <!-- Gestión de terceros -->
-  <div class="section-card">
-    <h3 class="section-title">Gestión de terceros</h3>
-    <div class="btn-grid">
-      <a class="app-btn" href="proveedores.html">
-        <i class="fa-solid fa-truck"></i> Proveedores
-      </a>
-      <a class="app-btn" href="clientes.html">
-        <i class="fa-solid fa-id-card"></i> Clientes
-      </a>
-    </div>
-  </div>
-
-  <!-- Movimientos -->
-  <div class="section-card">
-    <h3 class="section-title">Movimientos</h3>
-    <div class="btn-grid">
-      <a class="app-btn" href="compras.html">
-        <i class="fa-solid fa-cart-shopping"></i> Compras
-      </a>
-      <a class="app-btn" href="entradas.html">
-        <i class="fa-solid fa-boxes-stacked"></i> Entradas
-      </a>
-      <a class="app-btn" href="ventas.html">
-        <i class="fa-solid fa-hand-holding-dollar"></i> Ventas
-      </a>
-      <a class="app-btn" href="salidas.html">
-        <i class="fa-solid fa-dolly"></i> Salidas
-      </a>
-      <a class="app-btn" href="domicilios.html">
-        <i class="fa-solid fa-dolly"></i> Logística
-      </a>
-      <a class="app-btn" href="devoluciones.html">
-        <i class="fa-solid fa-rotate-left"></i> Devoluciones
-      </a>
-      <a class="app-btn" href="entradas_otros_conceptos_completo.html">
-        <i class="fa-solid fa-boxes-stacked"></i> Entradas por otros conceptos
-      </a>
-    </div>
-  </div>
-
-  <!-- Soporte y control -->
-  <div class="section-card">
-    <h3 class="section-title">Soporte y control</h3>
-    <div class="btn-grid">
-      <a class="app-btn" href="productos.html">
-        <i class="fa-solid fa-capsules"></i> Productos
-      </a>
-      <a class="app-btn" href="inventario.html">
-        <i class="fa-solid fa-warehouse"></i> Inventario
-      </a>
-      <a class="app-btn" href="temperatura.html">
-        <i class="fa-solid fa-temperature-half"></i> Factores ambientales
-      </a>
-      <a class="app-btn" href="https://formulasmedicas.tiiny.site/" target="_blank">
-        <i class="fa-solid fa-prescription-bottle-medical"></i> Fórmulas Médicas
-      </a>
+<body class="loading">
+  <div class="container">
+    
+<!-- HEADER MEJORADO CON IMAGEN ÚNICA -->
+<div class="header-section">
+  <div class="logo-container">
+    <!-- Eliminar el div y la imagen que está sola a la izquierda -->
+    <div class="header-text">
+      <h1>
+        Zendra
+        <img src="logo-aula-diego.jpg" alt="Logo @ElAula DeDiego" class="logo-aula" />
+      </h1>
+      <h2>Sistema Integral de Gestión Farmacéutica</h2>
     </div>
   </div>
 </div>
 
-<!-- BOTÓN DE BORRAR TODO -->
-<div class="danger-wrap">
-  <button class="btn-danger" onclick="borrarTodosMovimientos()">Borrar TODOS los movimientos</button>
-</div>
+    <!-- FORMULARIO DE EMPRESA MEJORADO -->
+    <div class="empresa-section">
+      <h3><i class="fas fa-building"></i> Información de la Empresa</h3>
+      <form id="empresaForm">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="empresaNombre"><i class="fas fa-store"></i> Nombre de la Empresa:</label>
+            <input type="text" id="empresaNombre" required placeholder="Ingresa el nombre de tu empresa">
+          </div>
+          <div class="form-group">
+            <label for="empresaNit"><i class="fas fa-id-card"></i> NIT:</label>
+            <input type="text" id="empresaNit" required placeholder="000000000-0">
+          </div>
+          <div class="form-group">
+            <label for="empresaTelefono"><i class="fas fa-phone"></i> Teléfono:</label>
+            <input type="text" id="empresaTelefono" required placeholder="+57 300 123 4567">
+          </div>
+          <div class="form-group">
+            <label for="empresaCorreo"><i class="fas fa-envelope"></i> Correo Electrónico:</label>
+            <input type="email" id="empresaCorreo" required placeholder="contacto@empresa.com">
+          </div>
+          <div class="form-group">
+            <label for="empresaDirector"><i class="fas fa-user-tie"></i> Director Responsable:</label>
+            <input type="text" id="empresaDirector" required placeholder="Nombre del director">
+          </div>
+          <div class="form-group">
+            <label for="empresaDireccion"><i class="fas fa-map-marker-alt"></i> Dirección:</label>
+            <input type="text" id="empresaDireccion" required placeholder="Dirección completa">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-success">
+            <i class="fas fa-save"></i> Guardar Empresa
+          </button>
+          <button type="button" class="btn btn-danger" onclick="borrarEmpresa()">
+            <i class="fas fa-trash"></i> Limpiar Datos
+          </button>
+        </div>
+      </form>
+    </div>
 
-<script>
-  const empresaKey = "empresaInfo";
+    <!-- SECCIONES PRINCIPALES MEJORADAS -->
+    <div class="main-sections">
+      
+      <!-- Gestión de terceros -->
+      <div class="section-card terceros">
+        <h3 class="section-title">
+          <i class="fas fa-users"></i> Gestión de Terceros
+        </h3>
+        <div class="btn-grid">
+          <a class="app-btn" href="proveedores.html">
+            <i class="fas fa-truck"></i>
+            <span>Proveedores</span>
+          </a>
+          <a class="app-btn" href="clientes.html">
+            <i class="fas fa-user-friends"></i>
+            <span>Clientes</span>
+          </a>
+        </div>
+      </div>
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const empresaData = localStorage.getItem(empresaKey);
-    if (empresaData) {
-      const empresa = JSON.parse(empresaData);
-      document.getElementById('empresaNombre').value = empresa.nombre || "";
-      document.getElementById('empresaNit').value = empresa.nit || "";
-      document.getElementById('empresaTelefono').value = empresa.telefono || "";
-      document.getElementById('empresaCorreo').value = empresa.correo || "";
-      document.getElementById('empresaDirector').value = empresa.director || "";
-      document.getElementById('empresaDireccion').value = empresa.direccion || "";
-    }
-  });
+      <!-- Movimientos -->
+      <div class="section-card movimientos">
+        <h3 class="section-title">
+          <i class="fas fa-exchange-alt"></i> Movimientos
+        </h3>
+        <div class="btn-grid">
+          <a class="app-btn" href="compras.html">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Compras</span>
+          </a>
+          <a class="app-btn" href="entradas.html">
+            <i class="fas fa-boxes"></i>
+            <span>Entradas</span>
+          </a>
+          <a class="app-btn" href="ventas.html">
+            <i class="fas fa-cash-register"></i>
+            <span>Ventas</span>
+          </a>
+          <a class="app-btn" href="salidas.html">
+            <i class="fas fa-dolly"></i>
+            <span>Salidas</span>
+          </a>
+          <a class="app-btn" href="domicilios.html">
+            <i class="fas fa-shipping-fast"></i>
+            <span>Domicilios</span>
+          </a>
+          <a class="app-btn" href="devoluciones.html">
+            <i class="fas fa-undo-alt"></i>
+            <span>Devoluciones</span>
+          </a>
+          <a class="app-btn" href="entradas_otros_conceptos_completo.html">
+            <i class="fas fa-plus-circle"></i>
+            <span>Otras Entradas</span>
+          </a>
+        </div>
+      </div>
 
-  document.getElementById('empresaForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const empresa = {
-      nombre: document.getElementById('empresaNombre').value.trim(),
-      nit: document.getElementById('empresaNit').value.trim(),
-      telefono: document.getElementById('empresaTelefono').value.trim(),
-      correo: document.getElementById('empresaCorreo').value.trim(),
-      director: document.getElementById('empresaDirector').value.trim(),
-      direccion: document.getElementById('empresaDireccion').value.trim()
-    };
-    localStorage.setItem(empresaKey, JSON.stringify(empresa));
-    alert('Información de la empresa guardada.');
-  });
+      <!-- Soporte y control -->
+      <div class="section-card soporte">
+        <h3 class="section-title">
+          <i class="fas fa-cogs"></i> Soporte y Control
+        </h3>
+        <div class="btn-grid">
+          <a class="app-btn" href="productos.html">
+            <i class="fas fa-pills"></i>
+            <span>Productos</span>
+          </a>
+          <a class="app-btn" href="inventario.html">
+            <i class="fas fa-warehouse"></i>
+            <span>Inventario</span>
+          </a>
+          <a class="app-btn" href="temperatura.html">
+            <i class="fas fa-thermometer-half"></i>
+            <span>Factores Ambientales</span>
+          </a>
+          <a class="app-btn" href="https://formulasmedicas.tiiny.site/" target="_blank">
+            <i class="fas fa-prescription-bottle-medical"></i>
+            <span>Fórmulas Médicas</span>
+          </a>
+        </div>
+      </div>
+    </div>
 
-  function borrarEmpresa() {
-    if (confirm("¿Estás seguro de borrar la información de la empresa?")) {
-      localStorage.removeItem(empresaKey);
-      document.getElementById('empresaForm').reset();
-      alert("Información de la empresa borrada. Ahora puedes ingresar datos nuevos.");
-    }
-  }
+    <!-- BOTÓN DE PELIGRO MEJORADO -->
+    <div class="danger-section">
+      <button class="btn-danger-main" onclick="borrarTodosMovimientos()">
+        <i class="fas fa-exclamation-triangle"></i>
+        Borrar TODOS los movimientos
+      </button>
+    </div>
 
-  function borrarTodosMovimientos() {
-    const pass = prompt("Ingrese la clave para borrar todos los movimientos:");
-    if (pass === "sena") {
-      localStorage.clear();
-      alert("Se han borrado todos los movimientos y datos principales.");
-    } else {
-      alert("Clave incorrecta. No se borró nada.");
-    }
-  }
-</script>
+  </div>
 
-<!-- SNIPPET DE CHATBASE (burbuja de IA) -->
-<script>
-  (function(){
-    if(!window.chatbase || window.chatbase("getState") !== "initialized"){
-      window.chatbase = (...args) => {
-        if(!window.chatbase.q){ window.chatbase.q = [] }
-        window.chatbase.q.push(args)
+  <script>
+    // Efecto de carga
+    window.addEventListener('load', () => {
+      document.body.classList.add('loaded');
+    });
+
+    const empresaKey = "empresaInfo";
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const empresaData = localStorage.getItem(empresaKey);
+      if (empresaData) {
+        const empresa = JSON.parse(empresaData);
+        document.getElementById('empresaNombre').value = empresa.nombre || "";
+        document.getElementById('empresaNit').value = empresa.nit || "";
+        document.getElementById('empresaTelefono').value = empresa.telefono || "";
+        document.getElementById('empresaCorreo').value = empresa.correo || "";
+        document.getElementById('empresaDirector').value = empresa.director || "";
+        document.getElementById('empresaDireccion').value = empresa.direccion || "";
+      }
+    });
+
+    document.getElementById('empresaForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const empresa = {
+        nombre: document.getElementById('empresaNombre').value.trim(),
+        nit: document.getElementById('empresaNit').value.trim(),
+        telefono: document.getElementById('empresaTelefono').value.trim(),
+        correo: document.getElementById('empresaCorreo').value.trim(),
+        director: document.getElementById('empresaDirector').value.trim(),
+        direccion: document.getElementById('empresaDireccion').value.trim()
       };
-      window.chatbase = new Proxy(window.chatbase, {
-        get(target, prop){
-          if(prop === "q"){ return target.q }
-          return (...args) => target(prop, ...args)
-        }
-      })
+      localStorage.setItem(empresaKey, JSON.stringify(empresa));
+      
+      // Efecto de éxito
+      const btn = e.target.querySelector('button[type="submit"]');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-check"></i> ¡Guardado!';
+      btn.style.background = 'var(--gradient-success)';
+      
+      setTimeout(() => {
+        btn.innerHTML = originalText;
+        btn.style.background = '';
+      }, 2000);
+    });
+
+    function borrarEmpresa() {
+      if (confirm("¿Estás seguro de borrar la información de la empresa?")) {
+        localStorage.removeItem(empresaKey);
+        document.getElementById('empresaForm').reset();
+        
+        // Efecto visual
+        const inputs = document.querySelectorAll('#empresaForm input');
+        inputs.forEach(input => {
+          input.style.transform = 'scale(0.95)';
+          input.style.opacity = '0.5';
+          setTimeout(() => {
+            input.style.transform = 'scale(1)';
+            input.style.opacity = '1';
+          }, 200);
+        });
+        
+        alert("✅ Información de la empresa borrada exitosamente.");
+      }
     }
-    const onLoad = function(){
-      const script = document.createElement("script");
-      script.src = "https://www.chatbase.co/embed.min.js";
-      script.id = "6MkiTjm1OJSXymGZWHhJW";
-      script.domain = "www.chatbase.co";
-      document.body.appendChild(script)
-    };
-    if(document.readyState === "complete"){
-      onLoad()
-    } else {
-      window.addEventListener("load", onLoad)
+
+    function borrarTodosMovimientos() {
+      const pass = prompt("⚠️ PELIGRO: Ingrese la clave para borrar todos los movimientos:");
+      if (pass === "sena") {
+        localStorage.clear();
+        
+        // Efecto visual dramático
+        document.body.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => {
+          document.body.style.animation = '';
+        }, 500);
+        
+        alert("🗑️ Se han borrado todos los movimientos y datos principales.");
+      } else if (pass !== null) {
+        alert("❌ Clave incorrecta. No se borró nada.");
+      }
     }
-  })();
-</script>
+
+    // Animación de shake para el efecto de borrado
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Efecto de partículas en hover de botones principales
+    document.querySelectorAll('.app-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px) scale(1.02)';
+      });
+      
+      btn.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
+      });
+    });
+  </script>
+
+  <!-- SNIPPET DE CHATBASE (burbuja de IA) -->
+  <script>
+    (function(){
+      if(!window.chatbase || window.chatbase("getState") !== "initialized"){
+        window.chatbase = (...args) => {
+          if(!window.chatbase.q){ window.chatbase.q = [] }
+          window.chatbase.q.push(args)
+        };
+        window.chatbase = new Proxy(window.chatbase, {
+          get(target, prop){
+            if(prop === "q"){ return target.q }
+            return (...args) => target(prop, ...args)
+          }
+        })
+      }
+      const onLoad = function(){
+        const script = document.createElement("script");
+        script.src = "https://www.chatbase.co/embed.min.js";
+        script.id = "6MkiTjm1OJSXymGZWHhJW";
+        script.domain = "www.chatbase.co";
+        document.body.appendChild(script)
+      };
+      if(document.readyState === "complete"){
+        onLoad()
+      } else {
+        window.addEventListener("load", onLoad)
+      }
+    })();
+  </script>
 
 </body>
 </html>

@@ -1,57 +1,171 @@
+Aquí tienes un CSS completo y moderno que puedes usar para tu página principal Zendra. Este diseño es ideal para un sistema farmacéutico, adaptado y responsivo, con un encabezado visualmente atractivo y un logo destacado:
+
+```css
 body {
-  font-family: Inter, sans-serif;
-  margin: 0; padding: 1rem;
-  background: #f7f7f7;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #333;
+  min-height: 100vh;
 }
-.header {
+
+.header-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.logo-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  justify-content: center;
+  gap: 30px;
+  background: rgba(255,255,255,0.18);
+  padding: 25px 40px;
+  border-radius: 25px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+  margin-bottom: 30px;
 }
-.logo {
-  height: 60px;
-  object-fit: contain;
+
+.logo-aula-grande {
+  width: 200px;        /* Ajusta el tamaño según lo desees */
+  max-width: 260px;
+  height: auto;
+  margin-right: 32px;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  transition: transform 0.3s;
 }
-h1 {
-  margin: 0;
-  font-size: 1.75rem;
+.logo-aula-grande:hover {
+  transform: scale(1.08);
 }
+
+.header-text h1 {
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: white;
+  margin-bottom: 8px;
+  text-shadow: 0 3px 6px rgba(0,0,0,0.16);
+}
+
+.header-text h2 {
+  font-size: 1.4rem;
+  color: #e0e7ff;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
 .card {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.05);
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  background: rgba(255,255,255,0.97);
+  border-radius: 18px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.09);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  transition: box-shadow 0.3s;
 }
-/* Selector de mes */
-.month-filter { display: flex; align-items: center; gap: .5rem; margin-bottom: 1rem; }
-.month-filter label { font-weight: 600; }
-.month-filter select { width: auto; }
-/* Formulario */
-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; }
-label { font-size: .85rem; font-weight: 600; }
-input, select, textarea, button { width: 100%; padding: .5rem; border:1px solid #ccc; border-radius:8px; font-size:.9rem; }
-button { cursor:pointer; border:none; background:#0c702f; color:#fff; font-weight:600; }
-button:hover { opacity:.9; }
-/* Botón Editar */
-.btn-edit { background:#0066ff; padding:.2rem .5rem; font-size:.8rem; border-radius:4px; color:#fff; border:none; cursor:pointer; }
-.btn-edit:hover { opacity:.9; }
-/* Tablas */
-table { width:100%; border-collapse:collapse; font-size:.8rem; margin-top:.5rem; }
-th,td { padding:.45rem; border-bottom:1px solid #ddd; }
-th { background:#e9e9e9; text-align:left; }
-tr.alert td { background:#ffe5e5; color:#c00; font-weight:600; }
-.outVal { color:#c00; font-weight:700; }
-/* Gráficas */
-canvas { max-width:100%; height:300px; }
-/* Grid registros */
-.grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem; }
-.full-width { grid-column:1/-1; }
-.align-right { text-align:right; }
-@media (max-width:600px) { form { grid-template-columns:1fr; } }
-/* Calibración */
-.chart-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem; }
-.calibration-fields { display:flex; align-items:center; gap:.5rem; }
-.calibration-fields label { font-size:.8rem; font-weight:600; }
-.calibration-fields input { width:auto; padding:.25rem; font-size:.85rem; }
+.card:hover {
+  box-shadow: 0 18px 40px rgba(0,0,0,0.17);
+}
+
+/* Formulario, labels, inputs y botones */
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+}
+label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #334155;
+}
+input, select, textarea, button {
+  background: #f3f6fa;
+  color: #1e293b;
+  width: 100%;
+  padding: .8rem 1rem;
+  border: 2px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 500;
+  box-sizing: border-box;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 8px #667eea88;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  font-weight: 700;
+  padding: 0.85rem 1.8rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 4px rgba(37,99,235,0.07);
+  margin-top: 10px;
+}
+
+button[type="submit"] {
+  background: linear-gradient(90deg,#059669,#34d399);
+  color: #fff;
+}
+button[type="submit"]:hover {
+  background: linear-gradient(90deg,#059669,#06b6d4);
+}
+
+button[type="button"], .btn-danger {
+  background: linear-gradient(90deg,#dc2626,#fb7185);
+  color: #fff;
+}
+button[type="button"]:hover, .btn-danger:hover {
+  background: linear-gradient(90deg,#be123c,#f43f5e);
+}
+
+/* Titulación de tarjeta/formulario */
+h2 {
+  font-weight: 700;
+  font-size: 1.8rem;
+  color: #2563eb;
+  margin-bottom: 0.7rem;
+}
+
+@media (max-width: 900px) {
+  .logo-container {
+    flex-direction: column;
+    padding: 18px 8px;
+    gap: 14px;
+  }
+  .logo-aula-grande {
+    width: 120px;
+    margin: 0 0 10px 0;
+  }
+  .header-text h1 {
+    font-size: 2rem;
+  }
+  .card {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  form {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .logo-aula-grande {
+    width: 110px;
+  }
+  .header-section {
+    margin-bottom: 16px;
+  }
+}
+
+/* Extra: Scrollbar, utilidades y accesibilidad */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: #667eea; border-radius: 10px; }
+
+.hidden { display: none!important; }
+```
