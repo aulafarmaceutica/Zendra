@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Registro de Residuos - RH1</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    body {font-family: Arial,sans-serif; background:#f3f7fb; margin:20px;}
+    .container {max-width:900px; margin:auto; background:#fff; border-radius:15px; padding:28px 30px; box-shadow:0 10px 25px rgba(0,0,0,0.1);}
+    h2 {color:#007bff; text-align:center; margin-bottom:22px;}
+    label {display:block; font-weight:600; margin-bottom:6px;}
+    input,select,textarea {width:100%; padding:8px 12px; margin-bottom:15px; border-radius:8px; box-sizing:border-box; font-size:1rem; border:1.5px solid #ccc; transition: border-color 0.3s;}
+    input:focus, select:focus, textarea:focus {border-color:#007bff; background:#eef7ff; outline:none;}
+    .tabs {display:flex; border-bottom:3px solid #007bff; margin-bottom:18px;}
+    .tab {flex:1; padding:12px; text-align:center; font-weight:600; cursor:pointer; user-select:none; border-radius:15px 15px 0 0; background:#cfe2ff; color:#0056b3; margin-right:5px; transition:background 0.3s;}
+    .tab:last-child {margin-right:0;}
+    .tab.active {background:#fff; border-bottom:3px solid #007bff; color:#007bff; font-weight:700;}
+    .tab:hover:not(.active) {background:#007bff88; color:#fff;}
+    .grid-residuos {display:grid; grid-template-columns:repeat(3,1fr); gap:18px 14px; margin-bottom:20px;}
+    .campo-residuo {font-weight:500;}
+    .campo-residuo label {font-weight:500; font-size:15px; margin-bottom:5px;}
+    table {width:100%; border-collapse:collapse;}
+    th, td {border:1px solid #bbb; padding:8px; text-align:center; font-size:14px;}
+    thead tr.group-header th {
+      background: #ddd;
+      font-weight: bold;
+      text-align: center;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      font-size: 15px;
+    }
+    thead tr.group-header th:nth-child(1) {
+      border: none;
+      background: transparent;
+    }
+    thead tr.header-row th {
+      background:#f1f4f8;
+      font-weight:bold;
+      font-size:14px;
+    }
+    tbody tr:nth-child(even) {background:#f9f9f9;}
+    tfoot tr {background:#e8f2fc; font-weight:bold;}
+    .btn-group {display:flex; justify-content:space-between; margin-top:20px;}
+    button {padding:12px 28px; background:#007bff; color:#fff; border:none; border-radius:12px; font-weight:700; font-size:16px; cursor:pointer; transition:background 0.3s;}
+    button:hover {background:#0056b3;}
+    .comentario-label {font-weight:700; margin-top:30px; display:block;}
+    textarea {resize:vertical; min-height:60px;}
+    .pie-indicadores {background:#f0f7ff; border-radius:12px; padding:12px; margin-top:18px; font-size:13px;}
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Registro de Residuos - RH1</h2>
+
+  <form id="resForm">
+    <label for="fecha">Fecha</label>
+    <input type="date" id="fecha" required>
+
+    <label for="servicio">Servicio</label>
+    <select id="servicio" required>
+      <option value="">Seleccione</option>
+      <option>Farmacia</option>
+      <option>Droguería</option>
+      <option>Gestor Farmacéutico</option>
+      <option>Depósito</option>
+      <option>Tienda Naturista</option>
+    </select>
+
+    <label for="ambiente">Ambiente</label>
+    <select id="ambiente" required>
+      <option value="">Seleccione</option>
+      <option>Almacén</option>
+      <option>Central de mezclas</option>
+    </select>
+
+    <div class="grid-residuos">
+      <div class="campo-residuo">
+        <label for="blanca">Blanca - Aprovechables (kg)</label>
+        <input type="number" id="blanca" min="0" step="0.01" value="0">
+      </div>
+      <div class="campo-residuo">
+        <label for="negra">Negra - No aprovechables (kg)</label>
+        <input type="number" id="negra" min="0" step="0.01" value="0">
+      </div>
+      <div class="campo-residuo">
+        <label for="verde">Verde - Orgánicos (kg)</label>
+        <input type="number" id="verde" min="0" step="0.01" value="0">
+      </div>
+      <div class="campo-residuo">
+        <label for="biosanitario">Biosanitario (Roja) (kg)</label>
+        <input type="number" id="biosanitario" min="0" step="0.01" value="0">
+      </div>
+      <div class="campo-residuo">
+        <label for="cortopunzante">Cortopunzante (Guardian) (kg)</label>
+        <input type="number" id="cortopunzante" min="0" step="0.01" value="0">
+      </div>
+      <div class="campo-residuo">
+        <label for="farmaco">Fármaco (Roja) (kg)</label>
+        <input type="number" id="farmaco" min="0" step="0.01" value="0">
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button type="button" id="cancelBtn">Cancelar</button>
+      <button type="submit">Guardar Registro</button>
+    </div>
+  </form>
+
+  <table id="tablaRH1">
+    <thead>
+      <tr class="group-header">
+        <th></th>
+        <th colspan="3" style="background:#d6efd6;">Residuos No Peligrosos</th>
+        <th colspan="2" style="background:#ffe6e6;">Infecciosos o Riesgo Biológico</th>
+        <th colspan="1" style="background:#ffd9cc;">Químico</th>
+      </tr>
+      <tr class="header-row">
+        <th>Fecha</th>
+        <th>Blanca KG</th>
+        <th>Negra KG</th>
+        <th>Verde KG</th>
+        <th>Biosanitario KG (Roja)</th>
+        <th>Cortopunzante KG (Guardian)</th>
+        <th>Fármaco KG (Roja)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+    <tfoot></tfoot>
+  </table>
+
+  <label class="comentario-label" for="comentario">Comentarios o información adicional (se agrega al reporte):</label>
+  <textarea id="comentario"></textarea>
+
+  <button id="exportBtn" style="margin-top:20px; background:#28a745;">Generar y Descargar RH</button>
+
+  <div class="pie-indicadores" aria-live="polite" aria-atomic="true">
+    <strong>Indicadores Calculados</strong><br>
+    %IDRS: indicador para relleno sanitario (Kg residuos comunes/Kg total mensual residuos) x 100<br>
+    %IDR: indicador para reciclaje (Kg residuos reciclables/Kg total mensual residuos) x 100<br>
+    %IDD: indicador para desactivación (residuos sometidos a alta eficiencia)
+  </div>
+
+</div>
+
+<script>
+  const form = document.getElementById('resForm');
+  const tbody = document.querySelector('#tablaRH1 tbody');
+  const tfoot = document.querySelector('#tablaRH1 tfoot');
+  const comentarioInput = document.getElementById('comentario');
+  let registros = [];
+  let comentario = '';
+
+  // Cambiar comentario en tiempo real
+  comentarioInput.addEventListener('input', e => {
+    comentario = e.target.value;
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const fecha = form.fecha.value;
+    if(!fecha) {
+      alert('Seleccione fecha');
+      return;
+    }
+
+    let registro = {
+      fecha,
+      Blanca: parseFloat(form.blanca.value) || 0,
+      Negra: parseFloat(form.negra.value) || 0,
+      Verde: parseFloat(form.verde.value) || 0,
+      Biosanitario: parseFloat(form.biosanitario.value) || 0,
+      Cortopunzante: parseFloat(form.cortopunzante.value) || 0,
+      Farmaco: parseFloat(form.farmaco.value) || 0,
+    };
+
+    registros.push(registro);
+    renderTabla();
+    form.reset();
+  });
+
+  function renderTabla() {
+    let acumulados = {};
+    registros.forEach(r => {
+      if(!acumulados[r.fecha]) {
+        acumulados[r.fecha] = {
+          Blanca: 0, Negra: 0, Verde: 0,
+          Biosanitario: 0, Cortopunzante: 0, Farmaco: 0
+        };
+      }
+      acumulados[r.fecha].Blanca += r.Blanca;
+      acumulados[r.fecha].Negra += r.Negra;
+      acumulados[r.fecha].Verde += r.Verde;
+      acumulados[r.fecha].Biosanitario += r.Biosanitario;
+      acumulados[r.fecha].Cortopunzante += r.Cortopunzante;
+      acumulados[r.fecha].Farmaco += r.Farmaco;
+    });
+
+    tbody.innerHTML = '';
+    for(const fecha of Object.keys(acumulados).sort()){
+      const row = acumulados[fecha];
+      tbody.innerHTML += `
+        <tr>
+          <td>${fecha}</td>
+          <td>${row.Blanca.toFixed(2)}</td>
+          <td>${row.Negra.toFixed(2)}</td>
+          <td>${row.Verde.toFixed(2)}</td>
+          <td>${row.Biosanitario.toFixed(2)}</td>
+          <td>${row.Cortopunzante.toFixed(2)}</td>
+          <td>${row.Farmaco.toFixed(2)}</td>
+        </tr>`;
+    }
+
+    // Totales
+    let totales = {
+      Blanca: 0, Negra: 0, Verde: 0,
+      Biosanitario: 0, Cortopunzante: 0, Farmaco: 0
+    };
+    registros.forEach(r => {
+      totales.Blanca += r.Blanca;
+      totales.Negra += r.Negra;
+      totales.Verde += r.Verde;
+      totales.Biosanitario += r.Biosanitario;
+      totales.Cortopunzante += r.Cortopunzante;
+      totales.Farmaco += r.Farmaco;
+    });
+
+    tfoot.innerHTML = `
+      <tr style="background:#e8f2fc; font-weight:bold;">
+        <td>TOTAL</td>
+        <td>${totales.Blanca.toFixed(2)}</td>
+        <td>${totales.Negra.toFixed(2)}</td>
+        <td>${totales.Verde.toFixed(2)}</td>
+        <td>${totales.Biosanitario.toFixed(2)}</td>
+        <td>${totales.Cortopunzante.toFixed(2)}</td>
+        <td>${totales.Farmaco.toFixed(2)}</td>
+      </tr>
+    `;
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if (registros.length === 0) {
+      alert('No hay datos para exportar');
+      return;
+    }
+    const headers = [
+      'FECHA',
+      'BLANCA KG',
+      'NEGRA KG',
+      'VERDE KG',
+      'BIOSANITARIO KG (Roja)',
+      'CORTOPUNZANTE KG (Guardian)',
+      'FARMACO KG (Roja)'
+    ];
+    const lines = [headers.join(',')];
+
+    let sums = {
+      Blanca: 0, Negra: 0, Verde: 0,
+      Biosanitario: 0, Cortopunzante: 0, Farmaco: 0
+    };
+
+    const groupedData = {};
+
+    registros.forEach(entry => {
+      if (!groupedData[entry.fecha]) {
+        groupedData[entry.fecha] = {...sums};
+      }
+      groupedData[entry.fecha].Blanca += entry.Blanca;
+      groupedData[entry.fecha].Negra += entry.Negra;
+      groupedData[entry.fecha].Verde += entry.Verde;
+      groupedData[entry.fecha].Biosanitario += entry.Biosanitario;
+      groupedData[entry.fecha].Cortopunzante += entry.Cortopunzante;
+      groupedData[entry.fecha].Farmaco += entry.Farmaco;
+    });
+
+    Object.keys(groupedData).sort().forEach(date => {
+      const r = groupedData[date];
+      lines.push([
+        date,
+        r.Blanca.toFixed(2),
+        r.Negra.toFixed(2),
+        r.Verde.toFixed(2),
+        r.Biosanitario.toFixed(2),
+        r.Cortopunzante.toFixed(2),
+        r.Farmaco.toFixed(2)
+      ].join(','));
+      for (let key in sums) {
+        sums[key] += r[key];
+      }
+    });
+
+    lines.push([
+      'TOTAL',
+      sums.Blanca.toFixed(2),
+      sums.Negra.toFixed(2),
+      sums.Verde.toFixed(2),
+      sums.Biosanitario.toFixed(2),
+      sums.Cortopunzante.toFixed(2),
+      sums.Farmaco.toFixed(2)
+    ].join(','));
+
+    lines.push('');
+    lines.push('Indicadores Calculados');
+    lines.push('IDRS: indicador para relleno sanitario (Kg residuos comunes/Kg total mensual residuos) x 100');
+    lines.push('IDR: indicador para reciclaje (Kg residuos reciclables/Kg total mensual residuos) x 100');
+    lines.push('IDD: indicador para desactivación (residuos sometidos a alta eficiencia)');
+    if(commentario.trim()!==''){
+      lines.push('');
+      lines.push('Comentarios:');
+      lines.push(commentario);
+    }
+
+    const csvContent = lines.join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'RH1_Report.csv';
+    a.click();
+    a.remove();
+  });
+
+  document.getElementById('comentario').addEventListener('input', e => {
+    commentario = e.target.value;
+  });
+
+  let commentario = '';
+
+  // Render initial empty table
+  renderTabla();
+</script>
+
+</body>
+</html>
