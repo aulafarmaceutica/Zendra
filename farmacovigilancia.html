@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reporte Eventos Adversos a Medicamentos - FOREAM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body { font-family:'Nunito',Arial,sans-serif; background: #fff; margin:0;}
+    .container {margin:0 auto;max-width:1100px;}
+    .invima-header { display:flex; align-items:center; border-bottom: 2px solid #0093af;}
+    .invima-logo { height:40px; margin:12px 20px 8px 14px;}
+    .title-box { flex:1;}
+    .meta { font-size:.92em;}
+    .big-table {border-collapse:collapse;width:100%;margin:0;}
+    .big-table td, .big-table th {border:1.5px solid #3776a2;background:#EAF3FA;font-size:.96em;padding:6px 4px;}
+    .big-table th {background:#CDE1F7;}
+    .big-table .seccion-title{background:#90BEE6;font-weight:700;letter-spacing:.07em;font-size:1.1em;}
+    .big-table .subcell-title{background:#CDE1F7;font-weight:600;}
+    .big-table input, .big-table select, .big-table textarea{
+      background:#fff; font-size:.95em; border-radius:2px; border:1px solid #b5d3ec; 
+      padding:3.5px 4px; box-sizing:border-box; margin-top:2px;}
+    textarea {width:100%;}
+    .tbl-meds input, .tbl-meds select {width:100%;font-size:.94em;}
+    .tbl-meds th,.tbl-meds td{padding:3px;}
+    button{background:#3776a2;color:white;padding:10px 24px;border:none;border-radius:12px;font-weight:700; margin:8px 0;}
+    button:hover{background:#204b7c;}
+    .center{text-align:center;}
+    .acciones-reporte button { margin-right: 5px; }
+    .tabla-registros { margin-top:36px;}
+  </style>
+</head>
+<body>
+  <div class="container">
+
+  <div class="invima-header">
+    <img src="logo-aula-diego.jpg" class="invima-logo" alt="logo">
+    <div class="title-box">
+      <div style="font-size:.89em;color:#135782;">INSPECCIÓN, VIGILANCIA Y CONTROL &nbsp;&nbsp;&nbsp;&nbsp; VIGILANCIA</div>
+      <div style="font-size:1.25em;font-weight:900">REPORTE DE SOSPECHA DE EVENTOS ADVERSOS A MEDICAMENTOS - FOREAM</div>
+      <div class="meta">
+        Código: IVC-VIG-FM026 &nbsp;|&nbsp; Versión: 02 &nbsp;|&nbsp; Fecha de Emisión: 2025-02-20 &nbsp;|&nbsp; Página 1 de 3
+      </div>
+    </div>
+  </div>
+
+  <form id="formFoream" autocomplete="off">
+
+    <!-- SECCION 1 -->
+    <table class="big-table">
+      <tr><td colspan="6" class="seccion-title">1. INFORMACIÓN DEL REPORTANTE</td></tr>
+      <tr>
+        <td class="subcell-title">Fecha de notificación<br><input name="fecha_notifica" type="date" id="fechaReporte" required></td>
+        <td class="subcell-title">Origen del reporte<br><input name="depmuni" placeholder="Departamento - Municipio"></td>
+        <td class="subcell-title">Institución<br><input name="institucion" required></td>
+        <td class="subcell-title">Código PNF<br><input name="codigo_pnf"></td>
+      </tr>
+      <tr>
+        <td colspan="2" class="subcell-title">Nombre del Reportante<br><input name="reportante" required></td>
+        <td class="subcell-title">Profesión<br>
+          <select name="profesion_reportante" required>
+            <option value="">Seleccione</option>
+            <option>Médico</option>
+            <option>Químico Farmacéutico</option>
+            <option>Enfermero/a</option>
+            <option>TRF</option>
+            <option>TSF</option>
+            <option>Auxiliar</option>
+            <option>Otro</option>
+          </select>
+        </td>
+        <td class="subcell-title">Correo institucional<br><input name="email" type="email" required></td>
+      </tr>
+    </table>
+
+    <!-- SECCION 2 -->
+    <table class="big-table">
+      <tr><td colspan="7" class="seccion-title">2. INFORMACIÓN DEL PACIENTE</td></tr>
+      <tr>
+        <td class="subcell-title">Fecha de nacimiento<br><input name="fnac" type="date" id="fechaNac" required></td>
+        <td class="subcell-title">Edad<br>
+          <input id="edadAnos" name="edad" type="number" min="0" style="width:54px" placeholder="Años" readonly> /
+          <input id="edadMeses" name="edad_meses" type="number" min="0" style="width:34px" placeholder="Meses" readonly> /
+          <input id="edadDias" name="edad_dias" type="number" min="0" style="width:34px" placeholder="Días" readonly>
+        </td>
+        <td class="subcell-title">Documento<br>
+          <select name="tipo_doc">
+            <option value="">Tipo</option>
+            <option>CC</option>
+            <option>TI</option>
+            <option>RC</option>
+            <option>NUIP</option>
+            <option>Cód Lab</option>
+            <option>Otro</option>
+          </select>
+          <input name="documento" placeholder="Número">
+        </td>
+        <td class="subcell-title">Iniciales<br><input name="iniciales" maxlength="3" style="width:60px"></td>
+        <td class="subcell-title">Sexo<br>
+          <select name="sexo"><option></option><option>M</option><option>F</option></select></td>
+        <td class="subcell-title">Peso (kg)<br><input name="peso" type="number" step="0.1" style="width:55px;"></td>
+        <td class="subcell-title">Talla (cm)<br><input name="talla" type="number" step="0.1" style="width:55px;"></td>
+      </tr>
+      <tr>
+        <td colspan="7" class="subcell-title">Diagnóstico principal y otros diagnósticos<br><textarea name="diagnosticos"></textarea></td>
+      </tr>
+    </table>
+
+    <!-- SECCION 3 -->
+    <table class="big-table tbl-meds" id="tablaMedicamentos">
+      <tr><td colspan="15" class="seccion-title">3. INFORMACIÓN DE LOS MEDICAMENTOS</td></tr>
+      <tr>
+        <th>S/C/I</th><th>Medicamento</th><th>Indicación</th><th>Dosis</th><th>Unidad</th><th>Vía</th><th>Frecuencia</th>
+        <th>Inicio</th><th>Fin</th><th>Titular</th><th>Comercial</th><th>Reg. Sanitario</th><th>Lote</th><th>Vcto.</th><th></th>
+      </tr>
+      <tbody id="medsBody"></tbody>
+    </table>
+    <button type="button" onclick="agregarFilaMedicamento()">Agregar medicamento</button>
+
+    <!-- SECCION 4 EVENTO ADVERSO -->
+    <table class="big-table"><tr><td colspan="3" class="seccion-title">4. INFORMACIÓN DEL EVENTO ADVERSO</td></tr>
+      <tr>
+        <td style="min-width:180px">
+          Fecha inicio del evento<br><input type="date" name="evento_fecha" required><br><br>
+          Evento adverso:<br><input name="evento_tipo" style="width:96%;">
+        </td>
+        <td rowspan="2">
+          Descripción y análisis:<br>
+          <textarea name="evento_descripcion" style="height:74px"></textarea>
+        </td>
+        <td style="vertical-align:top">
+          Desenlace:<br>
+          <label><input type="radio" name="desenlace" value="Recuperado sin secuelas">Recuperado sin secuelas</label><br>
+          <label><input type="radio" name="desenlace" value="Recuperado con secuelas">Recuperado con secuelas</label><br>
+          <label><input type="radio" name="desenlace" value="Resolviendo">Resolviendo</label><br>
+          <label><input type="radio" name="desenlace" value="No recuperado">No recuperado</label><br>
+          <label><input type="radio" name="desenlace" value="Fatal">Fatal</label><br>
+          <label><input type="radio" name="desenlace" value="Desconocido">Desconocido</label><br><br>
+          Seriedad:<br>
+          <label><input type="checkbox" name="seriedad" value="Hospitalización">Hospitalización</label><br>
+          <label><input type="checkbox" name="seriedad" value="Anomalía congénita">Anomalía congénita</label><br>
+          <label><input type="checkbox" name="seriedad" value="Amenaza de vida">Amenaza de vida</label><br>
+          <label><input type="checkbox" name="seriedad" value="Muerte">Muerte</label><br>
+          <label><input type="checkbox" name="seriedad" value="Discapacidad">Discapacidad</label><br>
+          <label><input type="checkbox" name="seriedad" value="Condición médica importante">Condición médica importante</label>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" style="background:#F8FCFF">
+          <table style="width:100%">
+            <tr>
+              <td>¿El evento se presentó después de administrar el medicamento?</td>
+              <td><input type="radio" name="q1" value="Si">Si <input type="radio" name="q1" value="No">No <input type="radio" name="q1" value="No sabe">No sabe</td>
+            </tr>
+            <tr>
+              <td>¿Existen otros factores que puedan explicar el evento?</td>
+              <td><input type="radio" name="q2" value="Si">Si <input type="radio" name="q2" value="No">No <input type="radio" name="q2" value="No sabe">No sabe</td>
+            </tr>
+            <tr>
+              <td>¿El evento desapareció al suspender el medicamento?</td>
+              <td><input type="radio" name="q3" value="Si">Si <input type="radio" name="q3" value="No">No <input type="radio" name="q3" value="No sabe">No sabe</td>
+            </tr>
+            <tr>
+              <td>¿El paciente ya había presentado la misma reacción antes?</td>
+              <td><input type="radio" name="q4" value="Si">Si <input type="radio" name="q4" value="No">No <input type="radio" name="q4" value="No sabe">No sabe</td>
+            </tr>
+            <tr>
+              <td>¿Se puede ampliar la información del paciente?</td>
+              <td><input type="radio" name="q5" value="Si">Si <input type="radio" name="q5" value="No">No <input type="radio" name="q5" value="No sabe">No sabe</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+    <div style="padding:15px 0 20px 0; text-align:center">
+      <button type="submit">Guardar y descargar PDF</button>
+    </div>
+  </form>
+
+  <!-- TABLA DE REGISTROS -->
+  <div class="tabla-registros">
+    <h2 class="center">Reportes Registrados</h2>
+    <table class="big-table" id="tablaRegistros">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Fecha Notificación</th>
+          <th>Paciente</th>
+          <th>Institución</th>
+          <th>Evento</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Registros dinámicos -->
+      </tbody>
+    </table>
+  </div>
+  </div>
+<script>
+// MEDICAMENTOS DINÁMICOS
+function agregarFilaMedicamento() {
+  const tbody = document.getElementById('medsBody');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><select name="sciv[]"><option></option><option>S</option><option>C</option><option>I</option></select></td>
+    <td><input name="medicamento[]"></td>
+    <td><input name="indicacion[]"></td>
+    <td><input name="dosis[]" style="width:60px"></td>
+    <td><input name="unidad[]" style="width:48px"></td>
+    <td><input name="via[]" style="width:54px"></td>
+    <td><input name="fec[]" style="width:54px"></td>
+    <td><input name="finicio[]" type="date" style="width:92px"></td>
+    <td><input name="ffin[]" type="date" style="width:92px"></td>
+    <td><input name="titular[]" style="width:120px"></td>
+    <td><input name="comercial[]" style="width:120px"></td>
+    <td><input name="regsan[]" style="width:85px"></td>
+    <td><input name="lote[]" style="width:64px"></td>
+    <td><input name="fvcto[]" type="date" style="width:86px"></td>
+    <td><button type="button" onclick="this.closest('tr').remove()">Eliminar</button></td>
+  `;
+  tbody.appendChild(tr);
+}
+window.onload = agregarFilaMedicamento;
+
+// EDAD AUTO
+function calcularEdadAuto() {
+  let fnac = document.getElementById('fechaNac').value;
+  let frep = document.getElementById('fechaReporte').value;
+  if(fnac && frep){
+    let dn = new Date(fnac), dr = new Date(frep);
+    let años = dr.getFullYear()-dn.getFullYear();
+    let meses = dr.getMonth()-dn.getMonth();
+    let dias = dr.getDate()-dn.getDate();
+    if(dias<0){meses--;dias+=new Date(dr.getFullYear(),dr.getMonth(),0).getDate();}
+    if(meses<0){años--;meses+=12;}
+    document.getElementById('edadAnos').value = años>=0?años:0;
+    document.getElementById('edadMeses').value = meses>=0?meses:0;
+    document.getElementById('edadDias').value = dias>=0?dias:0;
+  }
+}
+document.getElementById('fechaNac').addEventListener('change',calcularEdadAuto);
+document.getElementById('fechaReporte').addEventListener('change',calcularEdadAuto);
+
+// REGISTROS Y PDF
+let registros = JSON.parse(localStorage.getItem('reportesFarmaco')) || [];
+function agregarRegistro(datos) {
+  registros.push(datos);
+  localStorage.setItem('reportesFarmaco', JSON.stringify(registros));
+  renderRegistros();
+}
+function renderRegistros() {
+  let tbody = document.querySelector("#tablaRegistros tbody");
+  if(!tbody) return;
+  tbody.innerHTML = "";
+  registros.forEach((r, idx) => {
+    let fila = `
+      <tr>
+        <td>${idx+1}</td>
+        <td>${r['fecha_notifica'] || ''}</td>
+        <td>${r['iniciales'] || ''}</td>
+        <td>${r['institucion'] || ''}</td>
+        <td>${r['evento_tipo'] || ''}</td>
+        <td class="acciones-reporte">
+          <button onclick="verRegistro(${idx})">Ver</button>
+          <button onclick="descargarPDFRegistro(${idx})">PDF</button>
+          <button onclick="eliminarRegistro(${idx})">Eliminar</button>
+        </td>
+      </tr>
+    `;
+    tbody.innerHTML += fila;
+  });
+}
+window.renderRegistros = renderRegistros;
+renderRegistros();
+
+function eliminarRegistro(idx) {
+  if(confirm('¿Eliminar este reporte?')){
+    registros.splice(idx,1);
+    localStorage.setItem('reportesFarmaco', JSON.stringify(registros));
+    renderRegistros();
+  }
+}
+// Ver: rellena el formulario
+function verRegistro(idx){
+  let r = registros[idx];
+  let f = document.forms['formFoream'];
+  Object.keys(r).forEach(k=>{
+    if(f[k]!==undefined && f[k]!=null) f[k].value = r[k];
+  });
+}
+
+// PDF: impresión visual exacta del formulario
+function descargarFormularioComoPDF(nombre) {
+  const form = document.getElementById('formFoream');
+  html2canvas(form).then(function(canvas) {
+    const imgData = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    // Ajuste de dimensiones manteniendo proporciones
+    let imgWidth = pageWidth - 30;
+    let imgHeight = canvas.height * imgWidth / canvas.width;
+    if(imgHeight>pageHeight-30){ imgHeight = pageHeight-30; imgWidth = canvas.width * imgHeight / canvas.height; }
+    pdf.addImage(imgData, 'PNG', 15, 15, imgWidth, imgHeight);
+    pdf.save(nombre);
+  });
+}
+
+// Al guardar
+document.getElementById('formFoream').onsubmit = function(e) {
+  e.preventDefault();
+  let datos = Object.fromEntries(new FormData(this).entries());
+  agregarRegistro(datos);
+  let nombre = 'FOREAM_EventoAdverso_' + (datos['fecha_notifica']||'') + '.pdf';
+  descargarFormularioComoPDF(nombre);
+};
+// Descargar desde tabla registros con impresión exacta
+window.descargarPDFRegistro = function(idx) {
+  let datos = registros[idx];
+  let f = document.forms['formFoream'];
+  Object.keys(datos).forEach(k=>{
+    if(f[k]!==undefined && f[k]!=null) f[k].value = datos[k];
+  });
+  descargarFormularioComoPDF('FOREAM_Reporte_' + (datos['fecha_notifica']||'') + '.pdf');
+};
+</script>
+</body>
+</html>
