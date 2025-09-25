@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar reportes - Medicamentos eReporting Colombia</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f6f6f6 }
+        .container { background:#fff;max-width:900px;margin:38px auto 0 auto;border-radius:10px;box-shadow:0 2px 10px rgba(30,54,76,0.055);padding:43px 54px 38px;;
+        }
+        .progress-bar-bg {width:100%;background:#e7e7e7;height:12px;border-radius:7px;margin-bottom:30px;}
+        .progress-bar-fill {width:100%;height:100%;background:#88be4b;border-radius:7px;}
+        h2 {color:#313131;font-size:1.26em;margin-bottom:18px;}
+        .footer {text-align: center;margin-top:34px;color:#224a6d;}
+        .descarga-btn {background:#0596b8;color:#fff;border:none;border-radius:6px;font-size:1.14em;padding:12px 34px;font-weight:500;cursor:pointer;transition:background 0.15s;text-decoration:none;display:inline-block;margin-top:28px;}
+        .descarga-btn:hover {background:#046d8a;}
+        .info {margin-top:24px;}
+        .info h3 {color:#224a6d;}
+        .info table {width:100%;border-collapse:collapse;}
+        .info th, .info td {border:1px solid #e2e2e2;padding:8px}
+        .info th {background:#e9f5fa;}
+        .info tr:nth-child(even) td {background:#f7fbfb;}
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <img src="https://www.invima.gov.co/template/images/logo.png" alt="Invima logo" style="margin-left:18px; margin-right:23px; height:40px;">
+        <span style="font-size:1.35em;font-weight:bold;letter-spacing:1px;">Medicamentos eReporting Colombia</span>
+        <span style="position:absolute;right:20px;top:19px;">☰ Menú</span>
+    </div>
+    <div class="container">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+        <h2>Reporte completo</h2>
+        <p>Gracias por completar el formulario. Presione el botón para descargar el reporte con toda la información que ingresó.</p>
+        <button class="descarga-btn" onclick="descargarReporte()">Descargar reporte</button>
+        <!-- Mostrará previa del reporte si quieres -->
+        <div id="reportePreview" class="info"></div>
+        <div class="footer">
+            Instituto Nacional de Vigilancia de Medicamentos y Alimentos<br>
+            Powered by VigiFlow eForms
+        </div>
+    </div>
+    <script>
+    // Función para simular el recupero de datos Multipágina (ejemplo, deberías adaptar para cada sección de tu flujo)
+    function getDatosFormulario() {
+        // Normalmente recuperas cada sección del localStorage, aquí demo hardcodeado:
+        return {
+            paciente: {
+                iniciales: localStorage.getItem('iniciales'),
+                sexo: localStorage.getItem('sexo'),
+                peso: localStorage.getItem('peso'),
+                fechaNacimiento: localStorage.getItem('fecha_nacimiento'),
+                edadReaccion: localStorage.getItem('edad_reaccion'),
+                paisReaccion: localStorage.getItem('pais_reaccion')
+            },
+            descripcion: {
+                sucedido: localStorage.getItem('descripcion_sucedido'),
+                reacciones: localStorage.getItem('reaccion_sintoma')
+            },
+            medicamentos: JSON.parse(localStorage.getItem('medicamentos')||"[]"),
+            adicional: {
+                enfermedades: localStorage.getItem('enfermedades'),
+                comentarios: localStorage.getItem('comentarios')
+            },
+            contacto: {
+                area: localStorage.getItem('areaReportante'),
+                profesion: localStorage.getItem('profesion'),
+                nombres: localStorage.getItem('nombres'),
+                apellidos: localStorage.getItem('apellidos'),
+                establecimiento: localStorage.getItem('establecimiento'),
+                correo: localStorage.getItem('correo'),
+                telefono: localStorage.getItem('telefono')
+            }
+        }
+    }
+    // Creación del reporte final visual (HTML)
+    function generarHtmlReporte(datos) {
+        return `
+<div class="info">
+    <h3>Datos del paciente</h3>
+    <table>
+        <tr><th>Iniciales</th><td>${datos.paciente.iniciales||''}</td></tr>
+        <tr><th>Sexo</th><td>${datos.paciente.sexo||''}</td></tr>
+        <tr><th>Peso</th><td>${datos.paciente.peso||''} kg</td></tr>
+        <tr><th>Fecha de nacimiento</th><td>${datos.paciente.fechaNacimiento||''}</td></tr>
+        <tr><th>Edad reacción</th><td>${datos.paciente.edadReaccion||''}</td></tr>
+        <tr><th>País reacción</th><td>${datos.paciente.paisReaccion||''}</td></tr>
+    </table>
+    <h3>Descripción de lo sucedido</h3>
+    <p>${datos.descripcion.sucedido||''}</p>
+    <h4>Reacción/síntoma principal</h4>
+    <p>${datos.descripcion.reacciones||''}</p>
+    <h3>Medicamentos relacionados</h3>
+    ${datos.medicamentos.map((med,i)=>`
+    <table>
+        <tr><th colspan="2">Medicamento ${i+1}</th></tr>
+        <tr><th>Nombre</th><td>${med.nombre||''}</td></tr>
+        <tr><th>Dosis</th><td>${med.dosis||''}</td></tr>
+        <tr><th>Vía</th><td>${med.via||''}</td></tr>
+        <tr><th>Acción</th><td>${med.accion||''}</td></tr>
+    </table>`).join('')}
+    <h3>Información adicional</h3>
+    <table>
+        <tr><th>Enfermedades previas/actuales</th><td>${datos.adicional.enfermedades||''}</td></tr>
+        <tr><th>Comentarios</th><td>${datos.adicional.comentarios||''}</td></tr>
+    </table>
+    <h3>Datos de contacto</h3>
+    <table>
+        <tr><th>Área Reportante</th><td>${datos.contacto.area||''}</td></tr>
+        <tr><th>Profesión</th><td>${datos.contacto.profesion||''}</td></tr>
+        <tr><th>Nombres</th><td>${datos.contacto.nombres||''}</td></tr>
+        <tr><th>Apellidos</th><td>${datos.contacto.apellidos||''}</td></tr>
+        <tr><th>Establecimiento</th><td>${datos.contacto.establecimiento||''}</td></tr>
+        <tr><th>Correo</th><td>${datos.contacto.correo||''}</td></tr>
+        <tr><th>Teléfono</th><td>${datos.contacto.telefono||''}</td></tr>
+    </table>
+</div>
+`
+    }
+    // Descargar como archivo HTML
+    function descargarReporte() {
+        const datos = getDatosFormulario();
+        const html = `<!DOCTYPE html><html lang="es"><head>
+        <meta charset="UTF-8"><title>Reporte VigiFlow</title>
+        <style>
+            body{font-family:'Segoe UI',Arial,sans-serif;background:#f9f9f9}
+            .info{background:#fff;padding:30px 26px;border-radius:12px;max-width:800px;margin:30px auto;box-shadow:0 2px 10px rgba(60,60,120,0.09);}
+            h3{color:#085b87;margin-top:18px;}
+            h4{color:#449cbb;margin-top:12px;}
+            table{width:100%;margin:16px 0;border-collapse:collapse;}
+            th,td{border:1px solid #ebebeb;padding:8px;text-align:left;}
+            th{background:#eef7fd; color:#0773A7;}
+            tr:nth-child(even) td{background:#f7fafd}
+        </style></head><body>${generarHtmlReporte(datos)}</body></html>`;
+        const blob = new Blob([html], {type: "text/html"});
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = "reporte_vigiflow.html";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        // También muestra previa visual
+        document.getElementById('reportePreview').innerHTML = generarHtmlReporte(datos);
+    }
+    </script>
+</body>
+</html>

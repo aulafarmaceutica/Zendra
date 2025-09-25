@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos eReporting Colombia - Sección 3</title>
+    <style>
+        body {
+            background: #f6f6f6;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .header-bar {
+            width: 100%;
+            background: #0596b8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            height: 56px;
+            position: relative;
+        }
+        .logo {
+            margin-left: 18px;
+            margin-right: 23px;
+            height: 40px;
+            width: auto;
+        }
+        .header-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .menu {
+            position: absolute;
+            right: 20px;
+            top: 0;
+            font-size: 1em;
+        }
+        .container {
+            background: #fff;
+            max-width: 950px;
+            margin: 36px auto 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(30,54,76,0.055);
+            padding: 50px 54px 38px 54px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            background: #e7e7e7;
+            height: 12px;
+            border-radius: 7px;
+            margin-bottom: 30px;
+        }
+        .progress-bar-fill {
+            width: 72%;
+            height: 100%;
+            background: #88be4b;
+            border-radius: 7px;
+            transition: width .5s;
+        }
+        h2 {
+            color: #313131;
+            font-size: 1.26em;
+            margin-bottom: 18px;
+        }
+        .form-row {
+            margin-bottom: 29px;
+        }
+        .label {
+            display: block;
+            font-weight: 600;
+            color: #2d3845;
+            margin-bottom: 8px;
+        }
+        .medicamento-section {
+            background: #e9f5fa;
+            border-radius: 8px;
+            padding: 25px 22px 18px 22px;
+            margin-top: 0;
+            margin-bottom: 26px;
+            border-left: 4px solid #0596b8;
+        }
+        .medicamento-row {
+            margin-bottom: 21px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .input-row input, .input-row select {
+            background: #f7f7f7;
+            border: 1px solid #ccd1d9;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 1.07em;
+            box-sizing: border-box;
+            color: #222;
+        }
+        .input-row input[type="text"] { width: 80px; }
+        .input-row select { width: 120px; }
+        .input-row input:last-child { width: 130px; }
+        .medicamento-label {
+            font-weight: 600;
+            color: #2d3845;
+            margin-bottom: 6px;
+            margin-top: 7px;
+        }
+        .note, .small {
+            font-size: 0.99em;
+            color: #888;
+            margin-bottom: 7px;
+        }
+        .select-long {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd1d9;
+            border-radius: 5px;
+            background: #f7f7f7;
+            font-size: 1.07em;
+            color: #222;
+        }
+        .checkbox-row {
+            margin-left: 3px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+        }
+        .sec-btn {
+            background: none;
+            color: #6fa832;
+            border: 1px solid #6fa832;
+            border-radius: 6px;
+            font-size: 1.11em;
+            padding: 7px 26px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 18px;
+            transition: background .1s;
+        }
+        .sec-btn:hover { background: #f6feeb; }
+        .siguiente-btn {
+            background: #88be4b;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.12em;
+            padding: 12px 34px;
+            font-weight: 500;
+            box-shadow: 0 2px 7px rgba(149,191,84,0.13);
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .siguiente-btn:hover { background: #72a832; }
+        .agregar-btn {
+            background: #0596b8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            padding: 8px 26px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+        .agregar-btn:hover { background: #046d8a; }
+        .optGroupTitle {
+            font-weight: bold;
+            color: #0596b8;
+            background: #e7f8fe;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <img src="https://www.invima.gov.co/template/images/logo.png" alt="Invima logo" class="logo">
+        <div class="header-title">Medicamentos eReporting Colombia</div>
+        <div class="menu">☰ Menú</div>
+    </div>
+    <div class="container">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+        <h2>Medicamentos</h2>
+        <div class="note">
+            Ingrese el nombre y detalles de cada medicamento que consumía antes de ocurrir la reacción, y marque aquel medicamento (s) que considera es el que probablemente causó la reacción. Pulse el botón “Agregar otro medicamento” por cada nuevo medicamento que necesite describir. Incluya cualquier preparación de medicamentos herbolarios (como productos naturales o remedios caseros a base de plantas), consumo de drogas o cualquier otra medicación alternativa que haya estado consumiendo.
+        </div>
+        <div class="medicamento-section">
+            <div class="medicamento-row">
+                <label class="medicamento-label" for="nombreMedicamento">Nombre del medicamento</label>
+                <input type="text" id="nombreMedicamento" name="nombreMedicamento" class="select-long">
+                <div class="note">Nombre completo del medicamento (como se muestra en el empaque)</div>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="causanteMedicamento" name="causanteMedicamento">
+                    <label for="causanteMedicamento">Este medicamento es probablemente el causante de la reacción</label>
+                </div>
+                <div class="note">No seleccione la casilla si no cree que este medicamento es el que probablemente causó la reacción</div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label" for="companiaMedicamento">Compañía farmacéutica productora/distribuidora del medicamento</label>
+                <input type="text" id="companiaMedicamento" name="companiaMedicamento" class="select-long">
+                <div class="note">Nombre de la compañía farmacéutica productora/distribuidora como se muestra en el empaque</div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label" for="loteMedicamento">Número de lote</label>
+                <input type="text" id="loteMedicamento" name="loteMedicamento" class="select-long">
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label" for="dosisMedicamento">Dosis</label>
+                <input type="text" id="dosisMedicamento" name="dosisMedicamento" class="select-long">
+                <div class="note">¿Qué cantidad de medicamento tomó? Por ejemplo: "2 comprimidos de 50 mg, 3 veces al día".</div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label" for="viaAdministracion">Vía de administración del medicamento</label>
+                <select class="select-long" id="viaAdministracion" name="viaAdministracion">
+                    <optgroup label="MÁS COMÚNMENTE UTILIZADOS">
+                        <option value="Intramuscular (inyección en el músculo)">Intramuscular (inyección en el músculo)</option>
+                        <option value="Intravenosa (no especificada)">Intravenosa (no especificada)</option>
+                        <option value="Oral">Oral</option>
+                    </optgroup>
+                    <optgroup label="TODOS">
+                        <option value="Nasal">Nasal</option>
+                        <option value="Oftálmica">Oftálmica</option>
+                        <option value="Cutánea">Cutánea</option>
+                        <option value="Rectal">Rectal</option>
+                        <option value="Respiratoria (inhalación)">Respiratoria (inhalación)</option>
+                        <option value="Subcutánea (inyección bajo la piel)">Subcutánea (inyección bajo la piel)</option>
+                        <option value="Vaginal">Vaginal</option>
+                        <option value="Desconocido">Desconocido</option>
+                        <option value="No aplica">No aplica</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label">Fecha de inicio de la administración del medicamento</label>
+                <div class="input-row">
+                    <input type="text" maxlength="2" placeholder="dd">
+                    <select>
+                        <option value="">mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input type="text" maxlength="4" placeholder="aaaa">
+                </div>
+                <div class="note">Por favor ingrese información lo más completa posible</div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label">Fecha de fin de la administración del medicamento</label>
+                <div class="input-row">
+                    <input type="text" maxlength="2" placeholder="dd">
+                    <select>
+                        <option value="">mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input type="text" maxlength="4" placeholder="aaaa">
+                </div>
+                <div class="note">Deje este campo en blanco si sigue tomando el medicamento</div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label">Duración de la administración del medicamento</label>
+                <div class="input-row">
+                    <input type="text" placeholder="">
+                    <select>
+                        <option value="">Seleccione unidad...</option>
+                        <option value="Año">Año</option>
+                        <option value="Mes">Mes</option>
+                        <option value="Semana">Semana</option>
+                        <option value="Día">Día</option>
+                        <option value="Hora">Hora</option>
+                    </select>
+                </div>
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label">Indicación del medicamento</label>
+                <input type="text" class="select-long" placeholder="¿Por qué tomó el medicamento? (Por ejemplo: diabetes, dolor de cabeza)">
+            </div>
+            <div class="medicamento-row">
+                <label class="medicamento-label">Acción tomada con el medicamento</label>
+                <select class="select-long">
+                    <option value="">Seleccione acción...</option>
+                    <option value="Medicamento retirado">Medicamento retirado</option>
+                    <option value="Dosis reducida">Dosis reducida</option>
+                    <option value="Dosis aumentada">Dosis aumentada</option>
+                    <option value="Dosis no modificada">Dosis no modificada</option>
+                    <option value="Desconocida">Desconocida</option>
+                    <option value="No aplica">No aplica</option>
+                </select>
+            </div>
+            <button class="agregar-btn" type="button">Agregar otro medicamento</button>
+        </div>
+        <div class="btn-container">
+            <a class="sec-btn" href="medicamentos_seccion2.html">Sección anterior</a>
+            <a class="siguiente-btn" href="medicamentos_seccion4.html">Siguiente sección</a>
+        </div>
+        <div class="footer">
+            Instituto Nacional de Vigilancia de Medicamentos y Alimentos<br>
+            Powered by VigiFlow eForms
+        </div>
+    </div>
+</body>
+</html>

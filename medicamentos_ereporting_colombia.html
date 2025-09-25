@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos eReporting Colombia - SIMULADOR</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f6f6f6;
+        }
+        .marca-agua {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh !important;
+            pointer-events: none;
+            z-index: 9999; /* Encima de todo */
+        }
+        .marca-agua-text {
+            font-size: 5em;
+            color: #224a6d26; /* Tenue, pero visible por encima */
+            font-weight: 800;
+            text-align: center;
+            position: absolute; left: 0; width: 100%;
+            user-select: none;
+            letter-spacing: 8px;
+            text-shadow:
+                0 0 10px #fff6,
+                0 5px 40px #2222,
+                0 1px 4px #2332;
+            pointer-events: none;
+            will-change: transform;
+        }
+        .container {
+            background: #fff;
+            max-width: 890px;
+            margin: 46px auto 36px auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(30,54,76,0.055);
+            padding: 50px 54px 38px 54px;
+            z-index: 3;
+            position: relative;
+        }
+        h1 {
+            color: #224a6d;
+            font-size: 2.1em;
+            margin-bottom: 12px;
+            font-weight: bold;
+            letter-spacing: .7px;
+        }
+        h2 {
+            color: #313131;
+            font-size: 1.20em;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #2d3845;
+        }
+        input, select {
+            background: #f7f7f7;
+            border: 1px solid #ccd1d9;
+            border-radius: 7px;
+            padding: 12px;
+            font-size: 1.07em;
+            width: 100%;
+            box-sizing: border-box;
+            color: #222;
+            margin-bottom: 16px;
+        }
+        input:focus, select:focus {
+            border-color: #224a6d;
+        }
+        .checkbox-group { margin-bottom: 16px; }
+        .checkbox-group label {margin-right: 27px; font-weight: normal;}
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .note {
+            font-size: 0.99em;
+            color: #888;
+            margin-bottom: 12px;
+            margin-top: -7px;
+        }
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 26px;
+            color: #224a6d;
+            background: #f6f6f6;
+            padding-top: 15px;
+        }
+        .simulador-footer {
+            text-align: center;
+            font-size: 14px;
+            color: #f70;
+            background: #fffbe7;
+            border-radius: 5px;
+            margin-bottom: 4px;
+            padding: 4px 0 1px 0;
+            font-weight: bold;
+        }
+        .siguiente-btn {
+            background: #68be47;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.14em;
+            font-weight: 500;
+            padding: 13px 30px;
+            cursor: pointer;
+            box-shadow: 0 2px 6px #215a9445;
+            transition: background 0.2s;
+            margin-top: 20px;
+        }
+        .siguiente-btn:hover { background: #417ab5; }
+    </style>
+</head>
+<body>
+    <div class="marca-agua">
+        <div class="marca-agua-text" id="marcaAguaText">SIMULADOR DE REPORTE</div>
+    </div>
+    <div class="container">
+        <h1>Medicamentos eReporting Colombia</h1>
+        <h2>Usuario del medicamento</h2>
+        <form id="form_paciente">
+            <label for="iniciales">Iniciales</label>
+            <input type="text" id="iniciales" name="iniciales">
+            <label>Sexo</label>
+            <div class="checkbox-group">
+                <label><input type="radio" name="sexo" value="Masculino"> Masculino</label>
+                <label><input type="radio" name="sexo" value="Femenino"> Femenino</label>
+                <label><input type="radio" name="sexo" value="Desconocido"> Desconocido</label>
+            </div>
+            <label for="peso">Peso (kg)</label>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <input type="number" id="peso" name="peso" min="0" style="flex:1;">
+                <span style="background:#f7f7f7;border:1px solid #ccd1d9;border-radius:7px;padding:8px 14px;">kg</span>
+            </div>
+            <label>Fecha de nacimiento</label>
+            <div class="input-row">
+                <input type="text" maxlength="2" style="width:50px" placeholder="dd" name="dia">
+                <input type="text" maxlength="2" style="width:50px" placeholder="mm" name="mes">
+                <input type="text" maxlength="4" style="width:80px" placeholder="aaaa" name="anio">
+            </div>
+            <div class="note">Es obligatorio llenar “Fecha de nacimiento” ó “Edad al comienzo de la reacción”</div>
+            <label>Edad al comienzo de la reacción</label>
+            <div style="display:flex;gap:12px;align-items:center;">
+                <input type="number" min="0" name="edad_valor" style="width:120px">
+                <select name="edad_unidad" style="width:180px">
+                    <option value="">Seleccione unidad...</option>
+                    <option value="Año">Año</option>
+                    <option value="Mes">Mes</option>
+                    <option value="Semana">Semana</option>
+                    <option value="Día">Día</option>
+                    <option value="Hora">Hora</option>
+                </select>
+            </div>
+            <div class="note">Es obligatorio llenar “Fecha de nacimiento” ó “Edad al comienzo de la reacción”</div>
+            <label>País donde comenzaron las reacciones</label>
+            <select name="pais_reaccion">
+                <option value="Colombia">Colombia</option>
+                <option value="Chile">Chile</option>
+                <option value="China">China</option>
+                <option value="Chipre">Chipre</option>
+                <option value="Ciudad del Vaticano">Ciudad del Vaticano</option>
+                <option value="Comoras">Comoras</option>
+                <option value="Congo">Congo</option>
+                <!-- Otros países aquí -->
+            </select>
+            <div class="note">Esto es importante en caso de que el entorno pudiera estar relacionado con la reacción o síntoma.</div>
+            <button class="siguiente-btn" type="button" onclick="guardarYAvanzar()">Siguiente sección</button>
+        </form>
+        <div class="simulador-footer">
+            Sistema SIMULADOR para práctica estudiantil.<br>
+            No válido para envío real de datos.
+        </div>
+        <div class="footer">
+            Medicamentos eReporting Colombia<br>
+            Instituto Nacional de Vigilancia de Medicamentos y Alimentos.
+        </div>
+    </div>
+    <script>
+        // Marca de agua que sigue el scroll y siempre visible
+        let marca = document.getElementById("marcaAguaText");
+        window.addEventListener("scroll", function(){
+            let desplazamiento = window.scrollY;
+            marca.style.transform = "translateY(" + (desplazamiento*0.5) + "px)";
+        });
+        function guardarYAvanzar() {
+            let form = document.getElementById('form_paciente');
+            let data = {};
+            for (let i of form.elements) {
+                if (i.name && (i.type !== 'button' && i.type !== 'submit')) {
+                    if (i.type === 'radio') {
+                        if (i.checked) data[i.name] = i.value;
+                    } else {
+                        data[i.name] = i.value;
+                    }
+                }
+            }
+            // Guarda el objeto con la clave "form_paciente"
+            localStorage.setItem('form_paciente', JSON.stringify(data));
+            // Ir a la siguiente sección
+            window.location.href = 'medicamentos_seccion2.html';
+        }
+    </script>
+</body>
+</html>

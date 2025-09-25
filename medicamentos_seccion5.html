@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos eReporting Colombia - Información de contacto</title>
+    <style>
+        body {
+            background: #f6f6f6;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .header-bar {
+            width: 100%;
+            background: #0596b8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            height: 56px;
+            position: relative;
+        }
+        .logo {
+            margin-left: 18px;
+            margin-right: 23px;
+            height: 40px;
+            width: auto;
+        }
+        .header-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .menu {
+            position: absolute;
+            right: 20px;
+            top: 0;
+            font-size: 1em;
+        }
+        .container {
+            background: #fff;
+            max-width: 950px;
+            margin: 36px auto 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(30,54,76,0.055);
+            padding: 50px 54px 38px 54px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            background: #e7e7e7;
+            height: 12px;
+            border-radius: 7px;
+            margin-bottom: 30px;
+        }
+        .progress-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: #88be4b;
+            border-radius: 7px;
+            transition: width .5s;
+        }
+        h2 {
+            color: #313131;
+            font-size: 1.26em;
+            margin-bottom: 18px;
+        }
+        .form-row {
+            margin-bottom: 19px;
+        }
+        .label {
+            display: block;
+            font-weight: 600;
+            color: #2d3845;
+            margin-bottom: 8px;
+        }
+        input[type="text"], select {
+            background: #f7f7f7;
+            border: 1px solid #ccd1d9;
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 1.08em;
+            width: 100%;
+            box-sizing: border-box;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 16px;
+        }
+        .sec-btn {
+            background: none;
+            color: #6fa832;
+            border: 1px solid #6fa832;
+            border-radius: 6px;
+            font-size: 1.11em;
+            padding: 7px 26px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 18px;
+            transition: background .1s;
+        }
+        .sec-btn:hover { background: #f6feeb; }
+        .enviar-btn {
+            background: #0596b8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.14em;
+            padding: 12px 34px;
+            font-weight: 500;
+            box-shadow: 0 2px 7px rgba(30,150,184,0.13);
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .enviar-btn:hover { background: #046d8a; }
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 34px;
+            color: #224a6d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <img src="https://www.invima.gov.co/template/images/logo.png" alt="Invima logo" class="logo">
+        <div class="header-title">Medicamentos eReporting Colombia</div>
+        <div class="menu">☰ Menú</div>
+    </div>
+    <div class="container">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+        <h2>Información de contacto</h2>
+        <form>
+            <div class="form-row">
+                <label class="label" for="areaReportante">Área Reportante</label>
+                <select id="areaReportante" name="areaReportante">
+                    <option value="">Seleccione área...</option>
+                    <option value="Farmacia">Farmacia</option>
+                    <option value="Hospital">Hospital</option>
+                    <option value="Centro de salud">Centro de salud</option>
+                    <option value="Consultorio privado">Consultorio privado</option>
+                    <option value="Laboratorio">Laboratorio</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label class="label" for="profesion">Profesión</label>
+                <select id="profesion" name="profesion">
+                    <option value="">Seleccione profesión...</option>
+                    <option value="Médico">Médico</option>
+                    <option value="Farmacéutico">Farmacéutico</option>
+                    <option value="Enfermero/a">Enfermero/a</option>
+                    <option value="Técnico">Técnico</option>
+                    <option value="Odontólogo/a">Odontólogo/a</option>
+                    <option value="Usuario">Usuario</option>
+                    <option value="Otro">Otro</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label class="label" for="nombres">Nombre (s)</label>
+                <input type="text" id="nombres" name="nombres">
+            </div>
+            <div class="form-row">
+                <label class="label" for="apellidos">Apellido (s)</label>
+                <input type="text" id="apellidos" name="apellidos">
+            </div>
+            <div class="form-row">
+                <label class="label" for="establecimiento">Establecimiento de Salud</label>
+                <input type="text" id="establecimiento" name="establecimiento">
+            </div>
+            <div class="form-row">
+                <label class="label" for="correo">Correo electrónico</label>
+                <input type="text" id="correo" name="correo">
+            </div>
+            <div class="form-row">
+                <label class="label" for="telefono">Teléfono</label>
+                <input type="text" id="telefono" name="telefono">
+            </div>
+<div class="btn-container">
+    <a class="sec-btn" href="medicamentos_seccion4.html">Sección anterior</a>
+    <a class="enviar-btn" href="reporte_final_vigiflow.html">Enviar reportes</a>
+</div>
+
+        </form>
+        <div class="footer">
+            Instituto Nacional de Vigilancia de Medicamentos y Alimentos<br>
+            Powered by VigiFlow eForms
+        </div>
+    </div>
+</body>
+</html>

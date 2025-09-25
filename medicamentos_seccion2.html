@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Medicamentos eReporting Colombia - Sección 2</title>
+    <style>
+        body {
+            background: #f6f6f6;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+        .header-bar {
+            width: 100%;
+            background: #0596b8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0;
+            height: 56px;
+            position: relative;
+        }
+        .logo {
+            margin-left: 18px;
+            margin-right: 23px;
+            height: 40px;
+            width: auto;
+        }
+        .header-title {
+            font-size: 1.4em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .menu {
+            position: absolute;
+            right: 20px;
+            top: 0;
+            font-size: 1em;
+        }
+        .container {
+            background: #fff;
+            max-width: 950px;
+            margin: 36px auto 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(30,54,76,0.055);
+            padding: 50px 54px 38px 54px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            background: #e7e7e7;
+            height: 12px;
+            border-radius: 7px;
+            margin-bottom: 30px;
+        }
+        .progress-bar-fill {
+            width: 48%;
+            height: 100%;
+            background: #88be4b;
+            border-radius: 7px;
+            transition: width .5s;
+        }
+        h2 {
+            color: #313131;
+            font-size: 1.26em;
+            margin-bottom: 18px;
+        }
+        .form-row {
+            margin-bottom: 29px;
+        }
+        .label {
+            display: block;
+            font-weight: 600;
+            color: #2d3845;
+            margin-bottom: 8px;
+        }
+        textarea {
+            background: #f7f7f7;
+            border: 1.5px solid #a94442;
+            border-radius: 5px;
+            padding: 13px;
+            font-size: 1.08em;
+            width: 100%;
+            min-height: 95px;
+            box-sizing: border-box;
+            color: #333;
+        }
+        .campo-obligatorio {
+            color: #ad2e2e;
+            font-size: 0.99em;
+            margin-bottom: 5px;
+        }
+        .reaccion-section {
+            background: #e9f5fa;
+            border-radius: 8px;
+            padding: 25px 22px 18px 22px;
+            margin-top: 0;
+            margin-bottom: 26px;
+            border-left: 4px solid #0596b8;
+        }
+        .reaccion-row {
+            margin-bottom: 21px;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .input-row input, .input-row select {
+            background: #f7f7f7;
+            border: 1px solid #ccd1d9;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 1.07em;
+            box-sizing: border-box;
+            color: #222;
+        }
+        .input-row input[type="text"] { width: 80px; }
+        .input-row select { width: 120px; }
+        .input-row input:last-child { width: 130px; }
+        .reaccion-label {
+            font-weight: 600;
+            color: #2d3845;
+            margin-bottom: 6px;
+            margin-top: 7px;
+        }
+        .note, .small {
+            font-size: 0.99em;
+            color: #888;
+            margin-bottom: 7px;
+        }
+        .select-long {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccd1d9;
+            border-radius: 5px;
+            background: #f7f7f7;
+            font-size: 1.07em;
+            color: #222;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+        }
+        .sec-btn {
+            background: none;
+            color: #6fa832;
+            border: 1px solid #6fa832;
+            border-radius: 6px;
+            font-size: 1.11em;
+            padding: 7px 26px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 18px;
+            transition: background .1s;
+        }
+        .sec-btn:hover { background: #f6feeb; }
+        .siguiente-btn {
+            background: #88be4b;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.12em;
+            padding: 12px 34px;
+            font-weight: 500;
+            box-shadow: 0 2px 7px rgba(149,191,84,0.13);
+            cursor: pointer;
+            transition: background 0.15s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .siguiente-btn:hover { background: #72a832; }
+        .agregar-btn {
+            background: #0596b8;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            padding: 8px 26px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+        .agregar-btn:hover { background: #046d8a; }
+        .radio-group {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-top:8px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            color: #313131;
+            font-size: 1.03em;
+            gap: 4px;
+        }
+        .radio-group input[type="radio"] {
+            margin-right: 4px;
+            accent-color: #0596b8;
+        }
+        .footer {
+            text-align: center;
+            font-size: 13px;
+            margin-top: 34px;
+            color: #224a6d;
+        }
+        .error-msg {
+            background: #ffeaea;
+            color: #ad2e2e;
+            border-radius: 6px;
+            padding: 12px 18px;
+            font-size: 1.08em;
+            margin-top: 10px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <img src="https://www.invima.gov.co/template/images/logo.png" alt="Invima logo" class="logo">
+        <div class="header-title">Medicamentos eReporting Colombia</div>
+        <div class="menu">☰ Menú</div>
+    </div>
+    <div class="container">
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill"></div>
+        </div>
+        <h2>Describa lo sucedido</h2>
+        <div class="note">
+            Describa con sus propias palabras los síntomas o reacciones que sospeche hayan sido causados por la medicación y lo sucedido posteriormente.  
+            Por favor describa lo sucedido en el siguiente campo. Puede ingresar detalles acerca de las reacciones y los medicamentos probablemente relacionados con ellas, así como fechas relevantes. 
+            Por favor asegúrese de describir detalles de lo ocurrido por cada reacción y medicamento a reportar en las siguientes secciones.
+        </div>
+        <div class="form-row">
+            <label class="label" for="descripcion">Descripción de lo sucedido</label>
+            <textarea id="descripcion" name="descripcion"></textarea>
+            <div class="campo-obligatorio">El campo obligatorio está vacío</div>
+        </div>
+        <div class="reaccion-label">Reacción(es)/Síntoma(s)</div>
+        <div class="note">Describa cada reacción con sus propias palabras. Presione el botón "Agregar otra reacción / síntoma" para agregar otros eventos que necesite describir.</div>
+        <div class="reaccion-section">
+            <div class="reaccion-row">
+                <label class="label" for="reaccionSintoma">Reacción/Síntoma</label>
+                <input type="text" name="reaccionSintoma" id="reaccionSintoma" class="select-long">
+            </div>
+            <div class="reaccion-row">
+                <span class="label">Fecha de comienzo de la reacción</span>
+                <div class="input-row">
+                    <input type="text" maxlength="2" placeholder="dd">
+                    <select>
+                        <option value="">mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input type="text" maxlength="4" placeholder="aaaa">
+                </div>
+                <div class="note">Por favor ingrese información lo más completa posible</div>
+            </div>
+            <div class="reaccion-row">
+                <span class="label">Fecha de fin de la reacción</span>
+                <div class="input-row">
+                    <input type="text" maxlength="2" placeholder="dd">
+                    <select>
+                        <option value="">mes</option>
+                        <option value="01">Enero</option>
+                        <option value="02">Febrero</option>
+                        <option value="03">Marzo</option>
+                        <option value="04">Abril</option>
+                        <option value="05">Mayo</option>
+                        <option value="06">Junio</option>
+                        <option value="07">Julio</option>
+                        <option value="08">Agosto</option>
+                        <option value="09">Septiembre</option>
+                        <option value="10">Octubre</option>
+                        <option value="11">Noviembre</option>
+                        <option value="12">Diciembre</option>
+                    </select>
+                    <input type="text" maxlength="4" placeholder="aaaa">
+                </div>
+                <div class="note">Por favor ingrese información lo más completa posible</div>
+            </div>
+            <div class="reaccion-row">
+                <span class="label">Duración de la reacción</span>
+                <div class="input-row">
+                    <input type="text" placeholder="">
+                    <select>
+                        <option value="">Seleccione unidad...</option>
+                        <option value="Año">Año</option>
+                        <option value="Mes">Mes</option>
+                        <option value="Semana">Semana</option>
+                        <option value="Día">Día</option>
+                        <option value="Hora">Hora</option>
+                    </select>
+                </div>
+            </div>
+            <div class="reaccion-row">
+                <span class="label">Estado actual de la reacción / síntoma</span>
+                <select class="select-long">
+                    <option value="">Seleccione...</option>
+                    <option value="Recuperada/Resuelta">Recuperada/Resuelta</option>
+                    <option value="En recuperación/En resolución">En recuperación/En resolución</option>
+                    <option value="No recuperada/No resuelta">No recuperada/No resuelta</option>
+                    <option value="Recuperada con secuelas">Recuperada con secuelas</option>
+                    <option value="Mortal">Mortal</option>
+                    <option value="Desconocido">Desconocido</option>
+                </select>
+            </div>
+            <div class="reaccion-row">
+                <span class="label">Grave</span>
+                <div class="radio-group">
+                    <label><input type="radio" name="grave" value="si"> Sí</label>
+                    <label><input type="radio" name="grave" value="no"> No</label>
+                </div>
+            </div>
+            <button class="agregar-btn" type="button">Agregar otra reacción/síntoma</button>
+        </div>
+        <div class="error-msg">
+            Uno o más campos no están rellenados correctamente, por favor corríjalos antes de continuar
+        </div>
+        <div class="btn-container">
+            <a class="sec-btn" href="medicamentos_ereporting_colombia.html">Sección anterior</a>
+            <a class="siguiente-btn" href="medicamentos_seccion3.html">Siguiente sección</a>
+        </div>
+        <div class="footer">
+            Instituto Nacional de Vigilancia de Medicamentos y Alimentos<br>
+            Powered by VigiFlow eForms
+        </div>
+    </div>
+</body>
+</html>
