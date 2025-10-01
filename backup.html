@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Zendra - Respaldo y Migración</title>
+    <link rel="stylesheet" href="diseno.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh; margin: 0;
+            font-family: 'Nunito', Arial, sans-serif;
+            background: linear-gradient(120deg, #60adff 0%, #8a70d6 100%);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .backup-card {
+            width: 455px; background: #fff; border-radius: 26px;
+            box-shadow: 0 8px 32px rgba(106,50,163,0.21);
+            padding: 38px 32px 22px 32px; text-align: center;
+            animation: popupFade 0.7s;
+        }
+        @keyframes popupFade {
+            0% { transform: translateY(30px); opacity: 0;}
+            100% { transform: translateY(0); opacity: 1;}
+        }
+        .backup-logo {
+            display:flex;justify-content:center;align-items:center;
+            margin-bottom:12px;
+        }
+        .backup-logo img {
+            width: 61px; height: 61px; border-radius: 50%;
+            box-shadow: 0 3px 12px rgba(96,173,255,0.16);
+            background: #eef4fa;
+            margin-right: 9px;
+        }
+        .backup-title {
+            font-size: 1.48em; font-weight: bold;
+            color: #507fff; letter-spacing: 1.1px;
+            margin-bottom: 4px;
+        }
+        .backup-desc {
+            color: #6c67be; font-size: 1.04em;
+            margin-bottom: 30px; padding-bottom:11px;
+        }
+        button, label {
+            font-size: 1.09em; border-radius: 9px; padding: 12px 26px;
+            margin-bottom: 13px; border: none;
+            background: linear-gradient(120deg,#60adff 0%,#8a70d6 95%);
+            color: #fff; font-weight: bold;
+            box-shadow: 0 2px 12px rgba(138,112,214,0.09);
+            transition: background 0.3s, transform 0.3s;
+            cursor: pointer;
+            outline: none;
+        }
+        button:hover {
+            background: linear-gradient(120deg,#8a70d6 0%,#60adff 100%);
+            transform: scale(1.06);
+        }
+        .menu-link {
+            text-decoration: none; color: #fff;
+            background: linear-gradient(120deg,#60adff 0%,#8a70d6 100%);
+            padding: 13px 20px; border-radius: 14px;
+            font-weight: bold; margin-top: 28px; display: inline-block;
+            box-shadow: 0 2px 8px rgba(96,173,255,0.07);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .menu-link:hover {background: linear-gradient(120deg,#8a70d6 0%,#60adff 100%); transform: scale(1.04);}
+        input[type="file"] {margin:12px auto;display:block;}
+        #resultado {margin-top:15px;font-weight:600;opacity:0;transition:opacity .3s;}
+        #resultado.show {opacity:1;}
+        .footer-inst {margin-top:30px;font-size:0.92em;color:#c5cfff;}
+    </style>
+</head>
+<body>
+   <div class="backup-card">
+       <div class="backup-logo">
+         <!-- Poner aquí tu logotipo Zendra si tienes/ PNG recomendado-->
+         <img src="https://aulafarmaceutica.github.io/Zendra/assets/logo_zendra.png" alt="Logo Zendra" onerror="this.style.display='none'">
+         <div>
+           <div class="backup-title">Zendra | Respaldo y Migración</div>
+         </div>
+       </div>
+       <div class="backup-desc">
+           Exporta, respalda y recupera todos los registros y movimientos<br>
+           <strong style="color:#69c0ad">de tu servicio farmacéutico educativo</strong>.
+           <br>Perfecto para restaurar sesiones y cambiar de computador.
+       </div>
+       <button onclick="exportarTodo()">💾 Exportar toda la información</button>
+       <form id="importForm">
+         <label for="importFile">📁 Importar datos (.json)</label>
+         <input type="file" id="importFile" accept=".json">
+         <button type="submit">🔄 Importar</button>
+       </form>
+       <div id="resultado"></div>
+       <a href="index.html" class="menu-link">⏮ Volver al Menú Principal</a>
+       <div class="footer-inst">AulaDeDiego | Zendra © 2025 · Todos los derechos reservados</div>
+   </div>
+<script>
+function exportarTodo() {
+    let data = {};
+    for (let i = 0; i < localStorage.length; i++) {
+        let key = localStorage.key(i);
+        data[key] = localStorage.getItem(key);
+    }
+    let blob = new Blob([JSON.stringify(data, null, 2)], {type : 'application/json'});
+    let enlace = document.createElement("a");
+    enlace.href = URL.createObjectURL(blob);
+    enlace.download = "Zendra_Respaldos_" + (new Date().toISOString().split('T')[0]) + ".json";
+    document.body.appendChild(enlace);
+    enlace.click();
+    document.body.removeChild(enlace);
+}
+document.getElementById('importForm').onsubmit = function(e) {
+    e.preventDefault();
+    let archivo = document.getElementById('importFile').files[0];
+    let resultado = document.getElementById('resultado');
+    if (!archivo) {
+        resultado.textContent = "Selecciona un archivo primero.";
+        resultado.classList.add("show");
+        setTimeout(()=>resultado.classList.remove("show"), 2300);
+        return;
+    }
+    let lector = new FileReader();
+    lector.onload = function(evento) {
+        try {
+            let datosJSON = JSON.parse(evento.target.result);
+            for (const [clave, valor] of Object.entries(datosJSON)) {
+                localStorage.setItem(clave, valor);
+            }
+            resultado.textContent = "¡Respaldo restaurado exitosamente!";
+            resultado.classList.add("show");
+            setTimeout(()=>resultado.classList.remove("show"), 2500);
+        } catch (error) {
+            resultado.textContent = "Error al importar el archivo. Verifica el formato.";
+            resultado.classList.add("show");
+            setTimeout(()=>resultado.classList.remove("show"), 2500);
+        }
+    };
+    lector.readAsText(archivo);
+};
+</script>
+</body>
+</html>
