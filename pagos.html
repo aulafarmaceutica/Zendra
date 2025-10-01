@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Zendra | Pagos y Egresos</title>
+  <link rel="stylesheet" href="diseno.css">
+  <style>
+    .container-pagos {max-width:1050px;margin:40px auto;padding:24px 30px;background:#fff;border-radius:20px;box-shadow:0 8px 24px rgba(106,50,163,0.13);}
+    h2 {color:#7d60d6;}
+    .tabs {display:flex;gap:12px; margin-bottom:24px;}
+    .tab {padding:12px 28px; cursor:pointer; font-weight:bold; border-radius:12px 12px 0 0; background:#eaf3fe; color:#665ad6;}
+    .tab.active {background:#fff; color:#7d60d6; border-bottom:3px solid #7d60d6;}
+    .filter-row {display:flex;gap:17px;margin-bottom:14px; flex-wrap:wrap;}
+    table {width:100%; margin:14px 0; border-collapse:collapse;}
+    th,td {border:1.5px solid #e0e5ed;padding:7px;}
+    th {background:#f5f8fe;color:#7d60d6;}
+    .btn-pago {background:#7d60d6;color:#fff;padding:8px 18px;border-radius:8px;font-weight:bold;border:none;cursor:pointer;}
+    .btn-pago:hover {background:#60adff;}
+    .form-row {margin:13px 0;display:flex;gap:16px;flex-wrap:wrap;}
+    .trab-list {margin-top:12px;}
+    .edit-btn {background:#8a70d6;color:#fff;padding:2px 8px;border-radius:6px;border:none;cursor:pointer;margin-left:6px;}
+  </style>
+</head>
+<body>
+  <div class="container-pagos">
+    <h2>Pagos y Egresos</h2>
+    <div class="tabs">
+      <div class="tab active" onclick="showPagoTab(0)">Pagos</div>
+      <div class="tab" onclick="showPagoTab(1)">Nómina</div>
+    </div>
+    <!-- TAB PAGOS -->
+    <div class="content-pagotab active">
+      <div class="filter-row">
+        <input type="date" id="filtroDesde">
+        <input type="date" id="filtroHasta">
+        <select id="filtroTipo">
+          <option value="">Todos</option>
+          <option value="compra">Compra</option>
+          <option value="servicio">Servicio</option>
+          <option value="empleado">Empleado</option>
+        </select>
+        <input type="text" id="filtroRef" placeholder="Referencia">
+        <button class="btn-pago" onclick="filtrarPagos()">Filtrar</button>
+        <button class="btn-pago" onclick="exportarPagos()">Exportar CSV</button>
+      </div>
+      <table id="tablaPagos">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Tipo</th><th>Referencia</th><th>Descripción</th><th>Monto</th><th>Estado</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h3>Registrar nuevo pago</h3>
+      <div class="form-row" id="pagoForm">
+        <input type="date" id="nuevoPagoFecha">
+        <select id="nuevoPagoTipo" onchange="showPagoTipo()">
+          <option value="compra">Compra</option>
+          <option value="servicio">Servicio</option>
+          <option value="empleado">Empleado</option>
+        </select>
+        <!-- COMPRA -->
+        <select id="selectCompra" style="display:none"></select>
+        <!-- SERVICIO -->
+        <select id="selectServ" style="display:none"></select>
+        <input type="text" id="addServ" placeholder="Nuevo servicio" style="display:none">
+        <button class="btn-pago" id="btnAddServ" style="display:none" onclick="agregarServicio()">Agregar servicio</button>
+        <!-- EMPLEADO -->
+        <select id="selectTrab" style="display:none"></select>
+        <input type="text" id="nuevoPagoDesc" placeholder="Descripción">
+        <input type="number" id="nuevoPagoMonto" placeholder="Monto">
+        <select id="nuevoPagoEstado">
+          <option value="Pagado">Pagado</option>
+          <option value="Pendiente">Pendiente</option>
+        </select>
+        <button class="btn-pago" onclick="agregarPago()">Registrar</button>
+      </div>
+    </div>
+    <!-- TAB NOMINA -->
+    <div class="content-pagotab">
+      <h3>Empleados y Nómina</h3>
+      <div class="form-row">
+        <input type="text" id="trabNombre" placeholder="Nombre">
+        <input type="text" id="trabCargo" placeholder="Cargo">
+        <input type="number" id="trabSalario" placeholder="Salario mensual">
+        <button class="btn-pago" onclick="agregarTrabajador()">Agregar</button>
+      </div>
+      <div class="trab-list" id="listaTrabajadores"></div>
+      <div id="editTrab" style="display:none;margin-top:8px;"></div>
+      <h4>Liquidar nómina</h4>
+      <div class="form-row">
+        <select id="pagoTrabajador"></select>
+        <input type="text" id="pagoDesc" placeholder="Descripción">
+        <input type="number" id="pagoMeses" min="1" max="12" value="1" placeholder="Meses">
+        <button class="btn-pago" onclick="liquidarNomina()">Liquidar y registrar</button>
+      </div>
+      <div id="nominaResult"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- NAVEGACIÓN DE TABS ---
+    function showPagoTab(n) {
+      document.querySelectorAll('.tab').forEach((tab,i)=>{
+        tab.classList.toggle('active',i===n);
+      });
+      document.querySelectorAll('.content-pagotab').forEach((ct,i)=>{
+        ct.classList.toggle('active',i===n);
+      });
+    }
+
+    // --- DATOS BASE SIMULADOS ---
+    let compras = [
+      {id:1, fecha:'2025-09-28', proveedor:'Coopidrogas',total:32000, descripcion:'Compra medicamentos'},
+      {id:2, fecha:'2025-09-29', proveedor:'Tecnoquímicas',total:28500, descripcion:'Compra insumos'},
+      {id:3, fecha:'2025-09-30', proveedor:'Audifarma',total:65400, descripcion:'Compra Lote especial'},
+    ];
+    let servicios = [
+      'Arriendo local',
+      'Energía',
+      'Internet',
+      'Vigilancia',
+      'Servicios públicos',
+      'Basuras'
+    ];
+    let pagos = [
+      {fecha:'2025-10-01',tipo:'compra',referencia:'1',descripcion:'Pago compra Coopidrogas',monto:32000,estado:'Pagado'},
+      {fecha:'2025-10-01',tipo:'servicio',referencia:'Arriendo local',descripcion:'Pago mensual arriendo',monto:1200000,estado:'Pagado'},
+      {fecha:'2025-10-01',tipo:'empleado',referencia:'Luis Castro',descripcion:'Nómina septiembre',monto:2200000,estado:'Pagado'},
+    ];
+    let trabajadores = [
+      {id:1, nombre:'Luis Castro', cargo:'Auxiliar farmacia', salario:1800000},
+      {id:2, nombre:'Paola Torres', cargo:'Regente farmacia', salario:2150000}
+    ];
+
+    // ------ TAB PAGOS ------
+    function mostrarPagos(pgs) {
+      const tbody = document.querySelector('#tablaPagos tbody');
+      tbody.innerHTML = '';
+      pgs.forEach(pg=>{
+        const row=document.createElement('tr');
+        row.innerHTML = `<td>${pg.fecha}</td><td>${pg.tipo}</td><td>${pg.referencia}</td><td>${pg.descripcion}</td><td>$${pg.monto.toLocaleString()}</td><td>${pg.estado}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+    function filtrarPagos() {
+      let desde = document.getElementById('filtroDesde').value;
+      let hasta = document.getElementById('filtroHasta').value;
+      let tipo = document.getElementById('filtroTipo').value;
+      let ref = document.getElementById('filtroRef').value;
+      let filtrados = pagos.filter(pg => {
+        let ok = true;
+        if(desde && pg.fecha < desde) ok = false;
+        if(hasta && pg.fecha > hasta) ok = false;
+        if(tipo && pg.tipo !== tipo) ok = false;
+        if(ref && !pg.referencia.includes(ref)) ok = false;
+        return ok;
+      });
+      mostrarPagos(filtrados);
+    }
+    function exportarPagos() {
+      let data = pagos.map(pg=>({...pg}));
+      let csv = "fecha,tipo,referencia,descripcion,monto,estado\n";
+      data.forEach(pg=> {
+        csv += `${pg.fecha},${pg.tipo},${pg.referencia},"${pg.descripcion}",${pg.monto},${pg.estado}\n`;
+      });
+      const blob = new Blob([csv],{type:'text/csv'});
+      const enlace=document.createElement('a');
+      enlace.href=URL.createObjectURL(blob);
+      enlace.download='pagos.csv';
+      document.body.appendChild(enlace);
+      enlace.click();
+      document.body.removeChild(enlace);
+    }
+
+    // ------ REGISTRO DE PAGO AVANZADO ------
+    function showPagoTipo() {
+      let tipo = document.getElementById('nuevoPagoTipo').value;
+      document.getElementById('selectCompra').style.display = (tipo==='compra')?'':'none';
+      document.getElementById('selectServ').style.display = (tipo==='servicio')?'':'none';
+      document.getElementById('addServ').style.display = (tipo==='servicio')?'':'none';
+      document.getElementById('btnAddServ').style.display = (tipo==='servicio')?'':'none';
+      document.getElementById('selectTrab').style.display = (tipo==='empleado')?'':'none';
+      cargarSelects();
+    }
+    function cargarSelects() {
+      // Compras
+      let selCompra = document.getElementById('selectCompra');
+      selCompra.innerHTML = '';
+      compras.forEach(c=>{
+        let opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `#${c.id} ${c.proveedor} ($${c.total})`;
+        selCompra.appendChild(opt);
+      });
+      // Servicios
+      let selServ=document.getElementById('selectServ');
+      selServ.innerHTML='';
+      servicios.forEach(s=>{
+        let opt=document.createElement('option');
+        opt.value=s; opt.textContent=s;
+        selServ.appendChild(opt);
+      });
+      // Trabajadores
+      let selTrab=document.getElementById('selectTrab');
+      selTrab.innerHTML='';
+      trabajadores.forEach(t=>{
+        let opt=document.createElement('option');
+        opt.value=t.id; opt.textContent=`${t.nombre} (${t.cargo})`;
+        selTrab.appendChild(opt);
+      });
+    }
+    function agregarServicio() {
+      let nuevoS = document.getElementById('addServ').value.trim();
+      if(nuevoS.length>2 && !servicios.includes(nuevoS)) {
+        servicios.push(nuevoS);
+        cargarSelects();
+        alert('Servicio agregado!');
+      }
+    }
+
+    function agregarPago() {
+      let fecha = document.getElementById('nuevoPagoFecha').value;
+      let tipo = document.getElementById('nuevoPagoTipo').value;
+      let referencia = '', desc = document.getElementById('nuevoPagoDesc').value;
+      let monto = parseFloat(document.getElementById('nuevoPagoMonto').value||0);
+      let estado = document.getElementById('nuevoPagoEstado').value;
+      if(tipo==='compra') {
+        let selCompra=document.getElementById('selectCompra');
+        referencia=selCompra.value;
+        desc += ` (Compra #${referencia})`;
+        let compra = compras.find(c=>c.id==referencia);
+        if(compra && monto===0) monto=compra.total;
+      }
+      if(tipo==='servicio') {
+        let selServicio=document.getElementById('selectServ');
+        referencia=selServicio.value;
+      }
+      if(tipo==='empleado') {
+        let selTrab=document.getElementById('selectTrab');
+        let trab=trabajadores.find(t=>t.id==selTrab.value);
+        referencia=trab?trab.nombre:'';
+        if(trab&&monto===0) monto=trab.salario;
+      }
+      if(!fecha||!tipo||!referencia||!monto) { alert('Completa todos los datos principales'); return; }
+      pagos.push({fecha, tipo, referencia, descripcion:desc, monto, estado});
+      mostrarPagos(pagos);
+      alert('Pago registrado');
+    }
+
+    // ------ NOMINA Y EDICIÓN DE EMPLEADOS ------
+    function mostrarTrabajadores() {
+      let html = '<strong>Lista de empleados:</strong><ul>';
+      trabajadores.forEach(t=>html+=`<li>${t.nombre} (${t.cargo}) - Salario: $${t.salario.toLocaleString()}<button class="edit-btn" onclick="editarTrabajador(${t.id})">Editar</button></li>`);
+      html+='</ul>';
+      document.getElementById('listaTrabajadores').innerHTML = html;
+      // Cargar en select nomina y pago
+      let selPago = document.getElementById('pagoTrabajador');
+      selPago.innerHTML='';
+      trabajadores.forEach(t=>{
+        let opt = document.createElement('option');
+        opt.value=t.id; opt.textContent=`${t.nombre} (${t.cargo})`;
+        selPago.appendChild(opt);
+      });
+      cargarSelects();
+    }
+    function agregarTrabajador() {
+      let nombre = document.getElementById('trabNombre').value;
+      let cargo = document.getElementById('trabCargo').value;
+      let salario = parseFloat(document.getElementById('trabSalario').value||0);
+      if(!nombre||!cargo||!salario) { alert('Completa los datos del empleado'); return; }
+      trabajadores.push({id:trabajadores.length+1, nombre, cargo, salario});
+      mostrarTrabajadores();
+      alert('Empleado agregado');
+    }
+    function editarTrabajador(id) {
+      let emp = trabajadores.find(t=>t.id===id);
+      if(!emp)return;
+      let html = `
+        <label>Editar: ${emp.nombre}</label>
+        <input type="text" id="editCargo" value="${emp.cargo}" placeholder="Cargo">
+        <input type="number" id="editSalario" value="${emp.salario}" placeholder="Salario">
+        <button class="btn-pago" onclick="guardarTrabajador(${id})">Guardar</button>
+        <button class="btn-pago" onclick="cancelarEditTrab()">Cancelar</button>
+      `;
+      document.getElementById('editTrab').style.display='block';
+      document.getElementById('editTrab').innerHTML = html;
+    }
+    function guardarTrabajador(id) {
+      let emp = trabajadores.find(t=>t.id===id);
+      if(!emp)return;
+      emp.cargo = document.getElementById('editCargo').value;
+      emp.salario = parseFloat(document.getElementById('editSalario').value||0);
+      document.getElementById('editTrab').style.display='none';
+      mostrarTrabajadores();
+    }
+    function cancelarEditTrab() {
+      document.getElementById('editTrab').style.display='none';
+    }
+    function liquidarNomina() {
+      let idTrab = parseInt(document.getElementById('pagoTrabajador').value);
+      let meses = parseInt(document.getElementById('pagoMeses').value||1);
+      let desc = document.getElementById('pagoDesc').value;
+      let trab = trabajadores.find(t=>t.id===idTrab);
+      if(!trab) {alert('Selecciona empleado');return;}
+      let salud = trab.salario * 0.08 * meses;
+      let pension = trab.salario * 0.16 * meses;
+      let bruto = trab.salario * meses;
+      let total = bruto + salud + pension;
+      pagos.push({
+        fecha:new Date().toISOString().split('T')[0],
+        tipo:'empleado',
+        referencia:trab.nombre,
+        descripcion:desc,
+        monto:total,
+        estado:'Pagado'
+      });
+      mostrarPagos(pagos);
+      document.getElementById('nominaResult').innerHTML = `Liquidación:<br>Salario bruto: $${bruto.toLocaleString()}<br>Salud (8%): $${salud.toLocaleString()}<br>Pensión (16%): $${pension.toLocaleString()}<br><strong>Total a pagar: $${total.toLocaleString()}</strong>`;
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      mostrarPagos(pagos);
+      mostrarTrabajadores();
+      cargarSelects();
+    });
+  </script>
+</body>
+</html>
