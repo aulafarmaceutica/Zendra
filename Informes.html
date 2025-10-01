@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Zendra | Informes Financieros</title>
+  <link rel="stylesheet" href="diseno.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { min-height:100vh; margin:0; font-family:'Nunito',Arial,sans-serif; background:linear-gradient(120deg,#7bc1f9 0%,#7d60d6 100%);}
+    .container-inf {max-width:1050px;margin:40px auto 0 auto; background:#fff;border-radius:24px;padding:30px 38px 36px 38px;box-shadow:0 10px 32px rgba(106,50,163,0.13);}
+    .tabs {display:flex;border-bottom:3px solid #9e8bff;margin-bottom:18px;}
+    .tab {flex:1;padding:12px;text-align:center;font-weight:700;cursor:pointer;user-select:none;border-radius:18px 18px 0 0;background:#eaf3fe;color:#48619d;margin-right:5px;transition:background 0.3s;}
+    .tab.active {background:#fff;border-bottom:3px solid #7d60d6;color:#7d60d6;}
+    .filter-row {margin:14px 0 22px 0;display:flex;gap:24px;flex-wrap: wrap;align-items:center;}
+    .filter-row select, .filter-row input {padding:7px 11px;border-radius:7px;border:1.5px solid #d5dbe9;}
+    h2 {color:#7d60d6;margin-bottom:11px;font-size:1.35em;}
+    .content-tab {display:none;}
+    .content-tab.active {display:block;}
+    .btn-expo {background:linear-gradient(120deg,#60adff,#8a70d6);color:#fff;padding:9px 20px;border-radius:9px;border:none;font-weight:bold;cursor:pointer;}
+    .btn-expo:hover {background:linear-gradient(120deg,#8a70d6 0%,#60adff 100%);}
+    table {width:100%;margin-top:10px;border-collapse:collapse;font-size:0.98em;}
+    th,td {border:1.5px solid #e0e5ed;padding:7px 4px;text-align:left;}
+    th {background:#f5f8fe;color:#7d60d6;}
+    .menu-button {display:inline-block;padding:10px 20px;background:#007bff;color:#fff;text-decoration:none;border-radius:5px;margin-bottom:20px;}
+  </style>
+</head>
+<body>
+  <div class="container-inf">
+    <a href="index.html" class="menu-button">Volver al Menú Principal</a>
+    <h2>Informes Financieros y Operativos</h2>
+    <div class="tabs">
+      <div class="tab active" onclick="showTab(0)">Ventas</div>
+      <div class="tab" onclick="showTab(1)">Compras</div>
+      <div class="tab" onclick="showTab(2)">Entradas</div>
+      <div class="tab" onclick="showTab(3)">Salidas</div>
+      <div class="tab" onclick="showTab(4)">Devoluciones</div>
+    </div>
+    
+    <!-- Ventas -->
+    <div class="content-tab active">
+      <div class="filter-row">
+        <input type="date" placeholder="Desde" id="ventaDesde">
+        <input type="date" placeholder="Hasta" id="ventaHasta">
+        <select id="ventaCliente">
+          <option value="">Todos los clientes</option>
+        </select>
+        <button class="btn-expo" onclick="filtrarVentas()">Filtrar</button>
+        <button class="btn-expo" onclick="exportVentas()">Exportar CSV</button>
+      </div>
+      <table id="tablaVentas">
+        <thead>
+          <tr>
+            <th>ID Venta</th><th>Fecha</th><th>Cliente</th><th>Productos</th><th>Total Venta</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Compras -->
+    <div class="content-tab">
+      <div class="filter-row">
+        <input type="date" id="compraDesde">
+        <input type="date" id="compraHasta">
+        <select id="compraProveedor">
+          <option value="">Todos los proveedores</option>
+        </select>
+        <button class="btn-expo" onclick="filtrarCompras()">Filtrar</button>
+        <button class="btn-expo" onclick="exportCompras()">Exportar CSV</button>
+      </div>
+      <table id="tablaCompras">
+        <thead>
+          <tr>
+            <th>Fecha</th><th>Proveedor</th><th>Productos</th><th>Total Compra</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
+    
+    <!-- Entradas -->
+    <div class="content-tab">
+      <div class="filter-row">
+        <input type="date" id="entradaDesde">
+        <input type="date" id="entradaHasta">
+        <button class="btn-expo" onclick="filtrarEntradas()">Filtrar</button>
+        <button class="btn-expo" onclick="exportEntradas()">Exportar CSV</button>
+      </div>
+      <table id="tablaEntradas">
+        <thead>
+          <tr><th>Fecha</th><th>Proveedor</th><th>Productos</th><th>Total</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    
+    <!-- Salidas -->
+    <div class="content-tab">
+      <div class="filter-row">
+        <input type="date" id="salidaDesde">
+        <input type="date" id="salidaHasta">
+        <button class="btn-expo" onclick="filtrarSalidas()">Filtrar</button>
+        <button class="btn-expo" onclick="exportSalidas()">Exportar CSV</button>
+      </div>
+      <table id="tablaSalidas">
+        <thead>
+          <tr><th>Fecha</th><th>Destino</th><th>Productos</th><th>Total Items</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    
+    <!-- Devoluciones -->
+    <div class="content-tab">
+      <div class="filter-row">
+        <input type="date" id="devolDesde">
+        <input type="date" id="devolHasta">
+        <select id="devolTipo">
+          <option value="">Todos los tipos</option>
+          <option value="cliente">Cliente</option>
+          <option value="proveedor">Proveedor</option>
+        </select>
+        <button class="btn-expo" onclick="filtrarDevoluciones()">Filtrar</button>
+        <button class="btn-expo" onclick="exportDevoluciones()">Exportar CSV</button>
+      </div>
+      <table id="tablaDevoluciones">
+        <thead>
+          <tr><th>Fecha</th><th>Tipo</th><th>Productos</th><th>Total</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+<script>
+function showTab(n) {
+  document.querySelectorAll('.tab').forEach((tab,i)=>{
+    tab.classList.toggle('active', i===n);
+  });
+  document.querySelectorAll('.content-tab').forEach((ct,i)=>{
+    ct.classList.toggle('active', i===n);
+  });
+}
+
+// Cargar datos iniciales
+document.addEventListener('DOMContentLoaded', function() {
+  cargarClientesSelect();
+  cargarProveedoresSelect();
+  filtrarVentas();
+  filtrarCompras();
+  filtrarEntradas();
+  filtrarSalidas();
+  filtrarDevoluciones();
+});
+
+function cargarClientesSelect() {
+  const select = document.getElementById('ventaCliente');
+  const clientes = JSON.parse(localStorage.getItem('clientes') || '[]');
+  clientes.forEach(cliente => {
+    const option = document.createElement('option');
+    option.value = cliente.nombre;
+    option.textContent = cliente.nombre;
+    select.appendChild(option);
+  });
+}
+
+function cargarProveedoresSelect() {
+  const select = document.getElementById('compraProveedor');
+  const proveedores = JSON.parse(localStorage.getItem('proveedores') || '[]');
+  proveedores.forEach(proveedor => {
+    const option = document.createElement('option');
+    option.value = proveedor.nombre;
+    option.textContent = proveedor.nombre;
+    select.appendChild(option);
+  });
+}
+
+function filtrarVentas() {
+  const ventas = JSON.parse(localStorage.getItem('ventas') || '[]');
+  const desde = document.getElementById('ventaDesde').value;
+  const hasta = document.getElementById('ventaHasta').value;
+  const cliente = document.getElementById('ventaCliente').value;
+  
+  let ventasFiltradas = ventas.filter(venta => {
+    let cumple = true;
+    if (desde && venta.fecha < desde) cumple = false;
+    if (hasta && venta.fecha > hasta) cumple = false;
+    if (cliente && venta.cliente && venta.cliente.nombre !== cliente) cumple = false;
+    return cumple;
+  });
+  
+  mostrarVentas(ventasFiltradas);
+}
+
+function mostrarVentas(ventas) {
+  const tbody = document.querySelector('#tablaVentas tbody');
+  tbody.innerHTML = '';
+  
+  ventas.forEach(venta => {
+    const row = document.createElement('tr');
+    const productos = venta.items.map(item => `${item.productoNombre} (${item.cantidad})`).join(', ');
+    row.innerHTML = `
+      <td>${venta.id}</td>
+      <td>${venta.fecha}</td>
+      <td>${venta.cliente ? venta.cliente.nombre : 'N/A'}</td>
+      <td>${productos}</td>
+      <td>$${venta.totalVenta.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function filtrarCompras() {
+  const compras = JSON.parse(localStorage.getItem('entradas') || '[]');
+  const desde = document.getElementById('compraDesde').value;
+  const hasta = document.getElementById('compraHasta').value;
+  const proveedor = document.getElementById('compraProveedor').value;
+  
+  let comprasFiltradas = compras.filter(compra => {
+    let cumple = true;
+    if (desde && compra.fecha < desde) cumple = false;
+    if (hasta && compra.fecha > hasta) cumple = false;
+    if (proveedor && compra.proveedor !== proveedor) cumple = false;
+    return cumple;
+  });
+  
+  mostrarCompras(comprasFiltradas);
+}
+
+function mostrarCompras(compras) {
+  const tbody = document.querySelector('#tablaCompras tbody');
+  tbody.innerHTML = '';
+  
+  compras.forEach(compra => {
+    const row = document.createElement('tr');
+    const productos = compra.items.map(item => `${item.productoNombre} (${item.cantidad})`).join(', ');
+    const total = compra.items.reduce((sum, item) => sum + (item.cantidad * item.precioUnitario), 0);
+    row.innerHTML = `
+      <td>${compra.fecha}</td>
+      <td>${compra.proveedor || 'N/A'}</td>
+      <td>${productos}</td>
+      <td>$${total.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function filtrarEntradas() {
+  const entradas = JSON.parse(localStorage.getItem('entradas') || '[]');
+  const desde = document.getElementById('entradaDesde').value;
+  const hasta = document.getElementById('entradaHasta').value;
+  
+  let entradasFiltradas = entradas.filter(entrada => {
+    let cumple = true;
+    if (desde && entrada.fecha < desde) cumple = false;
+    if (hasta && entrada.fecha > hasta) cumple = false;
+    return cumple;
+  });
+  
+  mostrarEntradas(entradasFiltradas);
+}
+
+function mostrarEntradas(entradas) {
+  const tbody = document.querySelector('#tablaEntradas tbody');
+  tbody.innerHTML = '';
+  
+  entradas.forEach(entrada => {
+    const row = document.createElement('tr');
+    const productos = entrada.items.map(item => `${item.productoNombre} (${item.cantidad})`).join(', ');
+    const total = entrada.items.reduce((sum, item) => sum + (item.cantidad * item.precioUnitario), 0);
+    row.innerHTML = `
+      <td>${entrada.fecha}</td>
+      <td>${entrada.proveedor || 'N/A'}</td>
+      <td>${productos}</td>
+      <td>$${total.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function filtrarSalidas() {
+  const salidas = JSON.parse(localStorage.getItem('salidas') || '[]');
+  const desde = document.getElementById('salidaDesde').value;
+  const hasta = document.getElementById('salidaHasta').value;
+  
+  let salidasFiltradas = salidas.filter(salida => {
+    let cumple = true;
+    if (desde && salida.fecha < desde) cumple = false;
+    if (hasta && salida.fecha > hasta) cumple = false;
+    return cumple;
+  });
+  
+  mostrarSalidas(salidasFiltradas);
+}
+
+function mostrarSalidas(salidas) {
+  const tbody = document.querySelector('#tablaSalidas tbody');
+  tbody.innerHTML = '';
+  
+  salidas.forEach(salida => {
+    const row = document.createElement('tr');
+    const productos = salida.items.map(item => `${item.productoNombre} (${item.cantidad})`).join(', ');
+    const totalItems = salida.items.reduce((sum, item) => sum + item.cantidad, 0);
+    row.innerHTML = `
+      <td>${salida.fecha}</td>
+      <td>${salida.destino || 'N/A'}</td>
+      <td>${productos}</td>
+      <td>${totalItems}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function filtrarDevoluciones() {
+  const devoluciones = JSON.parse(localStorage.getItem('devoluciones') || '[]');
+  const desde = document.getElementById('devolDesde').value;
+  const hasta = document.getElementById('devolHasta').value;
+  const tipo = document.getElementById('devolTipo').value;
+  
+  let devolucionesFiltradas = devoluciones.filter(devolucion => {
+    let cumple = true;
+    if (desde && devolucion.fecha < desde) cumple = false;
+    if (hasta && devolucion.fecha > hasta) cumple = false;
+    if (tipo && devolucion.tipo !== tipo) cumple = false;
+    return cumple;
+  });
+  
+  mostrarDevoluciones(devolucionesFiltradas);
+}
+
+function mostrarDevoluciones(devoluciones) {
+  const tbody = document.querySelector('#tablaDevoluciones tbody');
+  tbody.innerHTML = '';
+  
+  devoluciones.forEach(devolucion => {
+    const row = document.createElement('tr');
+    const productos = devolucion.items ? devolucion.items.map(item => `${item.productoNombre} (${item.cantidad})`).join(', ') : 'N/A';
+    const total = devolucion.items ? devolucion.items.reduce((sum, item) => sum + (item.cantidad * item.precioUnitario || 0), 0) : 0;
+    row.innerHTML = `
+      <td>${devolucion.fecha}</td>
+      <td>${devolucion.tipo || 'N/A'}</td>
+      <td>${productos}</td>
+      <td>$${total.toFixed(2)}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Funciones de exportación
+function exportVentas() {
+  const ventas = JSON.parse(localStorage.getItem('ventas') || '[]');
+  exportarCSV(ventas, 'ventas');
+}
+
+function exportCompras() {
+  const compras = JSON.parse(localStorage.getItem('entradas') || '[]');
+  exportarCSV(compras, 'compras');
+}
+
+function exportEntradas() {
+  const entradas = JSON.parse(localStorage.getItem('entradas') || '[]');
+  exportarCSV(entradas, 'entradas');
+}
+
+function exportSalidas() {
+  const salidas = JSON.parse(localStorage.getItem('salidas') || '[]');
+  exportarCSV(salidas, 'salidas');
+}
+
+function exportDevoluciones() {
+  const devoluciones = JSON.parse(localStorage.getItem('devoluciones') || '[]');
+  exportarCSV(devoluciones, 'devoluciones');
+}
+
+function exportarCSV(datos, tipo) {
+  if (datos.length === 0) {
+    alert('No hay datos para exportar');
+    return;
+  }
+  
+  let csv = '';
+  const headers = Object.keys(datos[0]);
+  csv += headers.join(',') + '\n';
+  
+  datos.forEach(row => {
+    const values = headers.map(header => {
+      let value = row[header];
+      if (typeof value === 'object') value = JSON.stringify(value);
+      return `"${value}"`;
+    });
+    csv += values.join(',') + '\n';
+  });
+  
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `${tipo}_${new Date().toISOString().split('T')[0]}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
